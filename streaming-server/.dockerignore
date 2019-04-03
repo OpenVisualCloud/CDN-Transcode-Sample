@@ -1,0 +1,4 @@
+CMakeLists.txt
+*.sh
+*.m4
+test/*

@@ -1,0 +1,31 @@
+<div class="top-bar" style="background-color:#0071c5" ui-header>
+  <div class="top-bar-left">
+    <ul class="dropdown menu" data-dropdown-menu style="background-color:#0071c5;">
+      <li class="menu-text">
+        <h4 style="color:#FDEDEC">OVC CDN Transcode E2E Sample</h4>
+      </li>
+    </ul>
+  </div>
+  <div class="top-bar-right" ui-header-setting>
+      <ul class="dropdown menu" data-dropdown-menu style="background-color:gray;color:white">
+      <li><a href="#" user-name-menu class="menu-text">guest</a>
+        <ul class="menu" style="background-color:gray">
+          <li><a href="#" data-open="setting" class="menu-text"><i class="fi-key"></i>&nbsp;Setting</a></li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</div>
+
+<div class="reveal" id="setting" data-reveal>
+  <form>
+    <p><h4><b>Setting</b></h4></p>
+
+    <div class="input-group" ui-header-setting-user>
+      <span class="input-group-label" style="width:40%"><b>User Name:</b></span>
+      <input class="input-group-field" type="text" name="user" pattern="[a-z0-9_]+"><br>
+    </div>
+
+    <input class="button expanded" type="submit" data-close>
+  </form>
+</div>

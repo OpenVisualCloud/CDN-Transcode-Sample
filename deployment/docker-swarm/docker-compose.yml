@@ -1,0 +1,111 @@
+version: '3.1'
+
+services:
+
+    zookeeper:
+        image: confluentinc/cp-zookeeper:latest
+        environment:
+            ZOOKEEPER_SERVER_ID: 1
+            ZOOKEEPER_CLIENT_PORT: '2181'
+            ZOOKEEPER_TICK_TIME: '2000'
+            ZOOKEEPER_HEAP_OPTS: '-Xmx2048m -Xms2048m'
+            ZOOKEEPER_MAX_CLIENT_CNXNS: '20000'
+            ZOOKEEPER_LOG4J_LOGGERS: 'zookeepr=ERROR'
+            ZOOKEEPER_LOG4J_ROOT_LOGLEVEL: 'ERROR'
+        restart: always
+        deploy:
+            replicas: 1
+
+    kafka:
+        image: confluentinc/cp-kafka:latest
+        depends_on:
+            - zookeeper
+        environment:
+            KAFKA_BROKER_ID: 1
+            KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+            KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+            KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
+            KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+            KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+            KAFKA_DEFAULT_REPLICATION_FACTOR: 1
+            KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
+            KAFKA_NUM_PARTITIONS: 16
+            KAFKA_LOG_RETENTION_HOURS: 8
+            KAFKA_HEAP_OPTS: '-Xmx1024m -Xms1024m'
+            KAFKA_LOG4J_LOGGERS: 'kafka=ERROR,kafka.controller=ERROR,state.change.logger=ERROR,org.apache.kafka=ERROR'
+            KAFKA_LOG4J_ROOT_LOGLEVEL: 'ERROR'
+            CONFLUENT_SUPPORT_METRICS_ENABLE: 0
+        restart: always
+        deploy:
+            replicas: 1
+
+    kafka-init:
+        image: confluentinc/cp-kafka:latest
+        depends_on:
+            - kafka
+        command: |
+              bash -c 'cub kafka-ready -b kafka:9092 1 20 && \
+                       kafka-topics --create --topic content_provider_sched --partitions 16 --replication-factor 1 --if-not-exists --zookeeper zookeeper:2181 && \
+                       sleep infinity'
+        environment:
+            KAFKA_BROKER_ID: ignored
+            KAFKA_ZOOKEEPER_CONNECT: ignored
+
+    cdn:
+        image: ovc_cdn_service:latest
+        ports:
+            - "443:8080"
+        volumes:
+            - ${HTML_VOLUME}:/var/www/html:ro
+            - ${VIDEO_ARCHIVE_VOLUME}:/var/www/archive:ro
+            - ${VIDEO_DASH_VOLUME}:/var/www/dash:rw
+            - ${VIDEO_HLS_VOLUME}:/var/www/hls:rw
+        depends_on:
+            - kafka
+        deploy:
+            replicas: 1
+        secrets:
+            - source: self_crt
+              target: self.crt
+              uid: ${USER_ID}
+              gid: ${GROUP_ID}
+              mode: 0444
+            - source: self_key
+              target: self.key
+              uid: ${USER_ID}
+              gid: ${GROUP_ID}
+              mode: 0440
+            - source: dhparam_pem
+              target: dhparam.pem
+              uid: ${USER_ID}
+              gid: ${GROUP_ID}
+              mode: 0444
+
+    vod-transcode:
+        image: ovc_transcode_sw:latest
+        volumes:
+            - ${VIDEO_ARCHIVE_VOLUME}:/var/www/archive:ro
+            - ${VIDEO_DASH_VOLUME}:/var/www/dash:rw
+            - ${VIDEO_HLS_VOLUME}:/var/www/hls:rw
+        deploy:
+            replicas: 2
+        depends_on:
+            - kafka
+            - zookeeper
+
+    live-transcode:
+        image: ovc_transcode_sw:latest
+        volumes:
+            - ${VIDEO_ARCHIVE_VOLUME}:/var/www/archive:ro
+        depends_on:
+            - cdn
+        command: |
+              bash -c 'ffmpeg -re -stream_loop -1 -i /var/www/archive/bbb_sunflower_1080p_30fps_normal.mp4 -vf scale=2560:1440 -c:v libsvt_hevc -b:v 15M -f flv rtmp://cdn/hls/big_buck_bunny_2560x1440 -vf scale=1920:1080 -c:v libsvt_hevc -b:v 10M -f flv rtmp://cdn/hls/big_buck_bunny_1920x1080 -vf scale=1280:720 -c:v libx264 -b:v 8M -f flv rtmp://cdn/hls/big_buck_bunny_1280x720 -vf scale=854:480 -c:v libx264 -b:v 6M -f flv rtmp://cdn/hls/big_buck_bunny_854x480 -abr_pipeline'
+
+secrets:
+    self_key:
+        file: self.key
+    self_crt:
+        file: self.crt
+    dhparam_pem:
+        file: dhparam.pem

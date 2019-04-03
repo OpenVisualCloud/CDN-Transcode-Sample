@@ -1,0 +1,1 @@
+taskkill /IM vlc.exe /F /T
