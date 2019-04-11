@@ -1,8 +1,7 @@
 # CDN Transcode Sample Getting Started Guide
-[TOC]
-This document describes how to run the CDN Transcode Sample (abbr as CTS) step by step. Please reference **CDN_Transcode_Sample_RA.md** to understand the CTS reference architecture design to understand how CTS works.
+This document describes how to run the CDN Transcode Sample (abbr as CTS) step by step. Please refer to [reference architecture](CDN_Transcode_Sample_RA.md) to understand the CTS reference architecture design and how CTS works.
 
-The CTS provides CDN transcode services, and this guide just shows how to use the services in a simplest and typical way which can be scaled out to more complex environment. E.g.: in this guide, the docker images for transcoder server and cdn edge server are hosted on the same physical server, in real case, they can be hosted on differented servers located in different places in the CDN network.
+The CTS provides CDN transcode services, and this guide just shows how to use the services in a simplest and typical way which can be scaled out to more complex environment. E.g.: in this guide, the docker images for transcoder server and cdn edge server are hosted on the same physical server. In real case, they can be hosted on differented servers located in different places in the CDN network.
 
 In this document, we'll use the simplest example to show how to build up the pipeline for different user scenarios. To simply the setup, we'll host some docker nodes in the same physical machine.
 
@@ -280,4 +279,4 @@ http {
 ```
 
 ### Playback on Web browser
-Access URL:http://10.67.116.179/ with any browser, you will see the playlist and then click to play.
+Access URL http://10.67.116.179/ with your web browser, you will see the playlist and then click to play.
