@@ -1,5 +1,4 @@
 # OVC CDN Transcode E2E Sample Reference Architecture
-[TOC]
 # Introduction
 ## Purpose
 This document describes the reference architecture (RA) design of the OVC CDN Transcode E2E Sample (abbr as CTES in this document) which can demostrate the media delivery over CDN network capability using Open Visual Cloud software stack.
@@ -24,7 +23,6 @@ There are 4 typical protocols widely used for stream from Transcode Server to CD
 | RTMP          | out: rtmp        | in:rtmp out: rtmp| in:rtmp out:rtmp| rtmp   |
 | HLS           | out: rtmp        | in:rtmp out: http| in:http out:http| http   |
 | DASH          | out: rtmp        | in:rtmp out: http| in:http out:http| http   |
-| HTTP-FLV      | out: rtmp        | TBD              | TBD             | http   |
 
 ### Live user scenario 1 - RTMP Live
 Below is the simple workflow of the RTMP live user scenario:
@@ -88,9 +86,6 @@ The **CDN Edge Server** receives video streams via rtmp, and will translate the 
 
 The **Client System** supports DASH playback and AVC/HEVC decode, in dash.js is used.
 
-### Live user scenario 4 - HTTP-FLV Live
-TODO
-
 ## VOD Use Case
 
 For VOD use case, there are mainly five logic nodes in the solution - the **Video Publisher**, **Transcode Server**, **OSS Server**, **CDN Edge Server**, **Client System**, and the **CDN Manager**.  The **Video Publisher** publish the encoded source video into the Transcode Server over http, by web browser or mobile app. The Transcode Server receives the video streams, transcode to video streams with different codec/resolution/bitrate, generate HLS or DASH video segmentation and index file, and save to **OSS Server**. The transcode output video files will then be distributed to **CDN Edge Server** by decision from **CDN manager**. The **CDN Edge Server** receives streams from **Transcode Server**, and send streams to **Client System** per request.
@@ -152,8 +147,3 @@ Below is the simple workflow of the DASH VOD user scenario:
 ```
 It's almost the same as HLS VOD scenario with some minor difference: FFmpeg should generate DASH .mp4 segmentations and index file, and the **Client System** supports DASH playback and AVC/HEVC decode, DASH.js will be used.
 
-# Reference Demo
-## Hardware Requirement
-## Software Ingredients
-## Network Configuration
-## Video Clips
