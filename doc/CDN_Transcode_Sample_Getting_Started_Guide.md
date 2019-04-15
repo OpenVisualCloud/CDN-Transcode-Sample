@@ -68,7 +68,7 @@ make start_docker_compose
 ```
 ## Sample execution
 ### Playback on Web browser
-Access URL:http://10.67.116.179/ with any browser, you will see the playlist and then click to play.
+Access URL:https://10.67.116.179/ with any browser, you will see the playlist and then click to play.
 ### Playback using VLC
 Modify the IP address setting in client/vlc_playback.bat, then run the script on Windows client.
 
@@ -138,7 +138,7 @@ docker run -it --device=/dev/dri:/dev/dri --network=my_bridge --ip 192.168.31.31
 ### Create CDN server docker instance
 Run below command on E3/VCA2/E5 server:
 ```
-docker run -it -p 80:80 --network=my_bridge --ip 192.168.31.32 --name nginx ovc_cdn_service /bin/bash
+docker run -it -p 443:8080 --network=my_bridge --ip 192.168.31.32 --name nginx ovc_cdn_service /bin/bash
 ```
 
 ### Install VLC on client
@@ -151,6 +151,7 @@ sudo apt-get install -y vlc
 #### CDN server
 Run below command on CDN server:
 ```
+sh self-sign.sh                 # Create self-signed server certificate
 nginx &
 ```
 
@@ -168,7 +169,7 @@ ffmpeg -hwaccel vaapi -hwaccel_device /dev/dri/renderD128 -hwaccel_output_format
 #### Live play
 Run below command on client:
 ```
-vlc http://10.67.116.179/hls/big_buck_bunny_2560x1440/index.m3u8
+vlc https://10.67.116.179:443/hls/big_buck_bunny_2560x1440/index.m3u8
 ```
 
 ## Video on Demand
@@ -234,8 +235,9 @@ python3 main.py
 ### Run CDN server docker instance
 Run below command on E3/VCA2/E5 server:
 ```
-docker run -it -p 80:80 --network=my_bridge --ip 192.168.31.33 --name nginx -v /var/www/dash:/var/www/dash -v /var/www/hls:/var/www/hls -v <<vcse-cdn project path>>/volume/video/archive/:/var/www/archive ovc_cdn_service /bin/bash
+docker run -it -p 443:8080 --network=my_bridge --ip 192.168.31.33 --name nginx -v /var/www/dash:/var/www/dash -v /var/www/hls:/var/www/hls -v <<vcse-cdn project path>>/volume/video/archive/:/var/www/archive ovc_cdn_service /bin/bash
 Run:
+sh self-sign.sh                # Create self-signed server certificate
 nginx &
 python3 main.py
 ```
@@ -279,4 +281,4 @@ http {
 ```
 
 ### Playback on Web browser
-Access URL http://10.67.116.179/ with your web browser, you will see the playlist and then click to play.
+Access URL https://10.67.116.179/ with your web browser, you will see the playlist and then click to play.
