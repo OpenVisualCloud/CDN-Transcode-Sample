@@ -42,4 +42,4 @@ We welcome community contributions to the CDN Transcode sample. Thank you for yo
 
 # How to Report Bugs and Provide Feedback
 
-Use the [Issues] (https://github.com/OpenVisualCloud/CDN-Transcode-Sample/issues) tab on GitHub.
+Use the [Issues](https://github.com/OpenVisualCloud/CDN-Transcode-Sample/issues) tab on GitHub.
