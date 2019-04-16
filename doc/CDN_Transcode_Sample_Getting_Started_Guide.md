@@ -152,6 +152,7 @@ sudo apt-get install -y vlc
 #### CDN server
 Run below command on CDN server:
 ```
+sh self-sign.sh                 # Create self-signed server certificate
 nginx &
 ```
 
@@ -237,6 +238,7 @@ Run below command on E3/VCA2/E5 server:
 ```
 docker run -it -p 443:8080 --network=my_bridge --ip 192.168.31.33 --name nginx -v /var/www/dash:/var/www/dash -v /var/www/hls:/var/www/hls -v <<vcse-cdn project path>>/volume/video/archive/:/var/www/archive ovc_cdn_service /bin/bash
 Run:
+sh self-sign.sh                 # Create self-signed server certificate
 nginx &
 python3 main.py
 ```
