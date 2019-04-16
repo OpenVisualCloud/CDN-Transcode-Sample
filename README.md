@@ -12,13 +12,13 @@ The CDN Transcode Sample is an Open Visual Cloud software stack with all require
 
 # License
 
-The CDN Transcode sample is licensed under the OSI-approved BSD 3-Clause license. See [LICENSE](LICENSE) for details.
+The CDN Transcode Sample is licensed under the OSI-approved BSD 3-Clause license. See [LICENSE](LICENSE) for details.
 
 # System Requirements
 
 ## Operating System
 
-The CDN Transcode sample may run on Linux* 64 bit operating systems. The list below represents the operating systems that the transcode application and library were tested and validated on:
+The CDN Transcode Sample may run on Linux* 64 bit operating systems. The list below represents the operating systems that the transcode application and library were tested and validated on:
 
 * __Linux* Operating Systems (64-bit):__
 
@@ -32,7 +32,7 @@ The CDN Transcode sample may run on Linux* 64 bit operating systems. The list be
 
 # How to Contribute
 
-We welcome community contributions to the CDN Transcode sample. Thank you for your time! By contributing to the project, you agree to the license and copyright terms therein and to the release of your contribution under these terms.
+We welcome community contributions to the CDN Transcode Sample. Thank you for your time! By contributing to the project, you agree to the license and copyright terms therein and to the release of your contribution under these terms.
 
 ## Contribution process
 
@@ -42,4 +42,4 @@ We welcome community contributions to the CDN Transcode sample. Thank you for yo
 
 # How to Report Bugs and Provide Feedback
 
-Use the [Issues] (https://github.com/OpenVisualCloud/CDN-Transcode-Sample/issues) tab on GitHub.
+Use the [Issues](https://github.com/OpenVisualCloud/CDN-Transcode-Sample/issues) tab on GitHub.
