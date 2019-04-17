@@ -1,7 +1,22 @@
+# Open Visual Cloud CDN Transcode Sample
+[![Stable release](https://img.shields.io/badge/latest_release-v1.0-green.svg)](https://github.com/OpenVisualCloud/CDN-Transcode-Sample/releases/tag/v1.0)
+[![License](https://img.shields.io/badge/license-BSD_3_Clause-green.svg)](https://github.com/OpenVisualCloud/CDN-Transcode-Sample/blob/master/LICENSE)
+[![Contributions](https://img.shields.io/badge/contributions-welcome-blue.svg)](https://github.com/OpenVisualCloud/CDN-Transcode-Sample/wiki)
+
 The CDN Transcode Sample is an Open Visual Cloud software stack with all required open source ingredients well integrated to provide out-of-box CDN media transcode service, including live streaming and video on demand. It also provides Docker-based media delivery software development environment upon which developer can easily build their specific applications.
 
-# What's in this repo?
+# License
+The CDN Transcode Sample is licensed under the OSI-approved BSD 3-Clause license. See [LICENSE](LICENSE) for details.
 
+# How to contribute
+See [CONTRIBUTING](CONTRIBUTING.md) for details. Thank you!
+
+# Documents
+-  [CDN Transcode Sample Getting Started Guide](doc/CDN_Transcode_Sample_Getting_Started_Guide.md)
+-  [CDN Transcode Sample Reference Architecture](doc/CDN_Transcode_Sample_RA.md)
+
+# What's in this project
+The CDN Transcode Sample contains below components:
 -  Dockerfiles
 -  Python web services source code
 -  BASH glue scripts
@@ -10,36 +25,11 @@ The CDN Transcode Sample is an Open Visual Cloud software stack with all require
 -  Configuration files
 -  Documents
 
-# License
-
-The CDN Transcode Sample is licensed under the OSI-approved BSD 3-Clause license. See [LICENSE](LICENSE) for details.
-
-# System Requirements
-
-## Operating System
-
+# System requirements
+## Operating system
 The CDN Transcode Sample may run on Linux* 64 bit operating systems. The list below represents the operating systems that the transcode application and library were tested and validated on:
+- Ubuntu* 16.04 Server LTS
+- Ubuntu* 18.04 Server LTS
 
-* __Linux* Operating Systems (64-bit):__
-
-    -  Ubuntu* 16.04 Server LTS
-    -  Ubuntu* 18.04 Server LTS
-
-# How to get started?
-
--  Refer to [Reference Architecture](doc/CDN_Transcode_Sample_RA.md) to understand the reference architecture.
--  Refer to [User Guide](doc/CDN_Transcode_Sample_Getting_Started_Guide.md) to setup and run the sample.
-
-# How to Contribute
-
-We welcome community contributions to the CDN Transcode Sample. Thank you for your time! By contributing to the project, you agree to the license and copyright terms therein and to the release of your contribution under these terms.
-
-## Contribution process
-
--  Validate that your changes do not break a build
--  Perform smoke tests and ensure they pass
--  Submit a pull request for review to the maintainer
-
-# How to Report Bugs and Provide Feedback
-
+# How to report bugs
 Use the [Issues](https://github.com/OpenVisualCloud/CDN-Transcode-Sample/issues) tab on GitHub.
