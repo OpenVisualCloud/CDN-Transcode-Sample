@@ -1,6 +1,4 @@
 # CDN Transcode Sample Getting Started Guide
-Table of Contents
-=================
 
    * [CDN Transcode Sample Getting Started Guide](#cdn-transcode-sample-getting-started-guide)
    * [Prerequisites](#prerequisites)
