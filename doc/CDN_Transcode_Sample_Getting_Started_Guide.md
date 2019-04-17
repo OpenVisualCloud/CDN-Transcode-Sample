@@ -43,6 +43,11 @@ make
 # Deploy
 The sample supports both auto deployment and manual deployment. The auto deployment will help users to have quick try to use this sample while the manual deployment give more flexibility for customerization.
 
+**Note: If you want to add your own video clips, please copy them to <CDN-Transcode-Sample folder path>/volume/video/archive folder, then run below command to generate video clip preview pictures. For video clips suffix name, .mp4 is recommended.**
+```
+ffmpeg -i <CDN-Transcode-Sample folder path>/volume/video/archive/<clip_name> -vf "thumbnail,scale=640:360" -frames:v 1 -y <CDN-Transcode-Sample folder path>/volume/video/archive/<clip_name>.png
+```
+
 ## Auto deploy
 The auto deploy supports both docker swarm and docker compose. You're recommend to use docker compose in this sample. The auto deploy will deploy the VOD and live streaming sample service automatically using a video stream big buck bunny as one example. For auto deployment, the original source video content are local content but not streamed from a streaming server, to simply the setup.
 ### Stop/start service
@@ -146,14 +151,14 @@ docker run -it --network=my_bridge --ip 192.168.31.32 --name live_transcode -v /
 #### Create two VOD transcode docker instances
 Run below commands on CDN-Transcode server to create two vod transcode docker instances:
 ```
-docker run -it --network=my_bridge --ip 192.168.31.33 --name vod_transcode_1 -v /var/www/dash:/var/www/dash -v /var/www/hls:/var/www/hls -v <vcse-cdn project path>/volume/video/archive:/var/www/archive ovc_transcode_sw /bin/bash -c '/home/main.py'
-docker run -it --network=my_bridge --ip 192.168.31.34 --name vod_transcode_2 -v /var/www/dash:/var/www/dash -v /var/www/hls:/var/www/hls -v <vcse-cdn project path>/volume/video/archive:/var/www/archive ovc_transcode_sw /bin/bash -c '/home/main.py'
+docker run -it --network=my_bridge --ip 192.168.31.33 --name vod_transcode_1 -v /var/www/dash:/var/www/dash -v /var/www/hls:/var/www/hls -v <CDN-Transcode-Sample folder path>/volume/video/archive:/var/www/archive ovc_transcode_sw /bin/bash -c '/home/main.py'
+docker run -it --network=my_bridge --ip 192.168.31.34 --name vod_transcode_2 -v /var/www/dash:/var/www/dash -v /var/www/hls:/var/www/hls -v <CDN-Transcode-Sample folder path>/volume/video/archive:/var/www/archive ovc_transcode_sw /bin/bash -c '/home/main.py'
 ```
 
 #### Create nginx web service docker instance
 Run below command on CDN-Transcode server to create nginx docker instance:
 ```
-docker run -it -p 443:8080 --network=my_bridge --ip 192.168.31.35 --name nginx -v /var/www/dash:/var/www/dash -v /var/www/hls:/var/www/hls -v <vcse-cdn project path>/volume/video/archive:/var/www/archive -v <vcse-cdn project path>/volume/html:/var/www/html ovc_cdn_service /bin/bash -c '/home/main.py&/home/self-sign.sh&&/usr/sbin/nginx'
+docker run -it -p 443:8080 --network=my_bridge --ip 192.168.31.35 --name nginx -v /var/www/dash:/var/www/dash -v /var/www/hls:/var/www/hls -v <CDN-Transcode-Sample folder path>/volume/video/archive:/var/www/archive -v <CDN-Transcode-Sample folder path>/volume/html:/var/www/html ovc_cdn_service /bin/bash -c '/home/main.py&/home/self-sign.sh&&/usr/sbin/nginx'
 ```
 
 #### Launch live transcoder service
