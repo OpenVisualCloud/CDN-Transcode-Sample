@@ -68,17 +68,17 @@ The manual deployment give an example to users who want to use this sample as a 
 #### Network topology
 In this guide we use a very simple topology diagram to showcase the interconnection between each nodes. Below is the diagram: 
 ```
-                        +-----------------+-----------------+-----------------+-----------------+                   
-                        |  Live transcode | VOD transcode 1 | VOD transcode 2 |                 |                   
-                        | [Ubuntu docker] | [Ubuntu docker] | [Ubuntu docker] |      ...        |                   
-                        | 192.168.31.32   | 192.168.31.33   | 192.168.31.34   |                 |                   
-                        +-----------------+-----------------+-----------------+-----------------+                   
-                        |    Zookeeper    |      Kafka      |   kafka-init    |     Nginx       |                   
-+------------------+    | [Ubuntu docker] | [Ubuntu docker] | [Ubuntu docker] | [Ubuntu docker] |   +--------------+
-| Streaming Server |    | 192.168.31.29   | 192.168.31.30   | 192.168.31.31   | 192.168.31.35   |   |    Client    |
-|  10.67.117.70    |--->|-----------------+-----------------+-----------------+-----------------+-->| 10.67.117.80 |
-| FFmpeg Nginx     |    |           CDN-Transcode Server:  Ubuntu l8.04 10.67.116.179           |   | VLC/browser  |
-+------------------+    +-----------------------------------------------------------------------+   +--------------+
+                     +-----------------+-----------------+-----------------+-----------------+                  
+                     |  Live transcode | VOD transcode 1 | VOD transcode 2 |                 |                  
+                     | [Ubuntu docker] | [Ubuntu docker] | [Ubuntu docker] |      ...        |                  
+                     | 192.168.31.32   | 192.168.31.33   | 192.168.31.34   |                 |                  
+                     +-----------------+-----------------+-----------------+-----------------+                  
+                     |    Zookeeper    |      Kafka      |   kafka-init    |     Nginx       |                  
++----------------+   | [Ubuntu docker] | [Ubuntu docker] | [Ubuntu docker] | [Ubuntu docker] |   +-------------+
+|Streaming Server|   | 192.168.31.29   | 192.168.31.30   | 192.168.31.31   | 192.168.31.35   |   |   Client    |
+| 10.67.117.70   |-->|-----------------+-----------------+-----------------+-----------------+-->|10.67.117.80 |
+|FFmpeg Nginx    |   |           CDN-Transcode Server:  Ubuntu l8.04 10.67.116.179           |   |VLC/browser  |
++----------------+   +-----------------------------------------------------------------------+   +-------------+
 
 ```
 #### Install FFmpeg on Streaming Server
