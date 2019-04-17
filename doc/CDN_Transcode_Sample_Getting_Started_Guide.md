@@ -1,5 +1,35 @@
 # CDN Transcode Sample Getting Started Guide
-[TOC]
+Table of Contents
+=================
+
+   * [CDN Transcode Sample Getting Started Guide](#cdn-transcode-sample-getting-started-guide)
+   * [Prerequisites](#prerequisites)
+      * [Setup CDN-Transcode Server](#setup-cdn-transcode-server)
+      * [Setup Streaming Server](#setup-streaming-server)
+      * [Setup Client](#setup-client)
+   * [Build](#build)
+   * [Deploy](#deploy)
+      * [Auto deployment](#auto-deployment)
+         * [Start CDN transcode service](#start-cdn-transcode-service)
+         * [Playback](#playback)
+            * [Web browser playback](#web-browser-playback)
+            * [VLC playback](#vlc-playback)
+      * [Manual deployment](#manual-deployment)
+         * [Setup network topology](#setup-network-topology)
+         * [Config CDN-Transcode Server](#config-cdn-transcode-server)
+         * [Config Streaming Server](#config-streaming-server)
+         * [Start CDN transcode service](#start-cdn-transcode-service-1)
+            * [Start zookeeper service](#start-zookeeper-service)
+            * [Start kafka service](#start-kafka-service)
+            * [Start kafka-init service](#start-kafka-init-service)
+            * [Start live transcode docker](#start-live-transcode-docker)
+            * [Start VOD transcode service](#start-vod-transcode-service)
+            * [Start nginx web service](#start-nginx-web-service)
+            * [Start live transcode service](#start-live-transcode-service)
+         * [Playback](#playback-1)
+            * [Web browser playback](#web-browser-playback-1)
+            * [VLC playback](#vlc-playback-1)
+
 This document describes how to run the CDN Transcode Sample (abbr as CTS) step by step. Please refer to [reference architecture](CDN_Transcode_Sample_RA.md) to understand the CTS reference architecture design and how CTS works.
 
 The CTS provides two kinds of services - live streaming and VOD, and this guide just shows how to use the services in a simplest and typical way which can be scaled out to more complex environment. E.g.: in this guide, the docker images for transcoder server and cdn edge server are hosted on the same physical server. In real case, they can be hosted on differented servers located in different places in the CDN network.
