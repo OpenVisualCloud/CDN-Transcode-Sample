@@ -1,6 +1,20 @@
 rem
-rem This is an example to playback 4 channels of video streams with 2x2 layout on Windows using VLC.
+rem This is an example to playback 4 channels of video streams with 2x2 layout on Windows using VLC. 
+rem It will launch 4 VLC process with each process playing back 1 channel of video stream, while keep 
+rem in a well designed layout. The VLC player will have no border, menu bar and tool bar, and also with
+rem proper Windows position. In this example it works for 1920x1080 resolution. You can reference this
+rem example to design other layout and also for other resolution.
+rem 
+rem Below is how the windows will look like:
 rem
+rem   +---------+---------+                                                     
+rem   |         |         |                                                     
+rem   |         |         |                                                     
+rem   +---------+---------+                                                     
+rem   |         |         |                                                     
+rem   |         |         |                                                     
+rem   +---------+---------+                                                     
+rem                                                                             
 
 C:
 cd "C:\Program Files (x86)\VideoLAN\VLC"
