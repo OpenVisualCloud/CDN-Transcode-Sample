@@ -103,13 +103,18 @@ The auto deploy supports both docker swarm and docker compose. You're recommende
 ffmpeg -i <CDN-Transcode-Sample>/volume/video/archive/<clip_name> -vf "thumbnail,scale=640:360" -frames:v 1 -y <CDN-Transcode-Sample>/volume/video/archive/<clip_name>.png
 ```
 ### Start CDN transcode service
-Use the following commands to start docker swarm service
+Use the following commands on CDN-Transcode server to stop/start docker swarm service
+**Note**: Initialize docker swarm on CDN-Transcode server if you have not:
+```bash
+sudo docker swarm init
+```
+Then start/stop services on CDN-Transcode server as follows:
 ```bash
 make stop_docker_swarm
 make start_docker_swarm
 ```
 
-Use the following commands to restart docker-compose service
+Use the following commands on CDN-Transcode server to stop/start docker-compose service
 ```bash
 make stop_docker_compose
 make start_docker_compose
