@@ -225,9 +225,38 @@ ffmpeg -i rtmp://10.67.117.70/live/bbb_sunflower_1080p_30fps_normal -vf scale=25
  rtmp://nginx/hls/big_buck_bunny_1280x720 -vf scale=854:480 -c:v libx264 -b:v 6M -f flv \
  rtmp://nginx/hls/big_buck_bunny_854x480 -abr_pipeline
 ```
+
+**Note**: for live ABR (using ffmpeg to trancode in 3 variants, and nginx produce one manifest, there are only 3 different resolutions and bit rates supported in live ABR).
+Run below commands on live transcode docker instance, the suffix "hi" corresponds to the maximum resolution or bit rate, the suffix "mid" corresponds to the medium resolution or bit rate and the suffix "low" corresponds to the minimum resolution or bit rate.
+```
+ffmpeg -i rtmp://10.67.117.70/live/bbb_sunflower_1080p_30fps_normal -vf scale=1920:1080 -c:v libsvt_hevc -b:v 8M -f flv \
+ rtmp://nginx/dash/big_buck_bunny_hi -vf scale=1280:720 -c:v libsvt_hevc -b:v 4M -f flv \
+ rtmp://nginx/hls/big_buck_bunny_mid -vf scale=854:480 -c:v libsvt_hevc -b:v 2M -f flv \
+ rtmp://nginx/hls/big_buck_bunny_low -abr_pipeline
+```
+
+Configure below parameters on nginx docker instance, the "max" flag which indicate which representation should have max witdh and height and so use it to create the variant manifest.
+```
+rtmp {
+  server {
+    application dash {
+      ......
+      dash_variant _low bandwidth="2048000" width="854" height="480";
+      dash_variant _med bandwidth="4096000" width="1280" height="720";
+      dash_variant _hi bandwidth="8192000" width="1920" height="1080" max;
+      ......
+    }
+  }
+}
+```
+
 ### Playback
 #### Web browser playback
 Visit https://\<CDN-Transcode Server IP address\>/ using any web browser, you will see the playlist and then click any of the streams in the playlist to playback.
 
 #### VLC playback
 Same as auto deployment, you can use VLC client as well following instructions in the above section.
+**Note**: for adaptative streaming, please run below commands.
+```
+vlc https://\<CDN-Transcode Server IP address\>/dash/big_buck_bunny.mpd
+```

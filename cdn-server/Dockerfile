@@ -24,11 +24,13 @@ ARG NGINX_RTMP_VER=v1.2.1
 ARG NGINX_RTMP_REPO=https://github.com/arut/nginx-rtmp-module/archive/${NGINX_RTMP_VER}.tar.gz
 ARG NGINX_RTMP_PATCH_HLS=https://raw.githubusercontent.com/VCDP/CDN/master/0001-add-hevc-support-for-rtmp-and-hls.patch
 ARG NGINX_RTMP_PATCH_DASH=https://raw.githubusercontent.com/VCDP/CDN/master/0002-add-HEVC-support-for-dash.patch
+ARG NGINX_RTMP_PATCH_DASH_ABR=https://raw.githubusercontent.com/VCDP/CDN/master/v1-0001-Add-some-dash-features.patch
 
 RUN wget -O - ${NGINX_RTMP_REPO} | tar xz && mv nginx-rtmp-module-${NGINX_RTMP_VER#v} nginx-rtmp-module && \
     cd nginx-rtmp-module && \
     wget -O - ${NGINX_RTMP_PATCH_HLS} | patch -p1 && \
-    wget -O - ${NGINX_RTMP_PATCH_DASH} | patch -p1
+    wget -O - ${NGINX_RTMP_PATCH_DASH} | patch -p1 && \
+    wget -O - ${NGINX_RTMP_PATCH_DASH_ABR} | patch -p1
 
 
 # Build nginx & nginx-rtmp
