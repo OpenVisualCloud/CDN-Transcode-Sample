@@ -19,19 +19,19 @@ jobs:
         - mkdir build
         - cd build
         - cmake ..
-        - cd ../xcode-server/ffmpeg-sw 
+        - cd xcode-server/ffmpeg-sw 
         - make 
     - name: cdn-server
       script:
         - mkdir build
         - cd build
         - cmake ..
-        - cd ../cdn-server 
+        - cd cdn-server 
         - make
     - name: deployment/docker-swarm
       script:
         - mkdir build
         - cd build
         - cmake ..
-        - cd ../deployment/docker-swarm
+        - cd deployment/docker-swarm
         - make
