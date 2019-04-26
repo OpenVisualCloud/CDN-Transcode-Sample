@@ -2,7 +2,7 @@
   <div class="top-bar-left">
     <ul class="dropdown menu" data-dropdown-menu style="background-color:#0071c5;">
       <li class="menu-text">
-        <h4 style="color:#FDEDEC">OVC CDN Transcode E2E Sample</h4>
+        <h4 style="color:#FDEDEC">CDN Transcode Sample</h4>
       </li>
     </ul>
   </div>
