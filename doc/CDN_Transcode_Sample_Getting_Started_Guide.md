@@ -28,9 +28,10 @@
             * [Web browser playback](#web-browser-playback-1)
             * [VLC playback](#vlc-playback-1)
 
+
 This document describes how to run the CDN Transcode Sample (abbr as CTS) step by step. Please refer to [reference architecture](CDN_Transcode_Sample_RA.md) to understand the CTS reference architecture design and how CTS works.
 
-The CTS provides two kinds of services - live streaming and VOD, and this guide just shows how to use the services in a simplest and typical way which can be scaled out to more complex environment. E.g.: in this guide, the docker images for transcoder server and cdn edge server are hosted on the same physical server. In real case, they can be hosted on differented servers located in different places in the CDN network.
+The CTS provides two kinds of services - `live streaming` and `VOD`, and this guide just shows how to use the services in a simplest and typical way which can be scaled out to more complex environment. E.g.: in this guide, the docker images for transcoder server and cdn edge server are hosted on the same physical server. In real case, they can be hosted on differented servers located in different places in the CDN network.
 
 # Prerequisites
 In this document, we'll use the simplest example to show how to build up the pipeline for different user scenarios. To simply the setup, we'll host docker nodes on the same physical server (named as "CDN-Transcode Server" in this document). One Streaming Server will be used as well to RTMP stream the source video content to CDN-Transcode Server, however you can omit Streaming Server if you want to just use local video content on CDN-Transcode Server. A client system is also needed to playback the transcoded video streams.
@@ -43,7 +44,8 @@ Below is the basic block diagram for the sample setup:
  |                  |   |                      |   |            |  
  +------------------+   +----------------------+   +------------+  
                                                                    
-```
+````
+**Note**: for `live streaming` and `VOD` in this document, it refers the interaction between `CDN-Transcode Server` and `Client`, not refers interaction between `Streaming Server` and `CDN-Transcode Server`.
 ## Setup CDN-Transcode Server
 - Install Ubuntu 18.04 on CDN-Transcode Server, and configure the IP address & proxy properlly.
 - Install [docker.ce](https://docs.docker.com/install).
@@ -83,14 +85,10 @@ In this document, we can use both VLC and web browser as the playback tool. To u
 On CDN-Transcode Server, run below command to build docker images:
 ``` sh
 mkdir build
-cd build
-cmake ..
-cd xcode-server/ffmpeg-sw
-make
-cd ../../cdn-server
-make
-cd ../deployment/docker-swarm
-make
+cd build && cmake ..
+cd xcode-server/ffmpeg-sw && make
+cd ../../cdn-server && make
+cd ../deployment/docker-swarm && make
 ```
 
 # Deploy
@@ -98,23 +96,23 @@ The sample supports both auto deployment and manual deployment. The auto deploym
 ## Auto deployment
 The auto deploy supports both docker swarm and docker compose. You're recommended to use docker compose in this sample. The auto deploy will deploy the live streaming and VOD services automatically using a default video stream "big buck bunny" as an example. To simply the setup, the original source video content are local content but not streamed from the RTMP streaming server.
 
-**Note**: If you want to use other video clips to try the auto deployment, you can simply copy the clips into <CDN-Transcode-Sample>/volume/video/archive folder, then run below command to generate video clip thumbnails. The transcode service will do 1:N transcoding for these clips. It's recommended to use .mp4 video clips.
+**Note**: If you want to use other video clips to try the auto deployment, you can simply copy the clips into <CDN-Transcode-Sample>/volume/video/archive folder, then run below command to generate video clip thumbnails. The transcode service will perform 1:N transcoding for these video clips. It's recommended to use .mp4 video clip files.
 ```
 ffmpeg -i <CDN-Transcode-Sample>/volume/video/archive/<clip_name> -vf "thumbnail,scale=640:360" -frames:v 1 -y <CDN-Transcode-Sample>/volume/video/archive/<clip_name>.png
 ```
 ### Start CDN transcode service
-Use the following commands on CDN-Transcode server to stop/start docker swarm service
-**Note**: Initialize docker swarm on CDN-Transcode server if you have not:
+Run below steps on CDN-Transcode server to stop/start docker swarm service.
+
+- Initialize docker swarm if you have not
 ```bash
 sudo docker swarm init
 ```
-Then start/stop services on CDN-Transcode server as follows:
+- Restart docker swarm services
 ```bash
 make stop_docker_swarm
 make start_docker_swarm
 ```
-
-Use the following commands on CDN-Transcode server to stop/start docker-compose service
+- Restart docker-compose service
 ```bash
 make stop_docker_compose
 make start_docker_compose
@@ -219,7 +217,8 @@ docker run -it -p 443:8080 --network=my_bridge --ip 192.168.31.35 --name nginx -
 #### Start live transcode service
 Run below commands on live transcode docker instance to show one 1:4 channels of live transcode. It supports 1 channel of H264 decode, 2 channels of SVT-HEVC encode and 2 channels of x264 encode. **Note**: you need to replace the IP address below with the actual Streaming Server IP address in your setup.
 ```
-ffmpeg -i rtmp://10.67.117.70/live/bbb_sunflower_1080p_30fps_normal -vf scale=2560:1440 -c:v libsvt_hevc -b:v 15M -f flv \
+ffmpeg -i rtmp://10.67.117.70/live/bbb_sunflower_1080p_30fps_normal \
+ -vf scale=2560:1440 -c:v libsvt_hevc -b:v 15M -f flv \
  rtmp://nginx/hls/big_buck_bunny_2560x1440 -vf scale=1920:1080 -c:v libsvt_hevc -b:v 10M -f flv \
  rtmp://nginx/hls/big_buck_bunny_1920x1080 -vf scale=1280:720 -c:v libx264 -b:v 8M -f flv \
  rtmp://nginx/hls/big_buck_bunny_1280x720 -vf scale=854:480 -c:v libx264 -b:v 6M -f flv \
