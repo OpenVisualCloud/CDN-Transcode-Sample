@@ -29,9 +29,9 @@
             * [VLC playback](#vlc-playback-1)
 
 
-This document describes how to run the CDN Transcode Sample (abbr as CTS) step by step. Please refer to [reference architecture](CDN_Transcode_Sample_RA.md) to understand the CTS reference architecture design and how CTS works.
+This document describes how to run the CDN Transcode Sample step by step. Please refer to [reference architecture](CDN_Transcode_Sample_RA.md) to understand the sample reference architecture design and how the sample works.
 
-The CTS provides two kinds of services - `live streaming` and `VOD`, and this guide just shows how to use the services in a simplest and typical way which can be scaled out to more complex environment. E.g.: in this guide, the docker images for transcoder server and cdn edge server are hosted on the same physical server. In real case, they can be hosted on differented servers located in different places in the CDN network.
+The sample provides two kinds of services - `live streaming` and `VOD`, and this guide just shows how to use the services in a simplest and typical way which can be scaled out to more complex environment. E.g.: in this guide, the docker images for transcoder server and cdn edge server are hosted on the same physical server. In real case, they can be hosted on different servers located in different places in the CDN network.
 
 # Prerequisites
 In this document, we'll use the simplest example to show how to build up the pipeline for different user scenarios. To simply the setup, we'll host docker nodes on the same physical server (named as "CDN-Transcode Server" in this document). One Streaming Server will be used as well to RTMP stream the source video content to CDN-Transcode Server, however you can omit Streaming Server if you want to just use local video content on CDN-Transcode Server. A client system is also needed to playback the transcoded video streams.
