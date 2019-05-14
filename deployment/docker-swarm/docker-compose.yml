@@ -104,8 +104,8 @@ services:
 
 secrets:
     self_key:
-        file: self.key
+        file: ${SECRETS_VOLUME}/self.key
     self_crt:
-        file: self.crt
+        file: ${SECRETS_VOLUME}/self.crt
     dhparam_pem:
-        file: dhparam.pem
+        file: ${SECRETS_VOLUME}/dhparam.pem

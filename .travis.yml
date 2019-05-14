@@ -28,10 +28,10 @@ jobs:
         - cmake ..
         - cd cdn-server 
         - make
-    - name: deployment/docker-swarm
+    - name: self-certificates 
       script:
         - mkdir build
         - cd build
         - cmake ..
-        - cd deployment/docker-swarm
+        - cd self-certificates
         - make

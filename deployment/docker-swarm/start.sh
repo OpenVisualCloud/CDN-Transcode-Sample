@@ -5,6 +5,7 @@ export VIDEO_ARCHIVE_VOLUME=$(readlink -f "$DIR/../../volume/video/archive")
 export VIDEO_DASH_VOLUME=$(readlink -f "$DIR/../../volume/video/dash")
 export VIDEO_HLS_VOLUME=$(readlink -f "$DIR/../../volume/video/hls")
 export HTML_VOLUME=$(readlink -f "$DIR/../../volume/html")
+export SECRETS_VOLUME=$(readlink -f "$DIR/../../self-certificates")
 
 sudo docker container prune -f
 sudo docker volume prune -f
@@ -26,13 +27,11 @@ docker_compose)
         echo ""
         exit 0
     fi
-    . "$DIR/self-sign.sh"
     export USER_ID=$(id -u)
     export GROUP_ID=$(id -g)
     sudo -E docker-compose -f "$yml" -p ovc --compatibility up
     ;;
 *)
-    . "$DIR/self-sign.sh"
     export USER_ID=$(id -u)
     export GROUP_ID=$(id -g)
     sudo -E docker stack deploy -c "$yml" ovc

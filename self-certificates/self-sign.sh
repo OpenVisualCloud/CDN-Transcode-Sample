@@ -6,7 +6,7 @@ DIR=$(dirname $(readlink -f "$0"))
 case "$(cat /proc/1/sched | head -n 1)" in
 *self-sign*)
     openssl req -x509 -nodes -days 30 -newkey rsa:4096 -keyout /home/self.key -out /home/self.crt << EOL
-SH
+CN
 SH
 Shanghai
 Zizhu
@@ -21,7 +21,7 @@ EOL
     chmod 644 "/home/dhparam.pem"
     ;;
 *)
-    OPTIONS=("--volume=$DIR:/home:rw")
-    . "$DIR/../../script/shell.sh" /home/self-sign.sh $(hostname -f)
+    OPTIONS=("--volume=${DIR}:/home:rw")
+    . "$DIR/../script/shell.sh" /home/self-sign.sh $(hostname -f)
     ;;
 esac
