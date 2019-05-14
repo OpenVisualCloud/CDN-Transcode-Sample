@@ -88,7 +88,7 @@ mkdir build
 cd build && cmake ..
 cd xcode-server/ffmpeg-sw && make
 cd ../../cdn-server && make
-cd ../deployment/docker-swarm && make
+cd ../self-certificates && make
 ```
 
 # Deploy
