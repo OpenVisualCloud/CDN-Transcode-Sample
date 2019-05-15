@@ -2,7 +2,7 @@ version: '3.1'
 
 services:
 
-    zookeeper:
+    zookeeper-service:
         image: confluentinc/cp-zookeeper:latest
         environment:
             ZOOKEEPER_SERVER_ID: 1
@@ -16,14 +16,14 @@ services:
         deploy:
             replicas: 1
 
-    kafka:
+    kafka-service:
         image: confluentinc/cp-kafka:latest
         depends_on:
-            - zookeeper
+            - zookeeper-service
         environment:
             KAFKA_BROKER_ID: 1
-            KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
-            KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092
+            KAFKA_ZOOKEEPER_CONNECT: zookeeper-service:2181
+            KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-service:9092,PLAINTEXT_HOST://localhost:29092
             KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
             KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
             KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
@@ -42,16 +42,16 @@ services:
     kafka-init:
         image: confluentinc/cp-kafka:latest
         depends_on:
-            - kafka
+            - kafka-service
         command: |
-              bash -c 'cub kafka-ready -b kafka:9092 1 20 && \
-                       kafka-topics --create --topic content_provider_sched --partitions 16 --replication-factor 1 --if-not-exists --zookeeper zookeeper:2181 && \
+              bash -c 'cub kafka-ready -b kafka-service:9092 1 20 && \
+                       kafka-topics --create --topic content_provider_sched --partitions 16 --replication-factor 1 --if-not-exists --zookeeper zookeeper-service:2181 && \
                        sleep infinity'
         environment:
             KAFKA_BROKER_ID: ignored
             KAFKA_ZOOKEEPER_CONNECT: ignored
 
-    cdn:
+    cdn-service:
         image: ovc_cdn_service:latest
         ports:
             - "443:8080"
@@ -61,7 +61,7 @@ services:
             - ${VIDEO_DASH_VOLUME}:/var/www/dash:rw
             - ${VIDEO_HLS_VOLUME}:/var/www/hls:rw
         depends_on:
-            - kafka
+            - kafka-service
         deploy:
             replicas: 1
         secrets:
@@ -81,7 +81,7 @@ services:
               gid: ${GROUP_ID}
               mode: 0444
 
-    vod-transcode:
+    vod-transcode-service:
         image: ovc_transcode_sw:latest
         volumes:
             - ${VIDEO_ARCHIVE_VOLUME}:/var/www/archive:ro
@@ -90,17 +90,17 @@ services:
         deploy:
             replicas: 2
         depends_on:
-            - kafka
-            - zookeeper
+            - kafka-service
+            - zookeeper-service
 
-    live-transcode:
+    live-transcode-service:
         image: ovc_transcode_sw:latest
         volumes:
             - ${VIDEO_ARCHIVE_VOLUME}:/var/www/archive:ro
         depends_on:
-            - cdn
+            - cdn-service
         command: |
-              bash -c 'ffmpeg -re -stream_loop -1 -i /var/www/archive/bbb_sunflower_1080p_30fps_normal.mp4 -vf scale=2560:1440 -c:v libsvt_hevc -b:v 15M -f flv rtmp://cdn/hls/big_buck_bunny_2560x1440 -vf scale=1920:1080 -c:v libsvt_hevc -b:v 10M -f flv rtmp://cdn/hls/big_buck_bunny_1920x1080 -vf scale=1280:720 -c:v libx264 -b:v 8M -f flv rtmp://cdn/hls/big_buck_bunny_1280x720 -vf scale=854:480 -c:v libx264 -b:v 6M -f flv rtmp://cdn/hls/big_buck_bunny_854x480 -abr_pipeline'
+              bash -c 'ffmpeg -re -stream_loop -1 -i /var/www/archive/bbb_sunflower_1080p_30fps_normal.mp4 -vf scale=2560:1440 -c:v libsvt_hevc -b:v 15M -f flv rtmp://cdn-service/hls/big_buck_bunny_2560x1440 -vf scale=1920:1080 -c:v libsvt_hevc -b:v 10M -f flv rtmp://cdn-service/hls/big_buck_bunny_1920x1080 -vf scale=1280:720 -c:v libx264 -b:v 8M -f flv rtmp://cdn-service/hls/big_buck_bunny_1280x720 -vf scale=854:480 -c:v libx264 -b:v 6M -f flv rtmp://cdn-service/hls/big_buck_bunny_854x480 -abr_pipeline'
 
 secrets:
     self_key:

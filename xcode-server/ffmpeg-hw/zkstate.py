@@ -3,7 +3,7 @@
 from kazoo.client import KazooClient
 from kazoo.exceptions import NoNodeError, NodeExistsError
 
-ZK_HOSTS = 'zookeeper:2181'
+ZK_HOSTS = 'zookeeper-service:2181'
 
 class ZKState():
     def __init__(self, path, timeout=30):
