@@ -3,7 +3,7 @@ version: '3.1'
 services:
 
     zookeeper-service:
-        image: confluentinc/cp-zookeeper:latest
+        image: zookeeper:latest
         environment:
             ZOOKEEPER_SERVER_ID: 1
             ZOOKEEPER_CLIENT_PORT: '2181'
@@ -17,39 +17,29 @@ services:
             replicas: 1
 
     kafka-service:
-        image: confluentinc/cp-kafka:latest
+        image: wurstmeister/kafka:latest
         depends_on:
             - zookeeper-service
         environment:
             KAFKA_BROKER_ID: 1
-            KAFKA_ZOOKEEPER_CONNECT: zookeeper-service:2181
-            KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka-service:9092,PLAINTEXT_HOST://localhost:29092
-            KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
-            KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
+            KAFKA_ADVERTISED_HOST_NAME: 'kafka-service'
+            KAFKA_ADVERTISED_PORT: '9092'
+            KAFKA_ZOOKEEPER_CONNECT: 'zookeeper-service:2181'
+            KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://kafka-service:9092'
+            KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'PLAINTEXT:PLAINTEXT'
+            KAFKA_INTER_BROKER_LISTENER_NAME: 'PLAINTEXT'
             KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
             KAFKA_DEFAULT_REPLICATION_FACTOR: 1
             KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
             KAFKA_NUM_PARTITIONS: 16
+            KAFKA_CREATE_TOPICS: 'content_provider_sched:16:1'
             KAFKA_LOG_RETENTION_HOURS: 8
             KAFKA_HEAP_OPTS: '-Xmx1024m -Xms1024m'
             KAFKA_LOG4J_LOGGERS: 'kafka=ERROR,kafka.controller=ERROR,state.change.logger=ERROR,org.apache.kafka=ERROR'
             KAFKA_LOG4J_ROOT_LOGLEVEL: 'ERROR'
-            CONFLUENT_SUPPORT_METRICS_ENABLE: 0
         restart: always
         deploy:
             replicas: 1
-
-    kafka-init:
-        image: confluentinc/cp-kafka:latest
-        depends_on:
-            - kafka-service
-        command: |
-              bash -c 'cub kafka-ready -b kafka-service:9092 1 20 && \
-                       kafka-topics --create --topic content_provider_sched --partitions 16 --replication-factor 1 --if-not-exists --zookeeper zookeeper-service:2181 && \
-                       sleep infinity'
-        environment:
-            KAFKA_BROKER_ID: ignored
-            KAFKA_ZOOKEEPER_CONNECT: ignored
 
     cdn-service:
         image: ovc_cdn_service:latest
