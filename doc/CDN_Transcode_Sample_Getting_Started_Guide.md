@@ -19,7 +19,6 @@
          * [Start CDN transcode service](#start-cdn-transcode-service-1)
             * [Start zookeeper service](#start-zookeeper-service)
             * [Start kafka service](#start-kafka-service)
-            * [Start kafka-init service](#start-kafka-init-service)
             * [Start live transcode docker](#start-live-transcode-docker)
             * [Start VOD transcode service](#start-vod-transcode-service)
             * [Start nginx web service](#start-nginx-web-service)
@@ -129,17 +128,17 @@ The manual deployment give an example to users who want to use this sample as a 
 ### Setup network topology
 In this guide we use a very simple topology diagram to showcase the interconnection between each nodes. Below is an example:
 ```
-                     +-----------------+-----------------+-----------------+-----------------+                  
-                     |  Live transcode | VOD transcode 1 | VOD transcode 2 |                 |                  
-                     | [Ubuntu docker] | [Ubuntu docker] | [Ubuntu docker] |      ...        |                  
-                     | 192.168.31.32   | 192.168.31.33   | 192.168.31.34   |                 |                  
-                     +-----------------+-----------------+-----------------+-----------------+                  
-                     |    Zookeeper    |      Kafka      |   kafka-init    |     Nginx       |                  
-+----------------+   | [Ubuntu docker] | [Ubuntu docker] | [Ubuntu docker] | [Ubuntu docker] |   +-------------+
-|Streaming Server|   | 192.168.31.29   | 192.168.31.30   | 192.168.31.31   | 192.168.31.35   |   |   Client    |
-| 10.67.117.70   |-->|-----------------+-----------------+-----------------+-----------------+-->|10.67.117.80 |
-| FFmpeg Nginx   |   |           CDN-Transcode Server:  Ubuntu l8.04 10.67.116.179           |   | VLC/browser |
-+----------------+   +-----------------------------------------------------------------------+   +-------------+
+                        +-----------------+-----------------+-----------------+
+                        |  Live transcode | VOD transcode 1 | VOD transcode 2 |
+                        | [Ubuntu docker] | [Ubuntu docker] | [Ubuntu docker] |
+                        | 192.168.31.32   | 192.168.31.33   | 192.168.31.34   |
+                        +-----------------+-----------------+-----------------+
+                        |    Zookeeper    |      Kafka      |     Nginx       |
++----------------+      | [Ubuntu docker] | [Ubuntu docker] | [Ubuntu docker] |      +-------------+
+|Streaming Server|      | 192.168.31.29   | 192.168.31.30   | 192.168.31.35   |      |   Client    |
+| 10.67.117.70   |----->|-----------------+-----------------+-----------------+----->|10.67.117.80 |
+| FFmpeg Nginx   |      |   CDN-Transcode Server: Ubuntu l8.04 10.67.116.179  |      | VLC/browser |
++----------------+      +-----------------------------------------------------+      +-------------+
 
 ```
 
@@ -178,40 +177,34 @@ http {
 #### Start zookeeper service
 Run below command on CDN-Transcode Server to create zookeeper docker instance:
 ```
-docker pull confluentinc/cp-zookeeper
-docker run -d --name zookeeper --env ZOOKEEPER_SERVER_ID=1 --env ZOOKEEPER_CLIENT_PORT=2181 --env ZOOKEEPER_TICK_TIME=2000 --env ZOOKEEPER_MAX_CLIENT_CNXNS=20000 --env ZOOKEEPER_HEAP_OPTS="-Xmx2048m -Xms2048m" --restart=always --network=my_bridge --ip 192.168.31.29 -it confluentinc/cp-zookeeper
+docker pull zookeeper
+docker run -d --name zookeeper-service --env ZOOKEEPER_SERVER_ID=1 --env ZOOKEEPER_CLIENT_PORT=2181 --env ZOOKEEPER_TICK_TIME=2000 --env ZOOKEEPER_MAX_CLIENT_CNXNS=20000 --env ZOOKEEPER_HEAP_OPTS="-Xmx2048m -Xms2048m" --restart=always --network=my_bridge --ip 192.168.31.29 -it zookeeper
 ```
 
 #### Start kafka service
 Run below command on CDN-Transcode Server to create kafka docker instance:
 ```
-docker pull confluentinc/cp-kafka
-docker run -d --name kafka --link zookeeper --env KAFKA_BROKER_ID=1 --env KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181 --env KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092,PLAINTEXT_HOST://localhost:29092 --env KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT --env KAFKA_INTER_BROKER_LISTENER_NAME=PLAINTEXT --env KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1  --env KAFKA_DEFAULT_REPLICATION_FACTOR=1 --env KAFKA_AUTO_CREATE_TOPICS_ENABLE=true --env CONFLUENT_SUPPORT_METRICS_ENABLE=0 --env KAFKA_NUM_PARTITIONS=16 --env KAFKA_HEAP_OPTS="-Xmx1024m -Xms1024m" --restart=always --network=my_bridge --ip 192.168.31.30 -it confluentinc/cp-kafka
-```
-
-#### Start kafka-init service
-Run below command on CDN-Transcode Server to create kafka-init docker instance:
-```
-docker run -d --name kafka-init --link kafka --env KAFKA_BROKER_ID=ignored --env KAFKA_ZOOKEEPER_CONNECT=ignored --network=my_bridge --ip 192.168.31.31 -it confluentinc/cp-kafka bash -c 'cub kafka-ready -b kafka:9092 1 20 && kafka-topics --create --topic content_provider_sched --partitions 16 --replication-factor 1 --if-not-exists --zookeeper zookeeper:2181 && sleep infinity'
+docker pull wurstmeister/kafka
+docker run -d --name kafka-service --link zookeeper-service --env KAFKA_BROKER_ID=1 --env KAFKA_ADVERTISED_HOST_NAME=kafka-service --env KAFKA_ADVERTISED_PORT=9092 --env KAFKA_ZOOKEEPER_CONNECT=zookeeper-service:2181 --env KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka-service:9092 --env KAFKA_LISTENER_SECURITY_PROTOCOL_MAP=PLAINTEXT:PLAINTEXT --env KAFKA_INTER_BROKER_LISTENER_NAME=PLAINTEXT --env KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1  --env KAFKA_DEFAULT_REPLICATION_FACTOR=1 --env KAFKA_AUTO_CREATE_TOPICS_ENABLE=true --env KAFKA_NUM_PARTITIONS=16 --env KAFKA_CREATE_TOPICS="content_provider_sched:16:1" --env KAFKA_HEAP_OPTS="-Xmx1024m -Xms1024m" --restart=always --network=my_bridge --ip 192.168.31.30 -it wurstmeister/kafka
 ```
 
 #### Start live transcode docker
 Run below command on CDN-Transcode Server to create live transcode docker instance:
 ```
-docker run -it --network=my_bridge --ip 192.168.31.32 --name live_transcode -v /var/www/dash:/var/www/dash -v /var/www/hls:/var/www/hls ovc_transcode_sw /bin/bash
+docker run -it --network=my_bridge --ip 192.168.31.32 --name live-transcode-service -v /var/www/dash:/var/www/dash -v /var/www/hls:/var/www/hls ovc_transcode_sw /bin/bash
 ```
 
 #### Start VOD transcode service
 Run below commands on CDN-Transcode Server to create two vod transcode docker instances:
 ```
-docker run -it --network=my_bridge --ip 192.168.31.33 --name vod_transcode_1 -v /var/www/dash:/var/www/dash -v /var/www/hls:/var/www/hls -v <CDN-Transcode-Sample>/volume/video/archive:/var/www/archive ovc_transcode_sw /bin/bash -c '/home/main.py'
-docker run -it --network=my_bridge --ip 192.168.31.34 --name vod_transcode_2 -v /var/www/dash:/var/www/dash -v /var/www/hls:/var/www/hls -v <CDN-Transcode-Sample>/volume/video/archive:/var/www/archive ovc_transcode_sw /bin/bash -c '/home/main.py'
+docker run -it --network=my_bridge --ip 192.168.31.33 --name vod-transcode-service-1 -v /var/www/dash:/var/www/dash -v /var/www/hls:/var/www/hls -v <CDN-Transcode-Sample>/volume/video/archive:/var/www/archive ovc_transcode_sw /bin/bash -c '/home/main.py'
+docker run -it --network=my_bridge --ip 192.168.31.34 --name vod-transcode-service-2 -v /var/www/dash:/var/www/dash -v /var/www/hls:/var/www/hls -v <CDN-Transcode-Sample>/volume/video/archive:/var/www/archive ovc_transcode_sw /bin/bash -c '/home/main.py'
 ```
 
 #### Start nginx web service
-Run below command on CDN-Transcode Server to create nginx docker instance:
+Run below command on CDN-Transcode Server to create cdn docker instance:
 ```
-docker run -it -p 443:8080 --network=my_bridge --ip 192.168.31.35 --name nginx -v /var/www/dash:/var/www/dash -v /var/www/hls:/var/www/hls -v <CDN-Transcode-Sample>/volume/video/archive:/var/www/archive -v <CDN-Transcode-Sample>/volume/html:/var/www/html ovc_cdn_service /bin/bash -c '/home/main.py&/home/self-sign.sh&&/usr/sbin/nginx'
+docker run -it -p 443:8080 --network=my_bridge --ip 192.168.31.35 --name cdn-service -v /var/www/dash:/var/www/dash -v /var/www/hls:/var/www/hls -v <CDN-Transcode-Sample>/volume/video/archive:/var/www/archive -v <CDN-Transcode-Sample>/volume/html:/var/www/html ovc_cdn_service /bin/bash -c '/home/main.py&/home/self-sign.sh&&/usr/sbin/nginx'
 ```
 
 #### Start live transcode service
@@ -219,10 +212,10 @@ Run below commands on live transcode docker instance to show one 1:4 channels of
 ```
 ffmpeg -i rtmp://10.67.117.70/live/bbb_sunflower_1080p_30fps_normal \
  -vf scale=2560:1440 -c:v libsvt_hevc -b:v 15M -f flv \
- rtmp://nginx/hls/big_buck_bunny_2560x1440 -vf scale=1920:1080 -c:v libsvt_hevc -b:v 10M -f flv \
- rtmp://nginx/hls/big_buck_bunny_1920x1080 -vf scale=1280:720 -c:v libx264 -b:v 8M -f flv \
- rtmp://nginx/hls/big_buck_bunny_1280x720 -vf scale=854:480 -c:v libx264 -b:v 6M -f flv \
- rtmp://nginx/hls/big_buck_bunny_854x480 -abr_pipeline
+ rtmp://cdn-service/hls/big_buck_bunny_2560x1440 -vf scale=1920:1080 -c:v libsvt_hevc -b:v 10M -f flv \
+ rtmp://cdn-service/hls/big_buck_bunny_1920x1080 -vf scale=1280:720 -c:v libx264 -b:v 8M -f flv \
+ rtmp://cdn-service/hls/big_buck_bunny_1280x720 -vf scale=854:480 -c:v libx264 -b:v 6M -f flv \
+ rtmp://cdn-service/hls/big_buck_bunny_854x480 -abr_pipeline
 ```
 
 **Note**: for live ABR (using ffmpeg to trancode in 3 variants, and nginx produce one manifest, there are only 3 different resolutions and bit rates supported in live ABR).
@@ -230,19 +223,19 @@ Run below commands on live transcode docker instance, the suffix "hi" correspond
 For DASH
 ```
 ffmpeg -i rtmp://10.67.117.70/live/bbb_sunflower_1080p_30fps_normal -vf scale=1920:1080 -c:v libsvt_hevc -b:v 8M -f flv \
- rtmp://nginx/dash/big_buck_bunny_hi -vf scale=1280:720 -c:v libsvt_hevc -b:v 4M -f flv \
- rtmp://nginx/dash/big_buck_bunny_mid -vf scale=854:480 -c:v libsvt_hevc -b:v 2M -f flv \
- rtmp://nginx/dash/big_buck_bunny_low -abr_pipeline
+ rtmp://cdn-service/dash/big_buck_bunny_hi -vf scale=1280:720 -c:v libsvt_hevc -b:v 4M -f flv \
+ rtmp://cdn-service/dash/big_buck_bunny_mid -vf scale=854:480 -c:v libsvt_hevc -b:v 2M -f flv \
+ rtmp://cdn-service/dash/big_buck_bunny_low -abr_pipeline
 ```
 For HLS
 ```
 ffmpeg -i rtmp://10.67.117.70/live/bbb_sunflower_1080p_30fps_normal -vf scale=1920:1080 -c:v libsvt_hevc -b:v 8M -f flv \
- rtmp://nginx/hls/big_buck_bunny_hi -vf scale=1280:720 -c:v libsvt_hevc -b:v 4M -f flv \
- rtmp://nginx/hls/big_buck_bunny_mid -vf scale=854:480 -c:v libsvt_hevc -b:v 2M -f flv \
- rtmp://nginx/hls/big_buck_bunny_low -abr_pipeline
+ rtmp://cdn-service/hls/big_buck_bunny_hi -vf scale=1280:720 -c:v libsvt_hevc -b:v 4M -f flv \
+ rtmp://cdn-service/hls/big_buck_bunny_mid -vf scale=854:480 -c:v libsvt_hevc -b:v 2M -f flv \
+ rtmp://cdn-service/hls/big_buck_bunny_low -abr_pipeline
 ```
 
-Configure below parameters on nginx docker instance, the "max" flag which indicate which representation should have max witdh and height and so use it to create the variant manifest on DASH.
+Configure below parameters on cdn docker instance, the "max" flag which indicate which representation should have max witdh and height and so use it to create the variant manifest on DASH.
 ```
 rtmp {
   server {
