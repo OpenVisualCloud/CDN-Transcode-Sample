@@ -1,0 +1,100 @@
+version: '3.1'
+
+services:
+
+    zookeeper-service:
+        image: zookeeper:latest
+        ports:
+            - "2181:2181"
+        environment:
+            ZOOKEEPER_SERVER_ID: 1
+            ZOOKEEPER_CLIENT_PORT: '2181'
+            ZOOKEEPER_TICK_TIME: '2000'
+            ZOOKEEPER_HEAP_OPTS: '-Xmx2048m -Xms2048m'
+            ZOOKEEPER_MAX_CLIENT_CNXNS: '20000'
+            ZOOKEEPER_LOG4J_LOGGERS: 'zookeepr=ERROR'
+            ZOOKEEPER_LOG4J_ROOT_LOGLEVEL: 'ERROR'
+        restart: always
+        deploy:
+            replicas: 1
+            placement:
+                constraints:
+                    - node.hostname == master.machine
+        labels:
+            kompose.service.type: NodePort
+
+    kafka-service:
+        image: wurstmeister/kafka:latest
+        ports:
+            - "9092:9092"
+        depends_on:
+            - zookeeper-service
+        environment:
+            KAFKA_BROKER_ID: 1
+            KAFKA_ADVERTISED_HOST_NAME: 'kafka-service'
+            KAFKA_ADVERTISED_PORT: '9092'
+            KAFKA_ZOOKEEPER_CONNECT: 'zookeeper-service:2181'
+            KAFKA_ADVERTISED_LISTENERS: 'PLAINTEXT://kafka-service:9092'
+            KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: 'PLAINTEXT:PLAINTEXT'
+            KAFKA_INTER_BROKER_LISTENER_NAME: 'PLAINTEXT'
+            KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+            KAFKA_DEFAULT_REPLICATION_FACTOR: 1
+            KAFKA_AUTO_CREATE_TOPICS_ENABLE: 'true'
+            KAFKA_NUM_PARTITIONS: 16
+            KAFKA_CREATE_TOPICS: 'content_provider_sched:16:1'
+            KAFKA_LOG_RETENTION_HOURS: 8
+            KAFKA_HEAP_OPTS: '-Xmx1024m -Xms1024m'
+            KAFKA_LOG4J_LOGGERS: 'kafka=ERROR,kafka.controller=ERROR,state.change.logger=ERROR,org.apache.kafka=ERROR'
+            KAFKA_LOG4J_ROOT_LOGLEVEL: 'ERROR'
+        restart: always
+        deploy:
+            replicas: 1
+            placement:
+                constraints:
+                    - node.hostname == master.machine
+        labels:
+            kompose.service.type: NodePort
+
+    cdn-service:
+        image: ovc_cdn_service:latest
+        ports:
+            - "8080:8080"
+            - "1935:1935"
+        depends_on:
+            - kafka-service
+        deploy:
+            replicas: 1
+            placement:
+                constraints:
+                    - node.hostname == master.machine
+        command: ["bash", "-c", "/home/main.py&/usr/sbin/nginx"]
+        labels:
+            kompose.service.type: NodePort
+            kompose.image-pull-policy: IfNotPresent 
+
+    vod-transcode-service:
+        image: ovc_transcode_sw:latest
+        deploy:
+            replicas: 2
+            placement:
+                constraints:
+                    - node.hostname == master.machine
+        depends_on:
+            - kafka-service
+            - zookeeper-service
+        command: ["bash", "-c", "/home/main.py"]
+        labels:
+            kompose.image-pull-policy: IfNotPresent
+
+    live-transcode-service:
+        image: ovc_transcode_sw:latest
+        deploy:
+            replicas: 1
+            placement:
+                constraints:
+                    - node.hostname == master.machine
+        depends_on:
+            - cdn-service
+        command: ["bash", "-c", "ffmpeg -re -stream_loop -1 -i /var/www/archive/bbb_sunflower_1080p_30fps_normal.mp4 -vf scale=2560:1440 -c:v libsvt_hevc -b:v 15M -f flv rtmp://cdn-service/hls/big_buck_bunny_2560x1440 -vf scale=1920:1080 -c:v libsvt_hevc -b:v 10M -f flv rtmp://cdn-service/hls/big_buck_bunny_1920x1080 -vf scale=1280:720 -c:v libx264 -b:v 8M -f flv rtmp://cdn-service/hls/big_buck_bunny_1280x720 -vf scale=854:480 -c:v libx264 -b:v 6M -f flv rtmp://cdn-service/hls/big_buck_bunny_854x480 -abr_pipeline"]
+        labels:
+            kompose.image-pull-policy: IfNotPresent
