@@ -52,22 +52,19 @@ for i in $(find "$DIR" -name "*deployment.yaml" | grep -v 'live-transcode*'); do
     kubectl apply -f "$i"
 done
 
-while true; do
-    flag=0
-    for i in $(find "$DIR" -name "*deployment.yaml"); do
-        len=$(echo $DIR | wc -m)
-        i1=$(echo ${i:${len}} | sed 's/-deployment.yaml//')
+sleep 2s
 
-        if (kubectl get pod | awk '{print $1,$3}' | grep -q "${i1}" | grep -q 'Running'); then
-            flag=$((flag+1))
+for i in $(find "$DIR" -name "*deployment.yaml" | grep -v 'live-transcode*'); do
+    len=$(echo $DIR | wc -m)
+    i1=$(echo ${i:${len}} | sed 's/-deployment.yaml//')
+
+    while true; do
+        if (kubectl get pod | awk '{print $1,$3}' | grep -q "${i1}.*Running"); then
+            break
+        else
+            sleep 2s
         fi
     done
-
-    if [ ${flag} -ne "0" ]; then
-        sleep 2
-    else
-        break
-    fi
 done
 
 kubectl apply -f "$(find "$DIR" -name "live-transcode*.yaml")"

@@ -40,7 +40,7 @@ def update_imageName(data, fileName, imageName):
     data['spec']['template']['spec']['containers'][0]['image'] = "ovc_transcode_" + imageName + ":latest"
     if imageName == "hw":
         limits_caps = [ {'limits':
-                         {'gpu.intel.com/i915': 1} } ]
+                        {'gpu.intel.com/i915': 1} } ]
         data['spec']['template']['spec']['containers'][0]['resources'] = limits_caps
     with open(fileName, 'w', encoding='utf8') as outfile:
         yaml.dump(data, outfile, Dumper=yaml.RoundTripDumper, default_flow_style=False, allow_unicode=True)
@@ -155,7 +155,8 @@ def add_volumes(data, fileName, isCDN):
 node_num = int(os.popen("kubectl get node | awk '{print $1}' | sed -n '2, $p' | wc -l").read())
 print("There are " + str(node_num) + " kubernetes nodes on your host server!!!")
 
-node_name_list = os.popen("kubectl get node | awk '{print $1}' | sed -n '2, $p'").read().split("\n");
+node_name_list = os.popen("kubectl get node | awk '{print $1}' | sed -n '2, $p'").read().split("\n")
+node_name_list = list(filter(None, node_name_list))
 
 nfs_server = input("Please choose the sharing mode of the video clips server (localhost or remote NFS server ip adress):")
 while True:
@@ -189,12 +190,12 @@ while True:
 if node_num == 1:
     node_name = node_name_list[0]
 else:
-    node_name = input("Please input run zookeeper node name:")
+    node_name = input("Please input run zookeeper node name (" + str(node_name_list)[1:-1] + "):")
     while True:
         if node_name in node_name_list:
             break
         else:
-            node_name = input("Error, please input run zookeeper node name again(^[\w-]+$):")
+            node_name = input("Error, please input run zookeeper node name again (" + str(node_name_list)[1:-1] + "):")
 
 yaml_file = sys.argv[1] + "/zookeeper-service-deployment.yaml"
 data = load_yaml_file(yaml_file)
@@ -204,12 +205,12 @@ update_nodeSelector(data, yaml_file, node_name)
 if node_num == 1:
     node_name = node_name_list[0]
 else: 
-    node_name = input("Please input run kafka node name:")
+    node_name = input("Please input run kafka node name (" + str(node_name_list)[1:-1] + "):")
     while True:
         if node_name in node_name_list:
             break
         else:
-            node_name = input("Error, please input run kafka node name again(^[\w-]+$):")
+            node_name = input("Error, please input run kafka node name again (" + str(node_name_list)[1:-1] + "):")
 
 yaml_file = sys.argv[1] + "/kafka-service-deployment.yaml"
 data = load_yaml_file(yaml_file)
@@ -219,12 +220,12 @@ update_nodeSelector(data, yaml_file, node_name)
 if node_num == 1:
     node_name = node_name_list[0]
 else: 
-    node_name = input("Please input run cdn node name:")
+    node_name = input("Please input run cdn node name (" + str(node_name_list)[1:-1] + "):")
     while True:
         if node_name in node_name_list:
             break
         else:
-            node_name = input("Error, please input run cdn node name again(^[\w-]+$):")
+            node_name = input("Error, please input run cdn node name again (" + str(node_name_list)[1:-1] + "):")
 
 yaml_file = sys.argv[1] + "/cdn-service-deployment.yaml"
 data = load_yaml_file(yaml_file)
@@ -236,12 +237,12 @@ add_volumes(data, yaml_file, True)
 if node_num == 1:
     node_name = node_name_list[0]
 else: 
-    node_name = input("Please input run vod transcode node name:")
+    node_name = input("Please input run vod transcode node name (" + str(node_name_list)[1:-1] + "):")
     while True:
         if node_name in node_name_list:
             break
         else:
-            node_name = input("Error, please input run vod transcode node name again(^[\w-]+$):")
+            node_name = input("Error, please input run vod transcode node name again (" + str(node_name_list)[1:-1] + "):")
 
 image_name = input("Please choose the transcode mode of the vod transcode server (hw or sw):")
 while True:
@@ -261,12 +262,12 @@ add_volumes(data, yaml_file, False)
 if node_num == 1:
     node_name = node_name_list[0]
 else:
-    node_name = input("Please input run live transcode node name:")
+    node_name = input("Please input run live transcode node name (" + str(node_name_list)[1:-1] + "):")
     while True:
         if node_name in node_name_list:
             break
         else:
-            node_name = input("Error, please input run live transcode node name again(^[\w-]+$):")
+            node_name = input("Error, please input run live transcode node name again (" + str(node_name_list)[1:-1] + "):")
 
 image_name = input("Please choose the transcode mode of the live transcode server (hw or sw):")
 while True:
