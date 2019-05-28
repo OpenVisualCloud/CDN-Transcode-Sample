@@ -46,7 +46,7 @@ Below is the basic block diagram for the sample setup:
 ````
 **Note**: for `live streaming` and `VOD` in this document, it refers the interaction between `CDN-Transcode Server` and `Client`, not refers interaction between `Streaming Server` and `CDN-Transcode Server`.
 ## Setup CDN-Transcode Server
-- Install Ubuntu 18.04 on CDN-Transcode Server, and configure the IP address & proxy properlly.
+- Install Ubuntu 18.04/CentOS 7.6 on CDN-Transcode Server, and configure the IP address & proxy properlly.
 - Install [docker.ce](https://docs.docker.com/install).
 - Install [docker compose](https://docs.docker.com/compose/install) by referencing docker composer setup guide. Version 1.20+ is required.
 ```
@@ -128,13 +128,13 @@ In this guide we use a very simple topology diagram to showcase the interconnect
                         +-----------------+-----------------+-----------------+
                         |  Live transcode | VOD transcode 1 | VOD transcode 2 |
                         | [Ubuntu docker] | [Ubuntu docker] | [Ubuntu docker] |
-                        | 192.168.31.32   | 192.168.31.33   | 192.168.31.34   |
+                        |  192.168.31.32  |  192.168.31.33  |  192.168.31.34  |
                         +-----------------+-----------------+-----------------+
-                        |    Zookeeper    |      Kafka      |     Nginx       |
+                        |    Zookeeper    |      Kafka      |      Nginx      |
 +----------------+      | [Ubuntu docker] | [Ubuntu docker] | [Ubuntu docker] |      +-------------+
-|Streaming Server|      | 192.168.31.29   | 192.168.31.30   | 192.168.31.35   |      |   Client    |
+|Streaming Server|      |  192.168.31.29  |  192.168.31.30  |  192.168.31.35  |      |   Client    |
 | 10.67.117.70   |----->|-----------------+-----------------+-----------------+----->|10.67.117.80 |
-| FFmpeg Nginx   |      |   CDN-Transcode Server: Ubuntu l8.04 10.67.116.179  |      | VLC/browser |
+| FFmpeg Nginx   |      |     CDN-Transcode Server: Linux OS 10.67.116.179    |      | VLC/browser |
 +----------------+      +-----------------------------------------------------+      +-------------+
 
 ```
