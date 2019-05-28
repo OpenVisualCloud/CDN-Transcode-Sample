@@ -52,10 +52,6 @@ Below is the basic block diagram for the sample setup:
 ```
 sudo curl -L "https://github.com/docker/compose/releases/download/1.24.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 ```
-- Install FFmpeg
-```sh
-sudo apt-get install -y ffmpeg
-```
 - Setup docker network proxy
 You may need to setup the docker proxy on CDN-Transcode Server. Below is an example to directly use the host proxy as the docker proxy.
 ```
@@ -87,6 +83,7 @@ mkdir build
 cd build && cmake ..
 cd xcode-server/ffmpeg-sw && make
 cd ../../cdn-server && make
+cd ../content-provider && make
 cd ../self-certificates && make
 ```
 
