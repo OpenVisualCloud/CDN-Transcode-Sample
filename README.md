@@ -29,8 +29,8 @@ The CDN Transcode Sample contains below components:
 # System requirements
 ## Operating system
 The CDN Transcode Sample may run on Linux* 64 bit operating systems. The list below represents the operating systems that the transcode application and library were tested and validated on:
-- Ubuntu* 16.04 Server LTS
 - Ubuntu* 18.04 Server LTS
+- CentOS* 7.6
 
 # How to report bugs
 Use the [Issues](https://github.com/OpenVisualCloud/CDN-Transcode-Sample/issues) tab on GitHub.
