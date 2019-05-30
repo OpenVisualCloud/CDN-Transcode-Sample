@@ -52,6 +52,14 @@ Below is the basic block diagram for the sample setup:
 ```
 sudo curl -L "https://github.com/docker/compose/releases/download/1.24.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
 ```
+- Install [kompose](https://github.com/kubernetes/kompose/blob/master/docs/installation.md) by referencing kubernetes kompose setup guide. Version 1.16+ is required.
+```
+sudo curl -L https://github.com/kubernetes/kompose/releases/download/v1.18.0/kompose-linux-amd64 -o /usr/local/bin/kompose
+```
+- Install python3 and ruamel.yaml
+```
+pip3 install ruamel.yaml
+```
 - Setup docker network proxy
 You may need to setup the docker proxy on CDN-Transcode Server. Below is an example to directly use the host proxy as the docker proxy.
 ```

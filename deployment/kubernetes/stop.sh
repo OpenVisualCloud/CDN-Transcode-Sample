@@ -1,6 +1,7 @@
 #!/bin/bash -e
 
 DIR=$(dirname $(readlink -f "$0"))
+EXT=*.yaml
 
 for i in $(find "$DIR/" -name "*service.yaml"); do
     len=$(echo $DIR | wc -m)
@@ -25,4 +26,4 @@ for i in $(find "$DIR" -name "*deployment.yaml"); do
     done
 done
 
-rm -rf "$DIR/*.yaml"
+rm -rf $DIR/$EXT
