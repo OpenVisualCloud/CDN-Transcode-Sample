@@ -56,10 +56,13 @@ sudo curl -L "https://github.com/docker/compose/releases/download/1.24.0/docker-
 ```
 sudo curl -L https://github.com/kubernetes/kompose/releases/download/v1.18.0/kompose-linux-amd64 -o /usr/local/bin/kompose
 ```
-- Install python3 and ruamel.yaml
-```
-pip3 install ruamel.yaml
-```
+- Install python3, pip3 and ruamel.yaml
+
+|  Ubuntu 18.04 | CentOS 7.6 |
+|:--------------|:-----------|
+|(1) sudo apt-get install -y python3-pip |(1) sudo yum install -y python36 python36-pip |
+|(2) pip3 install ruamel.yaml            |(2) pip3 install ruamel.yaml                  |
+
 - Setup docker network proxy
 You may need to setup the docker proxy on CDN-Transcode Server. Below is an example to directly use the host proxy as the docker proxy.
 ```
@@ -88,11 +91,9 @@ In this document, we can use both VLC and web browser as the playback tool. To u
 On CDN-Transcode Server, run below command to build docker images:
 ``` sh
 mkdir build
-cd build && cmake ..
-cd xcode-server/ffmpeg-sw && make
-cd ../../cdn-server && make
-cd ../content-provider && make
-cd ../self-certificates && make
+cd build
+cmake ..
+make
 ```
 
 # Deploy
