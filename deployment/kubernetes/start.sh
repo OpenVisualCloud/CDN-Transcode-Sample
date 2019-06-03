@@ -3,7 +3,30 @@
 DIR=$(dirname $(readlink -f "$0"))
 EXT=*.yaml
 
-for i in $(find "$DIR/" -name "*service.yaml"); do
+# Set Bash color
+ECHO_PREFIX_INFO="\033[1;32;40mINFO...\033[0;0m"
+ECHO_PREFIX_ERROR="\033[1;31;40mError...\033[0;0m"
+
+# Try command  for test command result.
+function try_command {
+    "$@"
+    status=$?
+    if [ $status -ne 0 ]; then
+        echo -e $ECHO_PREFIX_ERROR "ERROR with \"$@\", Return status $status."
+        exit $status
+    fi
+    return $status
+}
+
+# This script must be run as root
+if [[ $EUID -ne 0 ]]; then
+    echo -e $ECHO_PREFIX_ERROR "This script must be run as root!" 1>&2
+    exit 1
+fi
+
+try_command hash kubectl > /dev/null
+
+for i in $(find "$DIR" -path "$DIR/dashboard" -prune -o -type f -name "*service.yaml" -print); do
     len=$(echo $DIR | wc -m)
     i1=$(echo ${i:${len}} | sed 's/-service.yaml//')
     for j in $(kubectl get svc | awk '{print $1}' | sed -n '2, $p' | grep -v 'kubernetes'); do
@@ -41,11 +64,11 @@ if test "$mdcv" = "1.16"; then
     exit 0
 fi
 
-kompose convert -f "$yml" -o "$DIR"
+try_command kompose convert -f "$yml" -o "$DIR"
 
-"$DIR/update_yaml.py" "$DIR"
+try_command "$DIR/update_yaml.py" "$DIR"
 
-for i in $(find "$DIR" -name "*service.yaml"); do
+for i in $(find "$DIR" -path "$DIR/dashboard" -prune -o -type f -name "*service.yaml" -print); do
     kubectl apply -f "$i"
 done
 
@@ -67,6 +90,8 @@ for i in $(find "$DIR" -name "*deployment.yaml" | grep -v 'live-transcode*'); do
         fi
     done
 done
+
+sleep 2s
 
 kubectl apply -f "$(find "$DIR" -name "live-transcode*.yaml")"
 

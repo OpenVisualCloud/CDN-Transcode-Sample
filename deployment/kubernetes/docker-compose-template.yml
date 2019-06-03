@@ -67,7 +67,7 @@ services:
             placement:
                 constraints:
                     - node.hostname == master.machine
-        command: ["bash", "-c", "/home/main.py&/usr/sbin/nginx"]
+        command: ["bash", "-c", "/home/main.py&/home/self-sign.sh&&/usr/sbin/nginx"]
         labels:
             kompose.service.type: NodePort
             kompose.image-pull-policy: IfNotPresent 
@@ -75,7 +75,7 @@ services:
     vod-transcode-service:
         image: ovc_transcode_sw:latest
         deploy:
-            replicas: 2
+            replicas: 1
             placement:
                 constraints:
                     - node.hostname == master.machine
