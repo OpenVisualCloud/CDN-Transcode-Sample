@@ -16,7 +16,12 @@ def update_command(data, fileName, imageName):
     with open(fileName, 'w', encoding='utf8') as outfile:
         yaml.dump(data, outfile, Dumper=yaml.RoundTripDumper, default_flow_style=False, allow_unicode=True)
 
-def update_imageName(data, fileName, imageName):
+def update_imageName(data, fileName, imageName, isVOD):
+    if imageName == "hw" or not isVOD:
+        replicas_caps = 1
+    else:
+        replicas_caps = 2
+    data['spec']['replicas'] = replicas_caps
     data['spec']['template']['spec']['containers'][0]['image'] = "ovc_transcode_" + imageName + ":latest"
     if imageName == "hw":
         limits_caps = { 'limits': {'gpu.intel.com/i915': 1} }
@@ -42,9 +47,6 @@ def add_volumeMounts(data, fileName, isCDN):
                                'readOnly': False},
                               {'name': 'html',
                                'mountPath': '/var/www/html',
-                               'readOnly': True},
-                              {'name': 'secrets',
-                               'mountPath': '/var/www/secrets',
                                'readOnly': True} ]
     else:
         volumemounts_caps = [ {'name': 'archive',
@@ -83,10 +85,7 @@ def add_volumes(data, fileName, nfs_server, isCDN, cdn_directory):
                           {'path': cdn_directory + '/volume/video/hls'} },
                          {'name': 'html',
                           'hostPath':
-                          {'path': cdn_directory + '/volume/html'} },
-                         {'name': 'secrets',
-                          'hostPath':
-                          {'path': cdn_directory + '/self-certificates'} } ]
+                          {'path': cdn_directory + '/volume/html'} } ]
     elif isCDN:
         volumes_caps = [ {'name': 'archive',
                           'nfs':
@@ -102,10 +101,7 @@ def add_volumes(data, fileName, nfs_server, isCDN, cdn_directory):
                            'server': nfs_server} },
                          {'name': 'html',
                           'hostPath':
-                          {'path': cdn_directory + '/volume/html'} },
-                         {'name': 'secrets',
-                          'hostPath':
-                          {'path': cdn_directory + '/self-certificates'} } ]
+                          {'path': cdn_directory + '/volume/html'} } ]
     else:
         volumes_caps = [ {'name': 'archive',
                           'nfs':
