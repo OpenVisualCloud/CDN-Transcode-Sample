@@ -26,7 +26,7 @@ fi
 
 try_command hash kubectl > /dev/null
 
-for i in $(find "$DIR" -path "$DIR/dashboard" -prune -o -type f -name "*service.yaml" -print); do
+for i in $(find "$DIR" -name "*service.yaml"); do
     len=$(echo $DIR | wc -m)
     i1=$(echo ${i:${len}} | sed 's/-service.yaml//')
     for j in $(kubectl get svc | awk '{print $1}' | sed -n '2, $p' | grep -v 'kubernetes'); do
@@ -68,7 +68,7 @@ try_command kompose convert -f "$yml" -o "$DIR"
 
 try_command "$DIR/update_yaml.py" "$DIR"
 
-for i in $(find "$DIR" -path "$DIR/dashboard" -prune -o -type f -name "*service.yaml" -print); do
+for i in $(find "$DIR" -name "*service.yaml"); do
     kubectl apply -f "$i"
 done
 
