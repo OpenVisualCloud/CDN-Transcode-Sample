@@ -3,7 +3,7 @@
    * [CDN Transcode Sample Getting Started Guide](#cdn-transcode-sample-getting-started-guide)
    * [Prerequisites](#prerequisites)
       * [Setup CDN-Transcode Server](#setup-cdn-transcode-server)
-      * [Setup Streaming Server](#setup-streaming-server)
+      * [Setup Streaming Server \(Optional\)](#setup-streaming-server-optional)
       * [Setup Client](#setup-client)
    * [Build](#build)
    * [Deploy](#deploy)
@@ -14,8 +14,8 @@
             * [VLC playback](#vlc-playback)
       * [Manual deployment](#manual-deployment)
          * [Setup network topology](#setup-network-topology)
-         * [Config CDN-Transcode Server](#config-cdn-transcode-server)
          * [Config Streaming Server](#config-streaming-server)
+         * [Config CDN-Transcode Server](#config-cdn-transcode-server)
          * [Start CDN transcode service](#start-cdn-transcode-service-1)
             * [Start zookeeper service](#start-zookeeper-service)
             * [Start kafka service](#start-kafka-service)
@@ -72,16 +72,22 @@ sudo systemctl daemon-reload
 sudo systemctl restart docker
 ```
 
-## Setup Streaming Server
+## Setup Streaming Server (Optional)
 As mentioned above, Streaing Server is not a must, you can skip this section if you do not want to stream the source via RTMP.
 - Install Ubuntu 18.04 on Streaming Server, and configure the IP address & proxy properlly.
 - Install FFmpeg
 ```sh
 sudo apt-get install -y ffmpeg
 ```
-- Install Nginx
+- Install Nginx and Nginx Rtmp Module
 ```
-sudo apt-get install -y nginx
+git clone https://github.com/arut/nginx-rtmp-module.git
+
+wget http://nginx.org/download/nginx-1.14.2.tar.gz
+tar -xvzf nginx-1.14.2.tar.gz
+cd nginx-1.14.2
+./configure --prefix=/usr/local/nginx --conf-path=/etc/nginx/nginx.conf --add-module=/path/to/nginx-rtmp-module
+make && sudo make install
 ```
 
 ## Setup Client
@@ -112,15 +118,15 @@ Run below steps on CDN-Transcode server to stop/start docker swarm service.
 ```bash
 sudo docker swarm init
 ```
-- Restart docker swarm services
+- start/stop docker swarm services
 ```bash
-make stop_docker_swarm
 make start_docker_swarm
+make stop_docker_swarm
 ```
-- Restart docker-compose service
+- start/stop docker-compose service
 ```bash
-make stop_docker_compose
 make start_docker_compose
+make stop_docker_compose
 ```
 ### Playback
 #### Web browser playback
@@ -148,14 +154,8 @@ In this guide we use a very simple topology diagram to showcase the interconnect
 
 ```
 
-### Config CDN-Transcode Server
-Run below command on CDN-Transcode Server to create docker network:
-```
-docker network create -d bridge --subnet 192.168.31.0/24 --gateway 192.168.31.1 my_bridge
-```
-
-### Config Streaming Server
-Add below Nginx configuration section into nginx.conf (may be /etc/nginx/nginx.conf) on streaming server, then copy video clips to the path defined in the configuration. E.g: /var/www/clips is used in this sample.
+### Config Streaming Server (Optional)
+Add below Nginx configuration section into nginx.conf (may be /etc/nginx/nginx.conf) on streaming server, then copy video clips to the path defined in the configuration and start nginx service. E.g: /var/www/clips is used in this sample.
 ```
 rtmp {
     server {
@@ -177,6 +177,12 @@ http {
         }
     }
 }
+```
+
+### Config CDN-Transcode Server
+Run below command on CDN-Transcode Server to create docker network:
+```
+docker network create -d bridge --subnet 192.168.31.0/24 --gateway 192.168.31.1 my_bridge
 ```
 
 ### Start CDN transcode service
@@ -214,7 +220,7 @@ docker run -it -p 443:8080 --network=my_bridge --ip 192.168.31.35 --name cdn-ser
 ```
 
 #### Start live transcode service
-Run below commands on live transcode docker instance to show one 1:4 channels of live transcode. It supports 1 channel of H264 decode, 2 channels of SVT-HEVC encode and 2 channels of x264 encode. **Note**: you need to replace the IP address below with the actual Streaming Server IP address in your setup.
+Run below commands on live transcode docker instance to show one 1:4 channels of live transcode. It supports 1 channel of H264 decode, 2 channels of SVT-HEVC encode and 2 channels of x264 encode. **Note**: If there is a Streaming Server, you need to replace the IP address below with the actual Streaming Server IP address in your setup. If not, please replace the inputRTMP stream with local stream "/var/www/archive/bbb_sunflower_1080p_30fps_normal.mp4"
 ```
 ffmpeg -i rtmp://10.67.117.70/live/bbb_sunflower_1080p_30fps_normal \
  -vf scale=2560:1440 -c:v libsvt_hevc -b:v 15M -f flv \
@@ -270,5 +276,5 @@ Visit https://\<CDN-Transcode Server IP address\>/ using any web browser, you wi
 Same as auto deployment, you can use VLC client as well following instructions in the above section.
 **Note**: for adaptative streaming, please run below commands.
 ```
-vlc https://\<CDN-Transcode Server IP address\>/dash/big_buck_bunny.mpd
+vlc https://<CDN-Transcode Server IP address>/dash/big_buck_bunny.mpd
 ```

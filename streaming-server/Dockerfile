@@ -64,6 +64,7 @@ RUN ln -sf /usr/share/zoneinfo/UTC /etc/localtime && \
     rm -rf /var/lib/apt/lists/*
 # Install
 COPY --from=build /home/build /
+COPY *.conf /etc/nginx/
 CMD /usr/sbin/nginx
 VOLUME /etc/nginx /var/www/html /var/www/tmp/client_body /var/www/tmp/proxy /var/www/tmp/fastcgi /var/www/tmp/uwsgi /var/www/tmp/scgi /var/www/cache /var/www/dash /var/www/hls
 EXPOSE 80 1935
