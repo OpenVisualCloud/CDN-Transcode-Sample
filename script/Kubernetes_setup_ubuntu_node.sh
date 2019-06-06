@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash -e
 
 # Set Bash color
 ECHO_PREFIX_INFO="\033[1;32;40mINFO...\033[0;0m"
@@ -32,6 +32,12 @@ else
     exit 1
 fi
 
+# Kubeadm reset
+if [ -f /usr/bin/kubeadm ]; then
+    try_command kubeadm reset
+    try_command iptables -F && iptables -t nat -F && iptables -t mangle -F && iptables -X
+fi
+
 # Install packages
 # Set Proxy if need
 try_command apt-get update && apt-get install -y apt-transport-https curl
@@ -63,15 +69,6 @@ try_command cat > /etc/docker/daemon.json <<EOF
   },
   "storage-driver": "overlay2"
 }
-EOF
-
-# Kubelet Proxy
-try_command mkdir -p /etc/systemd/system/kubelet.service.d/
-try_command cat <<EOF > /etc/systemd/system/kubelet.service.d/proxy.conf
-[Service]
-Environment="HTTP_PROXY=${http_proxy}"
-Environment="HTTPS_PROXY=${https_proxy}"
-Environment="NO_PROXY=${no_proxy}"
 EOF
 try_command systemctl daemon-reload
 try_command systemctl restart docker

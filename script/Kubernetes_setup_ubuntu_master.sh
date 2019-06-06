@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash -e
 
 # Set Bash color
 ECHO_PREFIX_INFO="\033[1;32;40mINFO...\033[0;0m"
@@ -30,6 +30,12 @@ if [ $ULONG_MASK == 18446744073709551615 ]; then
 else
     echo -e $ECHO_PREFIX_ERROR "This package does not support 32-bit system.\n"
     exit 1
+fi
+
+# Kubeadm reset
+if [ -f /usr/bin/kubeadm ]; then
+    try_command kubeadm reset
+    try_command iptables -F && iptables -t nat -F && iptables -t mangle -F && iptables -X
 fi
 
 # Install packages
@@ -64,20 +70,9 @@ try_command cat > /etc/docker/daemon.json <<EOF
   "storage-driver": "overlay2"
 }
 EOF
-
-# Kubelet Proxy
-try_command mkdir -p /etc/systemd/system/kubelet.service.d/
-try_command cat <<EOF > /etc/systemd/system/kubelet.service.d/proxy.conf
-[Service]
-Environment="HTTP_PROXY=${http_proxy}"
-Environment="HTTPS_PROXY=${https_proxy}"
-Environment="NO_PROXY=${no_proxy}"
-EOF
 try_command systemctl daemon-reload
 try_command systemctl restart docker
 try_command systemctl restart kubelet
-unset http_proxy
-unset https_proxy
 
 # Kubeadm init
 try_command kubeadm init --pod-network-cidr=10.244.0.0/16
@@ -89,3 +84,4 @@ try_command kubectl taint nodes --all node-role.kubernetes.io/master-
 
 # Set Proxy if need
 try_command kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/a70459be0084506e4ec919aa1c114638878db11b/Documentation/kube-flannel.yml
+try_command sed -i '/- kube-apiserver/a\\    - --service-node-port-range=1-65535' /etc/kubernetes/manifests/kube-apiserver.yaml

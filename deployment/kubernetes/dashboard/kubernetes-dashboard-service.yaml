@@ -28,6 +28,14 @@ data:
 apiVersion: v1
 kind: ServiceAccount
 metadata:
+  name: admin-user
+  namespace: kube-system
+
+---
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
   labels:
     k8s-app: kubernetes-dashboard
   name: kubernetes-dashboard
@@ -99,7 +107,7 @@ spec:
   ports:
     - port: 443
       targetPort: 8443
-      nodePort: 31111
+      nodePort: 8080
   selector:
     k8s-app: kubernetes-dashboard
   type: NodePort

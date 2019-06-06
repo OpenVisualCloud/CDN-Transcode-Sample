@@ -35,6 +35,16 @@ for i in $(find "$DIR" -name "*service.yaml"); do
     done
 done
 
+for i in $(find ./ -type f ! \( -name "*service.yaml" -o -name "*.sh" -o -name "*.py" \)); do
+    len=$(echo $DIR | wc -m)
+    i1=$(echo ${i:${len}} | sed 's/.yaml//')
+    for j in $(kubectl get pod -A | awk '{print $2}' | sed -n '2, $p' | awk -F '-' '{$NF=""; $(NF-1)=""; gsub("  ", "");gsub(" ", "-"); print}'); do
+        if [ "$i1" == "$j" ]; then
+            kubectl delete -f "$i"
+        fi
+    done
+done
+
 "$DIR/update_dashboard.py" "$DIR/../"
 
 for i in $DIR; do

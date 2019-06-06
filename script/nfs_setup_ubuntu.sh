@@ -1,4 +1,4 @@
-#!/bin/bash -x
+#!/bin/bash -e
 
 # Set Bash color
 ECHO_PREFIX_INFO="\033[1;32;40mINFO...\033[0;0m"
@@ -33,7 +33,7 @@ else
 fi
 
 # Set up NFS
-try_command echo -e "$PWD/../volume/video/archive *(rw,sync,no_root_squash,no_all_squash,no_subtree_check)" >> /etc/exports
+try_command echo -e "$PWD/../volume/video/archive *(rw,sync,no_root_squash,no_all_squash,no_subtree_check)" > /etc/exports
 try_command echo -e "$PWD/../volume/video/dash *(rw,sync,no_root_squash,no_all_squash,no_subtree_check)" >> /etc/exports
 try_command echo -e "$PWD/../volume/video/hls *(rw,sync,no_root_squash,no_all_squash,no_subtree_check)" >> /etc/exports
 try_command apt-get install nfs-kernel-server
