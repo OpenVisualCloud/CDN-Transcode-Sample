@@ -118,7 +118,7 @@ yaml_utils.update_nodeSelector(data, yaml_file, node_name)
 yaml_utils.add_volumeMounts(data, yaml_file, True)
 yaml_utils.add_volumes(data, yaml_file, nfs_server, True, cdn_directory)
 
-node_port = 30443
+node_port = 443
 
 yaml_file = sys.argv[1] + "/cdn-service-service.yaml"
 data = yaml_utils.load_yaml_file(yaml_file)

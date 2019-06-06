@@ -32,10 +32,20 @@ else
     exit 1
 fi
 
-# Kubeadm reset
-try_command kubeadm reset
-try_command iptables -F && iptables -t nat -F && iptables -t mangle -F && iptables -X
-
-# Remove Package
-try_command apt-get remove kubelet kubeadm kubectl
-try_command apt -y autoremove
+# Build gpu plugin
+if [ -f go1.11.2.linux-amd64.tar.gz ]; then
+    try_command rm go1.11.2.linux-amd64.tar.gz
+fi
+try_command wget https://dl.google.com/go/go1.11.2.linux-amd64.tar.gz
+try_command tar -C /usr/local -xzf go1.11.2.linux-amd64.tar.gz
+try_command rm go1.11.2.linux-amd64.tar.gz
+try_command export PATH=$PATH:/usr/local/go/bin
+try_command go version
+try_command mkdir -p /usr/local/go/src/github.com/intel
+try_command cd /usr/local/go/src/github.com/intel
+if [ -d intel-device-plugins-for-kubernetes ]; then
+    try_command rm -rf intel-device-plugins-for-kubernetes
+fi
+try_command git clone https://github.com/intel/intel-device-plugins-for-kubernetes.git
+try_command cd intel-device-plugins-for-kubernetes
+try_command make

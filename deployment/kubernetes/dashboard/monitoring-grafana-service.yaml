@@ -17,7 +17,6 @@ spec:
   ports:
   - port: 80
     targetPort: 3000
-    nodePort: 31112
   selector:
     k8s-app: grafana
   type: NodePort
