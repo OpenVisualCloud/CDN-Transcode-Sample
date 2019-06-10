@@ -23,7 +23,7 @@ if [[ $EUID -ne 0 ]]; then
 fi
 
 
-#detect system arch.
+# Detect system arch.
 ULONG_MASK=`getconf ULONG_MAX`
 if [ $ULONG_MASK == 18446744073709551615 ]; then
     SYSARCH=64
@@ -74,9 +74,9 @@ elif [ "$LINUX_DISTRO" == "CentOS" ]; then
     try_command yum install -y python36 python36-pip
     try_command pip3 install ruamel.yaml
 else
-    echo -e $ECHO_PREFIX_INFO "The installation is cancelled."
-    echo -e $ECHO_PREFIX_INFO "The CDN-Transcode-Sample can't support this OS, please use Ubuntu 18.04 or CentOS 7.6.\n"
+    echo -e $ECHO_PREFIX_INFO "The installation will be cancelled."
+    echo -e $ECHO_PREFIX_INFO "The CDN-Transcode-Sample does not support this OS, please use Ubuntu 18.04 or CentOS 7.6.\n"
     exit 1
 fi
 
-echo -e $ECHO_PREFIX_INFO "The installation is done."
+echo -e $ECHO_PREFIX_INFO "Installation completed."
