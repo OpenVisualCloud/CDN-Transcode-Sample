@@ -7,16 +7,26 @@ def load_yaml_file(fileName):
         data = yaml.load(infile, Loader=yaml.RoundTripLoader)
     return data
 
-def update_command(data, fileName, imageName):
-    if imageName == "hw":
-        command_caps = [ 'bash', '-c', 'ffmpeg -hwaccel vaapi -hwaccel_device /dev/dri/renderD128 -hwaccel_output_format vaapi -i /var/www/archive/bbb_sunflower_1080p_30fps_normal.mp4 -vf scale_vaapi=w=2560:h=1440 -c:v h264_vaapi -b:v 15M -f flv rtmp://cdn-service/hls/big_buck_bunny_2560x1440 -vf scale_vaapi=w=1920:h=1080 -c:v h264_vaapi -b:v 10M -f flv rtmp://cdn-service/hls/big_buck_bunny_1920x1080 -vf scale_vaapi=w=1280:h=720 -c:v h264_vaapi -b:v 8M -f flv rtmp://cdn-service/hls/big_buck_bunny_1280x720 -vf scale_vaapi=w=854:h=480 -c:v h264_vaapi -b:v 6M -f flv rtmp://cdn-service/hls/big_buck_bunny_854x480 -abr_pipeline' ]
-    else:
-        command_caps = [ 'bash', '-c', 'ffmpeg -re -stream_loop -1 -i /var/www/archive/bbb_sunflower_1080p_30fps_normal.mp4 -vf scale=2560:1440 -c:v libsvt_hevc -b:v 15M -f flv rtmp://cdn-service/hls/big_buck_bunny_2560x1440 -vf scale=1920:1080 -c:v libsvt_hevc -b:v 10M -f flv rtmp://cdn-service/hls/big_buck_bunny_1920x1080 -vf scale=1280:720 -c:v libx264 -b:v 8M -f flv rtmp://cdn-service/hls/big_buck_bunny_1280x720 -vf scale=854:480 -c:v libx264 -b:v 6M -f flv rtmp://cdn-service/hls/big_buck_bunny_854x480 -abr_pipeline' ]
-    data['spec']['template']['spec']['containers'][0].update({'args' : command_caps})
+def dump_yaml_file(data, fileName):
     with open(fileName, 'w', encoding='utf8') as outfile:
         yaml.dump(data, outfile, Dumper=yaml.RoundTripDumper, default_flow_style=False, allow_unicode=True)
 
-def update_imageName(data, fileName, imageName, isVOD):
+def update_service_name(data, service_name):
+    data["metadata"]["name"] = service_name
+    data["spec"]["template"]["metadata"]["labels"]["io.kompose.service"] = service_name
+    data["metadata"]["labels"]["io.kompose.service"] = service_name
+    data["spec"]["template"]["spec"]["containers"][0]["name"] = service_name
+    return data
+
+def update_command(data, imageName, num):
+    if imageName == "hw":
+        command_caps = [ 'bash', '-c', 'ffmpeg -hwaccel vaapi -hwaccel_device /dev/dri/renderD128 -hwaccel_output_format vaapi -i /var/www/archive/bbb_sunflower_1080p_30fps_normal.mp4 -vf scale_vaapi=w=2560:h=1440 -c:v h264_vaapi -b:v 15M -f flv rtmp://cdn-service/hls/big_buck_bunny_2560x1440_' + str(num) + ' -vf scale_vaapi=w=1920:h=1080 -c:v h264_vaapi -b:v 10M -f flv rtmp://cdn-service/hls/big_buck_bunny_1920x1080_' + str(num) + ' -vf scale_vaapi=w=1280:h=720 -c:v h264_vaapi -b:v 8M -f flv rtmp://cdn-service/hls/big_buck_bunny_1280x720_' + str(num) + ' -vf scale_vaapi=w=854:h=480 -c:v h264_vaapi -b:v 6M -f flv rtmp://cdn-service/hls/big_buck_bunny_854x480_' + str(num) + ' -abr_pipeline' ]
+    else:
+        command_caps = [ 'bash', '-c', 'ffmpeg -re -stream_loop -1 -i /var/www/archive/bbb_sunflower_1080p_30fps_normal.mp4 -vf scale=2560:1440 -c:v libsvt_hevc -b:v 15M -f flv rtmp://cdn-service/hls/big_buck_bunny_2560x1440_' + str(num) + ' -vf scale=1920:1080 -c:v libsvt_hevc -b:v 10M -f flv rtmp://cdn-service/hls/big_buck_bunny_1920x1080_' + str(num) + ' -vf scale=1280:720 -c:v libx264 -b:v 8M -f flv rtmp://cdn-service/hls/big_buck_bunny_1280x720_' + str(num) + ' -vf scale=854:480 -c:v libx264 -b:v 6M -f flv rtmp://cdn-service/hls/big_buck_bunny_854x480_' + str(num) + ' -abr_pipeline' ]
+    data['spec']['template']['spec']['containers'][0].update({'args' : command_caps})
+    return data
+
+def update_imageName(data, imageName, isVOD):
     if imageName == "hw" or not isVOD:
         replicas_caps = 1
     else:
@@ -26,15 +36,14 @@ def update_imageName(data, fileName, imageName, isVOD):
     if imageName == "hw":
         limits_caps = { 'limits': {'gpu.intel.com/i915': 1} }
         data['spec']['template']['spec']['containers'][0]['resources'] = limits_caps
-    with open(fileName, 'w', encoding='utf8') as outfile:
-        yaml.dump(data, outfile, Dumper=yaml.RoundTripDumper, default_flow_style=False, allow_unicode=True)
+    return data
 
-def update_nodeSelector(data, fileName, nodeName):
+def update_nodeSelector(data, nodeName):
     data['spec']['template']['spec']['nodeSelector']['kubernetes.io/hostname'] = nodeName
-    with open(fileName, 'w', encoding='utf8') as outfile:
-        yaml.dump(data, outfile, Dumper=yaml.RoundTripDumper, default_flow_style=False, allow_unicode=True)
+    return data
 
-def add_volumeMounts(data, fileName, isCDN):
+
+def add_volumeMounts(data, isCDN):
     if (isCDN):
         volumemounts_caps = [ {'name': 'archive',
                                'mountPath': '/var/www/archive',
@@ -59,10 +68,9 @@ def add_volumeMounts(data, fileName, isCDN):
                                'mountPath': '/var/www/hls',
                                'readOnly': False} ]
     data['spec']['template']['spec']['containers'][0].update({'volumeMounts' : volumemounts_caps})
-    with open(fileName, "w", encoding="utf-8") as outfile:
-        yaml.dump(data, outfile, Dumper=yaml.RoundTripDumper, default_flow_style=False, allow_unicode=True)
+    return data
 
-def add_volumes(data, fileName, nfs_server, isCDN, cdn_directory):
+def add_volumes(data, nfs_server, isCDN, cdn_directory):
     if nfs_server == "localhost" and not isCDN:
         volumes_caps = [ {'name': 'archive',
                           'hostPath':
@@ -116,10 +124,8 @@ def add_volumes(data, fileName, nfs_server, isCDN, cdn_directory):
                           {'path': cdn_directory + '/volume/video/hls',
                            'server': nfs_server} } ]
     data['spec']['template']['spec'].update({'volumes' : volumes_caps})
-    with open(fileName, "w", encoding="utf-8") as outfile:
-        yaml.dump(data, outfile, Dumper=yaml.RoundTripDumper, default_flow_style=False, allow_unicode=True)
+    return data
 
-def set_nodePort(data, fileName, port):
+def set_nodePort(data, port):
     data['spec']['ports'][0].update({'nodePort' : port})
-    with open(fileName, "w", encoding="utf-8") as outfile:
-        yaml.dump(data, outfile, Dumper=yaml.RoundTripDumper, default_flow_style=False, allow_unicode=True)
+    return data

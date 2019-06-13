@@ -77,7 +77,7 @@ try_command systemctl restart kubelet
 # Kubeadm init
 try_command kubeadm init --pod-network-cidr=10.244.0.0/16
 try_command mkdir -p $HOME/.kube
-try_command cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+try_command cp -f /etc/kubernetes/admin.conf $HOME/.kube/config
 try_command chown $(id -u):$(id -g) $HOME/.kube/config
 try_command export KUBECONFIG=$HOME/.kube/config
 try_command kubectl taint nodes --all node-role.kubernetes.io/master-

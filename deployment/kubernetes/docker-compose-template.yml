@@ -72,7 +72,7 @@ services:
             kompose.service.type: NodePort
             kompose.image-pull-policy: IfNotPresent 
 
-    vod-transcode-service:
+    vod-transcode-service-0:
         image: ovc_transcode_sw:latest
         deploy:
             replicas: 1
@@ -86,7 +86,7 @@ services:
         labels:
             kompose.image-pull-policy: IfNotPresent
 
-    live-transcode-service:
+    live-transcode-service-0:
         image: ovc_transcode_sw:latest
         deploy:
             replicas: 1
@@ -95,6 +95,5 @@ services:
                     - node.hostname == master.machine
         depends_on:
             - cdn-service
-        command: ["bash", "-c", "ffmpeg -re -stream_loop -1 -i /var/www/archive/bbb_sunflower_1080p_30fps_normal.mp4 -vf scale=2560:1440 -c:v libsvt_hevc -b:v 15M -f flv rtmp://cdn-service/hls/big_buck_bunny_2560x1440 -vf scale=1920:1080 -c:v libsvt_hevc -b:v 10M -f flv rtmp://cdn-service/hls/big_buck_bunny_1920x1080 -vf scale=1280:720 -c:v libx264 -b:v 8M -f flv rtmp://cdn-service/hls/big_buck_bunny_1280x720 -vf scale=854:480 -c:v libx264 -b:v 6M -f flv rtmp://cdn-service/hls/big_buck_bunny_854x480 -abr_pipeline"]
         labels:
             kompose.image-pull-policy: IfNotPresent
