@@ -40,10 +40,8 @@ for i in $(find "$DIR" -name "*deployment.yaml"); do
     len=$(echo $DIR | wc -m)
     i1=$(echo ${i:${len}} | sed 's/-deployment.yaml//')
 
-    for j in $(kubectl get pod | awk '{print $1}' | sed -n '2, $p' | sed 's/service-.*$//' | sort | uniq); do
-        #j1=$(echo $j | sed 's/service-.*$//')service
-        j1=${j}service
-        if [ ${i1} == ${j1} ]; then
+    for j in $(kubectl get pod | awk '{print $1}' | sed -n '2, $p' | awk -F '-' '{$NF=""; $(NF-1)=""; gsub("  ", "");gsub(" ", "-"); print}'); do
+        if [ ${i1} == ${j} ]; then
             kubectl delete -f "${i}"
         fi
     done
@@ -93,5 +91,7 @@ done
 
 sleep 2s
 
-kubectl apply -f "$(find "$DIR" -name "live-transcode*.yaml")"
+for i in $(find "$DIR" -name "live-transcode*.yaml"); do
+    kubectl apply -f "$i"
+done
 
