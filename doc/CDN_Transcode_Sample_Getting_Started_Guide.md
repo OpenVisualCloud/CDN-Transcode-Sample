@@ -1,9 +1,10 @@
 # CDN Transcode Sample Getting Started Guide
 
    * [CDN Transcode Sample Getting Started Guide](#cdn-transcode-sample-getting-started-guide)
+   * [Architecture](#architecture)
    * [Prerequisites](#prerequisites)
       * [Setup CDN-Transcode Server](#setup-cdn-transcode-server)
-      * [Setup Streaming Server \(Optional\)](#setup-streaming-server-optional)
+      * [Setup Streaming Server](#setup-streaming-server-optional)
       * [Setup Client](#setup-client)
    * [Build](#build)
    * [Deploy](#deploy)
@@ -31,6 +32,23 @@
 This document describes how to run the CDN Transcode Sample step by step. Please refer to [reference architecture](CDN_Transcode_Sample_RA.md) to understand the sample reference architecture design and how the sample works.
 
 The sample provides two kinds of services - `live streaming` and `VOD`, and this guide just shows how to use the services in a simplest and typical way which can be scaled out to more complex environment. E.g.: in this guide, the docker images for transcoder server and cdn edge server are hosted on the same physical server. In real case, they can be hosted on different servers located in different places in the CDN network.
+
+# Architecture
+
+<IMG src="./CDN-Transcode-Sample-Arch.PNG" height="450">
+
+The client player is based on dash.js, hls.js and VLC.
+
+The workflow of VOD is as follows:
+- The client player starts playback of a video by requesting the video manifest file.
+- The CDN service checks if the video has been transcoded. If the DASH/HLS segments exist, the CDN service simply returns the manifest (and any subsequent video segments.) Otherwise, the CDN service schedules transcoding of the video in Kafka, a message system shared between the CDN service and the VOD trancode service.
+- The VOD trancode service receives the request and starts transcoding of the video clip.
+- The CDN service returns the resulting DASH/HLS manifest and segments to the client player.
+
+The workflow of live streaming is as follows:
+- The Live transcode Service receives the video stream locally or over rtmp, decapsulate and demux the flv video, transcode to other codecs/bitrate/resolution, in 1:N manner, which means one input and N output. E.g.: one channel HEVC 4k@60fps, transcoded into one channle AVC 720p@30fps, one channel HEVC 1080p@30fps and one channel HEVC 4k@60fps. The transcoded video streams are then be encapsulated in flv over rtmp, be distributed to the CDN service.
+- The CDN service receives the video streams from the Live transcode Service, and will translate the video streams into HLS/DASH format.
+- The client player starts playback of a video by VLC.
 
 # Prerequisites
 In this document, we'll use the simplest example to show how to build up the pipeline for different user scenarios. To simply the setup, we'll host docker nodes on the same physical server (named as "CDN-Transcode Server" in this document). One Streaming Server will be used as well to RTMP stream the source video content to CDN-Transcode Server, however you can omit Streaming Server if you want to just use local video content on CDN-Transcode Server. A client system is also needed to playback the transcoded video streams.
@@ -123,6 +141,8 @@ sudo docker swarm init
 make start_docker_swarm
 make stop_docker_swarm
 ```
+
+Run below steps on CDN-Transcode server to stop/start docker compose service.
 - start/stop docker-compose service
 ```bash
 make start_docker_compose
