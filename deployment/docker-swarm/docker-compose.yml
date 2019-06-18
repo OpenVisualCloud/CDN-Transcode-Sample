@@ -56,17 +56,17 @@ services:
             replicas: 1
         secrets:
             - source: self_crt
-              target: self.crt
+              target: /var/run/secrets/self.crt
               uid: ${USER_ID}
               gid: ${GROUP_ID}
               mode: 0444
             - source: self_key
-              target: self.key
+              target: /var/run/secrets/self.key
               uid: ${USER_ID}
               gid: ${GROUP_ID}
               mode: 0440
             - source: dhparam_pem
-              target: dhparam.pem
+              target: /var/run/secrets/dhparam.pem
               uid: ${USER_ID}
               gid: ${GROUP_ID}
               mode: 0444

@@ -47,6 +47,10 @@ for i in $(find "$DIR" -name "*deployment.yaml"); do
     done
 done
 
+if [ -f "$DIR/ovc-self-certificates.yaml" ]; then
+    kubectl delete -f "$DIR/ovc-self-certificates.yaml"
+fi
+
 rm -rf $DIR/$EXT
 
 yml="$DIR/docker-compose-template.yml"
@@ -65,6 +69,10 @@ fi
 try_command kompose convert -f "$yml" -o "$DIR"
 
 try_command "$DIR/update_yaml.py" "$DIR"
+
+try_command kubectl create secret generic ssl-key-secret --from-file=self.key="$DIR/../../self-certificates/self.key" --from-file=self.crt="$DIR/../../self-certificates/self.crt" --from-file=dhparam.pem="$DIR/../../self-certificates/dhparam.pem" --dry-run -o yaml > "$DIR/ovc-self-certificates.yaml"
+
+try_command kubectl apply -f "$DIR/ovc-self-certificates.yaml"
 
 for i in $(find "$DIR" -path "$DIR/dashboard" -prune -o -type f -name "*service.yaml" -print); do
     kubectl apply -f "$i"

@@ -40,6 +40,10 @@ fi
 
 # Install packages
 # Set Proxy if need
+proxy_http=$http_proxy
+proxy_https=$https_proxy
+export http_proxy=$proxy_http
+export https_proxy=$proxy_https
 try_command apt-get update && apt-get install -y apt-transport-https curl
 try_command curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
 try_command cat <<EOF >/etc/apt/sources.list.d/kubernetes.list
@@ -75,6 +79,8 @@ try_command systemctl restart docker
 try_command systemctl restart kubelet
 
 # Kubeadm init
+unset http_proxy
+unset https_proxy
 try_command kubeadm init --pod-network-cidr=10.244.0.0/16
 try_command mkdir -p $HOME/.kube
 try_command cp -f /etc/kubernetes/admin.conf $HOME/.kube/config
@@ -83,5 +89,7 @@ try_command export KUBECONFIG=$HOME/.kube/config
 try_command kubectl taint nodes --all node-role.kubernetes.io/master-
 
 # Set Proxy if need
+export http_proxy=$proxy_http
+export https_proxy=$proxy_https
 try_command kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/a70459be0084506e4ec919aa1c114638878db11b/Documentation/kube-flannel.yml
 try_command sed -i '/- kube-apiserver/a\\    - --service-node-port-range=1-65535' /etc/kubernetes/manifests/kube-apiserver.yaml

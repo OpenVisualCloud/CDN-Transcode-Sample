@@ -47,4 +47,8 @@ for i in $(find "$DIR" -name "*deployment.yaml"); do
     done
 done
 
+if [ -f "$DIR/ovc-self-certificates.yaml" ]; then
+    kubectl delete -f "$DIR/ovc-self-certificates.yaml"
+fi
+
 rm -rf $DIR/$EXT
