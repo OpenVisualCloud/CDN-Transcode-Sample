@@ -56,6 +56,9 @@ def add_volumeMounts(data, isCDN):
                                'readOnly': False},
                               {'name': 'html',
                                'mountPath': '/var/www/html',
+                               'readOnly': True},
+                              {'name': 'secrets',
+                               'mountPath': '/var/run/secrets',
                                'readOnly': True} ]
     else:
         volumemounts_caps = [ {'name': 'archive',
@@ -93,7 +96,9 @@ def add_volumes(data, nfs_server, isCDN, cdn_directory):
                           {'path': cdn_directory + '/volume/video/hls'} },
                          {'name': 'html',
                           'hostPath':
-                          {'path': cdn_directory + '/volume/html'} } ]
+                          {'path': cdn_directory + '/volume/html'} },
+                         {'name': 'secrets',
+                          'secret': {'secretName': 'ssl-key-secret'} } ]
     elif isCDN:
         volumes_caps = [ {'name': 'archive',
                           'nfs':
@@ -109,7 +114,9 @@ def add_volumes(data, nfs_server, isCDN, cdn_directory):
                            'server': nfs_server} },
                          {'name': 'html',
                           'hostPath':
-                          {'path': cdn_directory + '/volume/html'} } ]
+                          {'path': cdn_directory + '/volume/html'} },
+                         {'name': 'secrets',
+                          'secret': {'secretName': 'ssl-key-secret'} } ]
     else:
         volumes_caps = [ {'name': 'archive',
                           'nfs':
