@@ -52,6 +52,7 @@ RUN mkdir -p /home/build/var/www/tmp/client_body && \
     mkdir -p /home/build/var/www/tmp/uwsgi && \
     mkdir -p /home/build/var/www/tmp/scgi && \
     mkdir -p /home/build/var/www/cache && \
+    mkdir -p /home/build/var/www/temp && \
     mkdir -p /home/build/var/www/html
 
 
@@ -62,7 +63,7 @@ WORKDIR /home
 
 # Prerequisites
 RUN ln -sf /usr/share/zoneinfo/UTC /etc/localtime && \
-    DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y -q --no-install-recommends libxml2 libssl-dev libpcre3 zlib1g libxslt1.1 python3-tornado python3-kafka python3-bs4 python3-kazoo vim openssh-server && \
+    DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y -q --no-install-recommends libxml2 libssl-dev libpcre3 zlib1g libxslt1.1 python3-tornado python3-kafka python3-bs4 python3-kazoo vim openssh-server ffmpeg && \
     rm -rf /var/lib/apt/lists/*
 # Install
 COPY --from=build /home/build /

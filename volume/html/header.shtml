@@ -11,6 +11,7 @@
       <li><a href="#" user-name-menu class="menu-text">guest</a>
         <ul class="menu" style="background-color:gray">
           <li><a href="#" data-open="setting" class="menu-text"><i class="fi-key"></i>&nbsp;Setting</a></li>
+          <li><a href="#" data-open="upload" class="menu-text"><i class="fi-key"></i>&nbsp;Upload</a></li>
         </ul>
       </li>
     </ul>
@@ -27,5 +28,30 @@
     </div>
 
     <input class="button expanded" type="submit" data-close>
+  </form>
+</div>
+
+<div class="reveal" id="upload" data-reveal>
+  <form>
+    <p><h4><b>Upload</b></h4></p>
+
+    <div class="input-group-0" ui-header-setting-user>
+      <input class="input_file" type="file" name="file" required="required"/>
+    </div>
+
+    <div class="input-group choose-file" ui-header-setting-user>
+      <span class="input-group-label" style="width:40%"><b>Choose File:</b></span>
+      <input class="input-group-field" type="text" name="user" readonly required placeholder="Please choose mp4 file"><br>
+    </div>
+
+
+    <div class="flex-center">
+        <h6 style="text-align:center">Upload 0% </h6>
+        <div class="input-group-bar">
+            <div class="bar"></div>
+        </div>
+    </div>
+
+    <input class="button expanded" type="button" value="Submit"  vadata-close>
   </form>
 </div>
