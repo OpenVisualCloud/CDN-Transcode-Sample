@@ -47,7 +47,7 @@ def add_volumeMounts(data, isCDN):
     if (isCDN):
         volumemounts_caps = [ {'name': 'archive',
                                'mountPath': '/var/www/archive',
-                               'readOnly': True},
+                               'readOnly': False},
                               {'name': 'dash',
                                'mountPath': '/var/www/dash',
                                'readOnly': False},
