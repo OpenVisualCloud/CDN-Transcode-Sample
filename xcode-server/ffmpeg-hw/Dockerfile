@@ -144,7 +144,7 @@ RUN  wget -O - ${X265_REPO} | tar xz && mv x265-${X265_VER} x265 && \
 
 # Fetch SVT-HEVC
 ARG SVT_HEVC_VER=252ff3d18bc1997a5af989ad4e67e025c93dbf68
-+ARG SVT_HEVC_REPO=https://github.com/OpenVisualCloud/SVT-HEVC.git
+ARG SVT_HEVC_REPO=https://github.com/OpenVisualCloud/SVT-HEVC.git
 
 RUN git clone ${SVT_HEVC_REPO} && \
     cd SVT-HEVC/Build/linux && \

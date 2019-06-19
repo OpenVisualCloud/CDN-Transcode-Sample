@@ -210,11 +210,11 @@ while True:
 
     yaml_utils.dump_yaml_file(data, fileName)
     i += 1
-    create_node = input("Do you still need to deploy the vod transcode service? ([y] or [n]):")
+    create_node = input("Do you still need to deploy the live transcode service? ([y] or [n]):")
     while True:
         if create_node.lower() == "y" or create_node.lower() == "n":
             break
         else:
-            create_node = input("Do you still need to deploy the vod transcode service? ([y] or [n]):")
+            create_node = input("Do you still need to deploy the live transcode service? ([y] or [n]):")
     if create_node.lower() == "n":
         break

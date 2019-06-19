@@ -57,7 +57,7 @@ if [ "$LINUX_DISTRO" == "Ubuntu" ]; then
     try_command apt-get install -y docker-ce docker-ce-cli containerd.io
     try_command curl -L "https://github.com/docker/compose/releases/download/1.24.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
     try_command curl -L https://github.com/kubernetes/kompose/releases/download/v1.18.0/kompose-linux-amd64 -o /usr/local/bin/kompose
-	try_command chmod +x /usr/local/bin/kompose
+    try_command chmod +x /usr/local/bin/kompose
     try_command apt-get install -y python3-pip
     try_command pip3 install ruamel.yaml
 elif [ "$LINUX_DISTRO" == "CentOS" ]; then
@@ -67,8 +67,8 @@ elif [ "$LINUX_DISTRO" == "CentOS" ]; then
     try_command yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
     try_command yum install -y docker-ce docker-ce-cli containerd.io
     try_command curl -L "https://github.com/docker/compose/releases/download/1.24.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-    try_command curl -L https://github.com/kubernetes/kompose/releases/download/v1.18.0/kompose-linux-amd64 -o /usr/local/bin/kompose
-	try_command chmod +x /usr/local/bin/kompose
+    try_command curl -L https://github.com/kubernetes/kompose/releases/download/v1.18.0/kompose-linux-amd64 -o /usr/bin/kompose
+    try_command chmod +x /usr/bin/kompose
     try_command yum install -y epel-release 
     try_command yum install -y python36 python36-pip
     try_command pip3 install ruamel.yaml
