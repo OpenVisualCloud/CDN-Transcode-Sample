@@ -19,18 +19,19 @@ ARG AUTOMAKE_VER=1.14
 ARG AUTOMAKE_REPO=https://ftp.gnu.org/pub/gnu/automake/automake-${AUTOMAKE_VER}.tar.xz
     RUN apt-get install -y -q automake
 
-# Build nginx-rtmp
-ARG NGINX_RTMP_VER=v1.2.1
-ARG NGINX_RTMP_REPO=https://github.com/arut/nginx-rtmp-module/archive/${NGINX_RTMP_VER}.tar.gz
-ARG NGINX_RTMP_PATCH_HLS=https://raw.githubusercontent.com/VCDP/CDN/master/0001-add-hevc-support-for-rtmp-and-hls.patch
-ARG NGINX_RTMP_PATCH_DASH=https://raw.githubusercontent.com/VCDP/CDN/master/0002-add-HEVC-support-for-dash.patch
-ARG NGINX_RTMP_PATCH_DASH_ABR=https://raw.githubusercontent.com/VCDP/CDN/master/v1-0001-Add-some-dash-features.patch
+# Build nginx-http-flv
+ARG NGINX_HTTP_FLV_VER=04dc8369b260c8c851f12fc30ea2f9df03f73c4e
+ARG NGINX_HTTP_FLV_REPO=https://github.com/winshining/nginx-http-flv-module.git
+ARG NGINX_HTTP_FLV_PATCH_HLS=https://raw.githubusercontent.com/VCDP/CDN/master/0001-Add-hevc-support-for-rtmp-and-hls-on-Nginx-Http-Flv.patch
+ARG NGINX_HTTP_FLV_PATCH_DASH=https://raw.githubusercontent.com/VCDP/CDN/master/0002-add-HEVC-support-for-dash.patch
+ARG NGINX_HTTP_FLV_PATCH_DASH_ABR=https://raw.githubusercontent.com/VCDP/CDN/master/0001-Add-dash-ABR-mode-support-on-Nginx-Http-Flv.patch
 
-RUN wget -O - ${NGINX_RTMP_REPO} | tar xz && mv nginx-rtmp-module-${NGINX_RTMP_VER#v} nginx-rtmp-module && \
-    cd nginx-rtmp-module && \
-    wget -O - ${NGINX_RTMP_PATCH_HLS} | patch -p1 && \
-    wget -O - ${NGINX_RTMP_PATCH_DASH} | patch -p1 && \
-    wget -O - ${NGINX_RTMP_PATCH_DASH_ABR} | patch -p1
+RUN git clone ${NGINX_HTTP_FLV_REPO} && \
+    cd nginx-http-flv-module && \
+    git checkout ${NGINX_HTTP_FLV_VER} && \
+    wget -O - ${NGINX_HTTP_FLV_PATCH_HLS} | patch -p1 && \
+    wget -O - ${NGINX_HTTP_FLV_PATCH_DASH} | patch -p1 && \
+    wget -O - ${NGINX_HTTP_FLV_PATCH_DASH_ABR} | patch -p1
 
 
 # Build nginx & nginx-rtmp
@@ -41,7 +42,7 @@ RUN apt-get update && apt-get install -y -q --no-install-recommends libssl-dev l
 
 RUN wget -O - ${NGINX_REPO} | tar xz && \
     cd nginx-${NGINX_VER} && \
-    ./configure --prefix=/var/www --sbin-path=/usr/sbin/nginx --modules-path=/usr/lib/x86_64-linux-gnu/nginx/modules --conf-path=/etc/nginx/nginx.conf --error-log-path=/var/www/log/error.log --pid-path=/var/www/nginx.pid --lock-path=/var/www/nginx.lock --http-log-path=/var/www/log/access.log --http-client-body-temp-path=/var/www/tmp/client_body --http-proxy-temp-path=/var/www/tmp/proxy --http-fastcgi-temp-path=/var/www/tmp/fastcgi --http-uwsgi-temp-path=/var/www/tmp/uwsgi --http-scgi-temp-path=/var/www/tmp/scgi --user=www-data --group=www-data --with-select_module --with-poll_module --with-threads --with-file-aio --with-http_ssl_module --with-http_v2_module --with-http_realip_module --with-http_addition_module --with-http_xslt_module --with-http_sub_module --with-http_dav_module --with-http_flv_module --with-http_mp4_module --with-http_gunzip_module --with-http_gzip_static_module --with-http_auth_request_module --with-http_random_index_module --with-http_secure_link_module --with-http_degradation_module --with-http_slice_module --with-http_stub_status_module --with-stream --with-stream_ssl_module --with-stream_realip_module --with-stream_ssl_preread_module --with-pcre --add-module=../nginx-rtmp-module && \
+    ./configure --prefix=/var/www --sbin-path=/usr/sbin/nginx --modules-path=/usr/lib/x86_64-linux-gnu/nginx/modules --conf-path=/etc/nginx/nginx.conf --error-log-path=/var/www/log/error.log --pid-path=/var/www/nginx.pid --lock-path=/var/www/nginx.lock --http-log-path=/var/www/log/access.log --http-client-body-temp-path=/var/www/tmp/client_body --http-proxy-temp-path=/var/www/tmp/proxy --http-fastcgi-temp-path=/var/www/tmp/fastcgi --http-uwsgi-temp-path=/var/www/tmp/uwsgi --http-scgi-temp-path=/var/www/tmp/scgi --user=www-data --group=www-data --with-select_module --with-poll_module --with-threads --with-file-aio --with-http_ssl_module --with-http_v2_module --with-http_realip_module --with-http_addition_module --with-http_xslt_module --with-http_sub_module --with-http_dav_module --with-http_flv_module --with-http_mp4_module --with-http_gunzip_module --with-http_gzip_static_module --with-http_auth_request_module --with-http_random_index_module --with-http_secure_link_module --with-http_degradation_module --with-http_slice_module --with-http_stub_status_module --with-stream --with-stream_ssl_module --with-stream_realip_module --with-stream_ssl_preread_module --with-pcre --add-module=../nginx-http-flv-module && \
     make -j8 && \
     make install DESTDIR=/home/build
 
