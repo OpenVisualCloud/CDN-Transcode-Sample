@@ -20,18 +20,23 @@ def in_out(proPath, srcPath, fileName, count):
         i += 1
         if len(os.listdir(proPath)) == int(count) + 1:
             try:
+                cmd = "ffmpeg -i " + os.path.join(proPath, '0') + " -vf thumbnail,scale=640:360 -frames:v 1 -y " + srcPath + "/" + fileName + ".png"
+                res = os.system(cmd)
                 upload_file = open(os.path.join(srcPath, fileName), "wb")
                 for i in range(0, int(count) + 1):
                     with open(os.path.join(proPath, str(i)), "rb") as data:
                         upload_file.write(data.read())
                 upload_file.close()
-            except Exception as a:
+                if not os.path.exists(srcPath + "/" + fileName + ".png"):
+                    sleep(5)
+                if not os.path.exists(srcPath + "/" + fileName + ".png"):
+                    raise Exception("image error")
+            except Exception as e:
+                del_file(os.path.join(srcPath, fileName, '0'))
                 del_file(os.path.join(srcPath, fileName))
                 del_file(proPath)
-                return ('delete error')
+                return (e)
             else:
-                cmd = "ffmpeg -i " + srcPath + "/" + fileName + " -vf thumbnail,scale=640:360 -frames:v 1 -y " + srcPath + "/" + fileName + ".png"
-                os.system(cmd)
                 del_file(proPath)
                 return ('delete success')
         else:
