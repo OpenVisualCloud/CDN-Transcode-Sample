@@ -64,7 +64,9 @@ WORKDIR /home
 
 # Prerequisites
 RUN ln -sf /usr/share/zoneinfo/UTC /etc/localtime && \
-    DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y -q --no-install-recommends libxml2 libssl-dev libpcre3 zlib1g libxslt1.1 python3-tornado python3-kafka python3-bs4 python3-kazoo vim openssh-server ffmpeg && \
+    DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y -q --no-install-recommends libxml2 libssl-dev libpcre3 zlib1g libxslt1.1 redis python3-tornado python3-kafka python3-pip python3-bs4 python3-kazoo vim openssh-server ffmpeg && \
+    pip3 install redis setuptools && \
+    pip3 install celery && \
     rm -rf /var/lib/apt/lists/*
 # Install
 COPY --from=build /home/build /
@@ -72,7 +74,8 @@ COPY *.xsl  /etc/nginx/
 COPY *.conf /etc/nginx/
 COPY *.ini  /home/
 COPY *.py   /home/
+COPY *.sh   /home/
 COPY self-sign.sh /home/
-CMD  ["/bin/bash","-c","/home/main.py&/usr/sbin/nginx"]
+CMD  ["/bin/bash","-c","/home/main.py&/usr/sbin/nginx&/home/celery.sh&/home/redis.sh"]
 VOLUME /etc/nginx /var/www/html /var/www/tmp/client_body /var/www/tmp/proxy /var/www/tmp/fastcgi /var/www/tmp/uwsgi /var/www/tmp/scgi /var/www/cache /var/www/dash /var/www/hls
 EXPOSE 8080
