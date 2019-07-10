@@ -156,14 +156,12 @@ RUN git clone ${SVT_HEVC_REPO} && \
     make install
 
 # Fetch SVT-AV1
-ARG SVT_AV1_VER=3009e99f32e3476e028aadd17a265630f80a8e36
+ARG SVT_AV1_VER=2bebd2df01b28a64dcd834b40f0a5ed090143945
 ARG SVT_AV1_REPO=https://github.com/OpenVisualCloud/SVT-AV1.git
-ARG SVT_AV1_MP4_PATCH_REPO=https://raw.githubusercontent.com/VCDP/CDN/master/0001-Enable-mp4-and-mkv-webm-container-support-on-SVT-AV1.patch
 
 RUN git clone ${SVT_AV1_REPO} && \
     cd SVT-AV1 && \
     git checkout ${SVT_AV1_VER} && \
-    wget -O - ${SVT_AV1_MP4_PATCH_REPO} | patch -p1 && \
     cd Build/linux && \
     mkdir -p ../../Bin/Release && \
     cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib/x86_64-linux-gnu -DCMAKE_ASM_NASM_COMPILER=yasm ../.. && \
@@ -230,7 +228,6 @@ ARG FFMPEG_1TN_PATCH_REPO=https://patchwork.ffmpeg.org/patch/11625/raw
 ARG FFMPEG_THREAD_PATCH_REPO=https://patchwork.ffmpeg.org/patch/11035/raw
 ARG FFMPEG_HW_LOOP_PATCH_REPO=https://patchwork.ffmpeg.org/patch/8173/raw
 ARG FFMPEG_ENCODE_THREAD_PATCH_REPO=https://patchwork.ffmpeg.org/patch/11179/raw
-ARG FFMPEG_SVT_AV1_MP4_PATHC_REPO=https://raw.githubusercontent.com/VCDP/CDN/master/0001-Enable-SVT-AV1-mp4-and-mkv-webm-container-support-on-FFmpeg.patch
 # ARG FFMPEG_RTMP_WORKAROUD_REPO=https://raw.githubusercontent.com/VCDP/CDN/master/Check_rtmp_packet_timestamp_workaround_ffmpeg.patch
 
 
@@ -247,8 +244,7 @@ RUN wget -O - ${FFMPEG_REPO} | tar xz && mv FFmpeg-${FFMPEG_VER} FFmpeg && \
 # Patch FFmpeg source for SVT-HEVC and SVT-AV1
 RUN cd /home/FFmpeg && \
     patch -p1 < ../SVT-HEVC/ffmpeg_plugin/0001-lavc-svt_hevc-add-libsvt-hevc-encoder-wrapper.patch && \
-    patch -p1 < ../SVT-AV1/ffmpeg_plugin/0001-Add-ability-for-ffmpeg-to-run-svt-av1-with-svt-hevc.patch && \
-    wget -O - ${FFMPEG_SVT_AV1_MP4_PATHC_REPO} | patch -p1
+    patch -p1 < ../SVT-AV1/ffmpeg_plugin/0001-Add-ability-for-ffmpeg-to-run-svt-av1-with-svt-hevc.patch
 
 # Compile FFmpeg
 RUN cd /home/FFmpeg && \
