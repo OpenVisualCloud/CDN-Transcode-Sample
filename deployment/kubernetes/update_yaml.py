@@ -158,7 +158,7 @@ while True:
         image_name = "sw"
     node_name = input_node_name("vod transcode", image_name.lower())
 
-    data = yaml_utils.update_imageName(data, image_name.lower(), False)
+    data = yaml_utils.update_imageName(data, image_name.lower(), True)
     data = yaml_utils.update_nodeSelector(data, node_name)
     service_name = "vod-transcode-service-" + str(i)
     data = yaml_utils.update_service_name(data,service_name)
