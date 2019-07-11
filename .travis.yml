@@ -14,12 +14,12 @@ before_install:
 
 jobs:
   include:
-    - name: xcode-server/ffmpeg-sw
+    - name: xcode-server
       script:
         - mkdir build
         - cd build
         - cmake ..
-        - cd xcode-server/ffmpeg-sw 
+        - cd xcode-server
         - make 
     - name: cdn-server
       script:

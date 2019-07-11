@@ -53,7 +53,7 @@ RUN mkdir -p /home/build/var/www/tmp/client_body && \
     mkdir -p /home/build/var/www/html
 
 
-FROM ovc_transcode_sw:latest
+FROM ovc_transcode_service:latest
 LABEL Description="This is the base image for a NGINX+RTMP service"
 LABEL Vendor="Intel Corporation"
 WORKDIR /home

@@ -73,7 +73,7 @@ services:
             kompose.image-pull-policy: IfNotPresent 
 
     vod-transcode-service-0:
-        image: ovc_transcode_sw:latest
+        image: ovc_transcode_service:latest
         deploy:
             replicas: 1
             placement:
@@ -87,7 +87,7 @@ services:
             kompose.image-pull-policy: IfNotPresent
 
     live-transcode-service-0:
-        image: ovc_transcode_sw:latest
+        image: ovc_transcode_service:latest
         deploy:
             replicas: 1
             placement:
