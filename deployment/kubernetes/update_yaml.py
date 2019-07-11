@@ -25,7 +25,6 @@ def ping(host):
     else:
         return False
 
-#input_node_name
 def input_node_name(service_name, image_name="sw"):
     global hw_node_name_list
 
@@ -50,6 +49,46 @@ def input_node_name(service_name, image_name="sw"):
         hw_node_name_list.remove(node_name)
 
     return node_name
+
+def config_trancode_service(yaml_file, service_name):
+    data = yaml_utils.load_yaml_file(yaml_file)
+    data = yaml_utils.add_volumeMounts(data, False)
+    data = yaml_utils.add_volumes(data, nfs_server, False, cdn_directory)
+    i = 0
+
+    while True:
+        if len(hw_node_name_list) > 0:
+            image_name = input("Please choose the transcode mode of the " + service_name + " ([hw]: hardware is for E3/VCA2 or [sw]: software is for E5):")
+            while True:
+                if image_name.lower() == "sw" or  image_name.lower() == "hw":
+                    break
+                else:
+                    image_name = input("Please choose the transcode mode of the " + service_name + " again ([hw]: hardware is for E3/VCA2 or [sw]: software is for E5):")
+        else:
+            image_name = "sw"
+        node_name = input_node_name(service_name, image_name.lower())
+
+        data = yaml_utils.update_imageName(data, image_name.lower(), False if (service_name == "live-transcode-service") else True)
+        data = yaml_utils.update_nodeSelector(data, node_name)
+        if service_name == "live-transcode-service":
+            data = yaml_utils.update_command(data, image_name.lower(), i)
+        data = yaml_utils.update_service_name(data, service_name + "-" + str(i))
+
+        if i == 0:
+            fileName = yaml_file
+        else:
+            fileName = yaml_file.rsplit("0")[0] + str(i) + "-deployment.yaml"
+
+        yaml_utils.dump_yaml_file(data, fileName)
+        i += 1
+        create_node = input("Do you still need to deploy the " + service_name + "-" + str(i) + "? ([y] or [n]):")
+        while True:
+            if create_node.lower() == "y" or create_node.lower() == "n":
+                break
+            else:
+                create_node = input("Input error, Do you still need to deploy the " + service_name + "-" + str(i) + "? ([y] or [n]):")
+        if create_node.lower() == "n":
+            break
 
 node_num = int(os.popen("kubectl get node | awk '{print $1}' | sed -n '2, $p' | wc -l").read())
 print("There are " + str(node_num) + " kubernetes nodes on your host server!!!")
@@ -109,7 +148,7 @@ else:
             nfs_server = input("Input error, Please input where the video clips server is again ([localhost] or [NFS server IP address]):")
 
 #zookeeper
-node_name = input_node_name("zookeeper service")
+node_name = input_node_name("zookeeper-service")
 
 yaml_file = sys.argv[1] + "/zookeeper-service-deployment.yaml"
 data = yaml_utils.load_yaml_file(yaml_file)
@@ -117,7 +156,7 @@ data = yaml_utils.update_nodeSelector(data, node_name)
 yaml_utils.dump_yaml_file(data, yaml_file)
 
 # kafka
-node_name = input_node_name("kafka service")
+node_name = input_node_name("kafka-service")
 
 yaml_file = sys.argv[1] + "/kafka-service-deployment.yaml"
 data = yaml_utils.load_yaml_file(yaml_file)
@@ -125,7 +164,7 @@ data = yaml_utils.update_nodeSelector(data, node_name)
 yaml_utils.dump_yaml_file(data, yaml_file)
 
 # cdn
-node_name = input_node_name("cdn service")
+node_name = input_node_name("cdn-service")
 
 yaml_file = sys.argv[1] + "/cdn-service-deployment.yaml"
 data = yaml_utils.load_yaml_file(yaml_file)
@@ -142,79 +181,28 @@ yaml_utils.dump_yaml_file(data, yaml_file)
 
 #vod transcode
 yaml_file = sys.argv[1] + "/vod-transcode-service-0-deployment.yaml"
-data = yaml_utils.load_yaml_file(yaml_file)
-data = yaml_utils.add_volumeMounts(data, False)
-data = yaml_utils.add_volumes(data, nfs_server, False, cdn_directory)
-i = 0
+
+ret = input("Do you need to deploy the vod transcode service? ([y] or [n]):")
 while True:
-    if len(hw_node_name_list) > 0:
-        image_name = input("Please choose the transcode mode of the vod transcode server ([hw]: hardware is for E3/VCA2 or [sw]: software is for E5):")
-        while True:
-            if image_name.lower() == "sw" or  image_name.lower() == "hw":
-                break
-            else:
-                image_name = input("Please choose the transcode mode of the vod transcode server again ([hw]: hardware is for E3/VCA2 or [sw]: software is for E5):")
-    else:
-        image_name = "sw"
-    node_name = input_node_name("vod transcode", image_name.lower())
-
-    data = yaml_utils.update_imageName(data, image_name.lower(), True)
-    data = yaml_utils.update_nodeSelector(data, node_name)
-    service_name = "vod-transcode-service-" + str(i)
-    data = yaml_utils.update_service_name(data,service_name)
-
-    if i == 0:
-        fileName = yaml_file
-    else:
-        fileName = yaml_file.rsplit("0")[0] + str(i) + "-deployment.yaml"
-
-    yaml_utils.dump_yaml_file(data, fileName)
-    i += 1
-    create_node = input("Do you still need to deploy the vod transcode service? ([y] or [n]):")
-    while True:
-        if create_node.lower() == "y" or create_node.lower() == "n":
-            break
-        else:
-            create_node = input("Input error, Do you still need to deploy the vod transcode service? ([y] or [n]):")
-    if create_node.lower() == "n":
+    if ret.lower() == "y":
+        config_trancode_service(yaml_file, "vod-transcode-service")
         break
+    elif ret.lower() == "n":
+        subprocess.call("rm -rf " + yaml_file, shell=True)
+        break
+    else:
+        ret = input("Input error, Do you need to deploy the vod transcode service? ([y] or [n]):")
 
 #live_transcode
 yaml_file = sys.argv[1] + "/live-transcode-service-0-deployment.yaml"
-data = yaml_utils.load_yaml_file(yaml_file)
-data = yaml_utils.add_volumeMounts(data, False)
-data = yaml_utils.add_volumes(data, nfs_server, False, cdn_directory)
-i = 0
+
+ret = input("Do you need to deploy the live transcode service? ([y] or [n]):")
 while True:
-    if len(hw_node_name_list) > 0:
-        image_name = input("Please choose the transcode mode of the live transcode service ([hw]: hardware is for E3/VCA2 or [sw]: software is for E5):")
-        while True:
-            if image_name.lower() == "sw" or  image_name.lower() == "hw":
-                break
-            else:
-                image_name = input("Please choose the transcode mode of the live transcode service again ([hw]: hardware is for E3/VCA2 or [sw]: software is for E5):")
-    else:
-        image_name = "sw"
-    node_name = input_node_name("live transcode", image_name.lower())
-
-    data = yaml_utils.update_imageName(data, image_name.lower(), False)
-    data = yaml_utils.update_command(data, image_name.lower(), i)
-    data = yaml_utils.update_nodeSelector(data, node_name)
-    service_name = "live-transcode-service-" + str(i)
-    data = yaml_utils.update_service_name(data,service_name)
-
-    if i == 0:
-        fileName = yaml_file
-    else:
-        fileName = yaml_file.rsplit("0")[0] + str(i) + "-deployment.yaml"
-
-    yaml_utils.dump_yaml_file(data, fileName)
-    i += 1
-    create_node = input("Do you still need to deploy the live transcode service? ([y] or [n]):")
-    while True:
-        if create_node.lower() == "y" or create_node.lower() == "n":
-            break
-        else:
-            create_node = input("Do you still need to deploy the live transcode service? ([y] or [n]):")
-    if create_node.lower() == "n":
+    if ret.lower() == "y":
+        config_trancode_service(yaml_file, "live-transcode-service")
         break
+    elif ret.lower() == "n":
+        subprocess.call("rm -rf " + yaml_file, shell=True)
+        break
+    else:
+        ret = input("Input error, Do you need to deploy the live transcode service? ([y] or [n]):")
