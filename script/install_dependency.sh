@@ -72,7 +72,6 @@ elif [ "$LINUX_DISTRO" == "CentOS" ]; then
     try_command yum install -y epel-release 
     try_command yum install -y python36 python36-pip
     try_command pip3 install ruamel.yaml
-    try_command pip3 install pytest-shutil
 else
     echo -e $ECHO_PREFIX_INFO "The installation will be cancelled."
     echo -e $ECHO_PREFIX_INFO "The CDN-Transcode-Sample does not support this OS, please use Ubuntu 18.04 or CentOS 7.6.\n"
