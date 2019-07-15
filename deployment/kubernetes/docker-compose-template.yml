@@ -2,6 +2,18 @@ version: '3.1'
 
 services:
 
+    redis-service:
+        image: redis:latest
+        ports:
+            - "6379:6379"
+        command:
+            redis-server
+        deploy:
+            replicas: 1
+            placement:
+                constraints:
+                    - node.hostname == master.machine
+
     zookeeper-service:
         image: zookeeper:latest
         ports:

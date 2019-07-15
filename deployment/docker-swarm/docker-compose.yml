@@ -2,6 +2,16 @@ version: '3.1'
 
 services:
 
+    redis-service:
+        image: redis:latest
+        ports:
+            - "6379:6379"
+        restart: always
+        deploy:
+            replicas: 1
+        command:
+            redis-server
+
     zookeeper-service:
         image: zookeeper:latest
         environment:
@@ -47,7 +57,7 @@ services:
             - "443:8080"
         volumes:
             - ${HTML_VOLUME}:/var/www/html:ro
-            - ${VIDEO_ARCHIVE_VOLUME}:/var/www/archive:ro
+            - ${VIDEO_ARCHIVE_VOLUME}:/var/www/archive:rw
             - ${VIDEO_DASH_VOLUME}:/var/www/dash:rw
             - ${VIDEO_HLS_VOLUME}:/var/www/hls:rw
         depends_on:
