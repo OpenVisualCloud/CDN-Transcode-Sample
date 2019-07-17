@@ -39,7 +39,6 @@ done
 for i in $(find "$DIR" -name "*deployment.yaml"); do
     len=$(echo $DIR | wc -m)
     i1=$(echo ${i:${len}} | sed 's/-deployment.yaml//')
-
     for j in $(kubectl get pod | awk '{print $1}' | sed -n '2, $p' | awk -F '-' '{$NF=""; $(NF-1)=""; gsub("  ", "");gsub(" ", "-"); print}'); do
         if [ ${i1} == ${j} ]; then
             kubectl delete -f "${i}"
@@ -47,8 +46,14 @@ for i in $(find "$DIR" -name "*deployment.yaml"); do
     done
 done
 
-if [ -f "$DIR/ovc-self-certificates.yaml" ]; then
-    kubectl delete -f "$DIR/ovc-self-certificates.yaml"
-fi
+for i in $(find "$DIR" -name "*certificates.yaml"); do
+    len=$(echo $DIR | wc -m)
+    i1=$(echo ${i:${len}} | sed 's/.yaml//')
+    for j in $(kubectl get secret | awk '{print $1}' | sed -n '2, $p' | grep -v 'default-token'); do
+        if [ ${i1} == ${j} ] && [ -f "${i}" ]; then
+            kubectl delete -f "${i}"
+        fi
+    done
+done
 
 rm -rf $DIR/$EXT
