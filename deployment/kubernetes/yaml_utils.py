@@ -97,7 +97,7 @@ def add_volumes(data, nfs_server, isCDN, cdn_directory):
                           'hostPath':
                           {'path': cdn_directory + '/volume/html'} },
                          {'name': 'secrets',
-                          'secret': {'secretName': 'ssl-key-secret'} } ]
+                          'secret': {'secretName': 'ovc-ssl-certificates'} } ]
     elif isCDN:
         volumes_caps = [ {'name': 'archive',
                           'nfs':
@@ -115,7 +115,7 @@ def add_volumes(data, nfs_server, isCDN, cdn_directory):
                           'hostPath':
                           {'path': cdn_directory + '/volume/html'} },
                          {'name': 'secrets',
-                          'secret': {'secretName': 'ssl-key-secret'} } ]
+                          'secret': {'secretName': 'ovc-ssl-certificates'} } ]
     else:
         volumes_caps = [ {'name': 'archive',
                           'nfs':
