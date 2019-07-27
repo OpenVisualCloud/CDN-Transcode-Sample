@@ -1,18 +1,29 @@
 version: '3.1'
 
 services:
-
     redis-service:
         image: redis:latest
         ports:
             - "6379:6379"
+        restart: always
+        deploy:
+            replicas: 1
         command:
             redis-server
+
+    mysql-service:
+        image: mysql:5.6
+        ports:
+            - "3306:3306"
+        restart: always
+        command: ["bash", "-c", "/mysql/setup.sh"]
         deploy:
             replicas: 1
             placement:
                 constraints:
                     - node.hostname == master.machine
+        labels:
+            kompose.service.type: NodePort
 
     zookeeper-service:
         image: zookeeper:latest
@@ -74,12 +85,13 @@ services:
             - "1935:1935"
         depends_on:
             - kafka-service
+            - mysql-service
         deploy:
             replicas: 1
             placement:
                 constraints:
                     - node.hostname == master.machine
-        command: ["bash", "-c", "/home/main.py&/usr/sbin/nginx"]
+        command: ["bash", "-c", "/usr/sbin/nginx&/home/setup.sh"]
         labels:
             kompose.service.type: NodePort
             kompose.image-pull-policy: IfNotPresent 

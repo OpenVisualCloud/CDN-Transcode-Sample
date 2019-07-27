@@ -1,0 +1,99 @@
+.video-grid{
+    padding: 5px;
+    border: 1px solid #cccccc;
+    box-shadow: 0 0 5px #ccc;
+    border-radius: 5px;
+}
+
+.video-grid-video{
+    height: 0;
+    padding-bottom: 60%;
+    overflow: hidden;
+}
+
+
+video{
+    width: 100%;
+    border: 0px solid #fff;
+    background:#EEEEEE;
+}
+
+video::-webkit-media-controls{
+        display:none !important;
+}
+
+/*-internal-media-controls-button-panel*/
+
+.control {
+    width: 100%;
+    background: rgba(0, 0, 0, 0) none repeat scroll !important;
+    border-top: 0px solid #fff;
+    position: relative;
+    display:none;
+    float: left;
+}
+
+.control .progress{
+    width: 95%;
+    height: 15%;
+    margin: 0px auto 1px;
+    cursor:pointer;
+}
+
+.choose-bar{
+    width: 95%;
+    height: 2vw;
+    margin: 0px auto;
+    background: #EEEEEE;
+}
+
+.control ul{
+    height:100%;
+    margin: 0px;
+    padding-left: 2vw;
+}
+
+.control ul li{
+    margin: 0px 5% 0px 0px;
+    list-style: none;
+    height:100%;
+    width: 15%;
+    color: skyblue;
+    float: left;
+    font-size: 1.2vw;
+    line-height: 2vw;
+    cursor:pointer;
+    white-space:nowrap;
+    text-overflow:ellipsis;
+}
+
+.control ul #time{
+    font-size: 1vw;
+    margin-left: -10%;
+    width: 25%;
+}
+
+#format div{
+    width: 10%;
+    display: flex;
+    justify-content: center;
+    position: absolute;
+    top: -300%;
+}
+
+.single-grid-right ul{
+    margin: 0px;
+    padding:0px;
+}
+
+.single-grid-right ul li{
+    width: 5vw;
+    height: 3vw;
+    list-style: none;
+    float: left;
+    background: #5bc0de;
+    margin: 1vw;
+    text-align:center;
+    line-height:3vw;
+    cursor:pointer;
+}

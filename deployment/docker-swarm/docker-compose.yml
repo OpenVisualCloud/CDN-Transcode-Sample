@@ -1,7 +1,6 @@
 version: '3.1'
 
 services:
-
     redis-service:
         image: redis:latest
         ports:
@@ -11,6 +10,18 @@ services:
             replicas: 1
         command:
             redis-server
+
+    mysql-service:
+        image: mysql:5.6
+        ports:
+            - "3306:3306"
+        restart: always
+        deploy:
+            replicas: 1
+        volumes:
+            - ${MYSQL_VOLUME}:/mysql
+        command: |
+            bash -c "/mysql/setup.sh"
 
     zookeeper-service:
         image: zookeeper:latest
@@ -60,8 +71,10 @@ services:
             - ${VIDEO_ARCHIVE_VOLUME}:/var/www/archive:rw
             - ${VIDEO_DASH_VOLUME}:/var/www/dash:rw
             - ${VIDEO_HLS_VOLUME}:/var/www/hls:rw
+            - ${MYSQL_VOLUME}:/mysql
         depends_on:
             - kafka-service
+            - mysql-service
         deploy:
             replicas: 1
         secrets:

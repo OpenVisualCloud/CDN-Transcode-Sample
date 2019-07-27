@@ -56,6 +56,9 @@ def add_volumeMounts(data, isCDN):
                               {'name': 'html',
                                'mountPath': '/var/www/html',
                                'readOnly': True},
+                              {'name': 'mysql',
+                               'mountPath': '/mysql',
+                               'readOnly': False},
                               {'name': 'secrets',
                                'mountPath': '/var/run/secrets',
                                'readOnly': True} ]
@@ -96,6 +99,9 @@ def add_volumes(data, nfs_server, isCDN, cdn_directory):
                          {'name': 'html',
                           'hostPath':
                           {'path': cdn_directory + '/volume/html'} },
+                         {'name': 'mysql',
+                          'hostPath':
+                          {'path': cdn_directory + '/volume/mysql'} },
                          {'name': 'secrets',
                           'secret': {'secretName': 'ovc-ssl-certificates'} } ]
     elif isCDN:
@@ -114,6 +120,9 @@ def add_volumes(data, nfs_server, isCDN, cdn_directory):
                          {'name': 'html',
                           'hostPath':
                           {'path': cdn_directory + '/volume/html'} },
+                         {'name': 'mysql',
+                          'hostPath':
+                          {'path': cdn_directory + '/volume/mysql'} },
                          {'name': 'secrets',
                           'secret': {'secretName': 'ovc-ssl-certificates'} } ]
     else:
@@ -129,6 +138,18 @@ def add_volumes(data, nfs_server, isCDN, cdn_directory):
                           'nfs':
                           {'path': cdn_directory + '/volume/video/hls',
                            'server': nfs_server} } ]
+    data['spec']['template']['spec'].update({'volumes' : volumes_caps})
+    return data
+
+def add_mysql_volume(data, nfs_server, cdn_directory):
+    volumemounts_caps = [ {'name': 'mysql',
+                           'mountPath': '/mysql',
+                           'readOnly': False} ]
+    volumes_caps = [ {'name': 'mysql',
+                      'hostPath':
+                     {'path': cdn_directory + '/volume/mysql'} } ]
+
+    data['spec']['template']['spec']['containers'][0].update({'volumeMounts' : volumemounts_caps})
     data['spec']['template']['spec'].update({'volumes' : volumes_caps})
     return data
 

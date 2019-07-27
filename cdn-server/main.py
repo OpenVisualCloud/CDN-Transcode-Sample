@@ -1,29 +1,42 @@
 #!/usr/bin/python3
 
-from tornado import ioloop, web
 from tornado.options import define, options, parse_command_line
-from playlist import PlayListHandler
-from schedule import ScheduleHandler
-from upload import UploadHandler
-import os
+
+import tornado.web
+import tornado.ioloop
+import tornado.httpserver
+import tornado.autoreload
+
+import os,setting
 import configparser
 
-APP = web.Application([
-    (r'/playlist', PlayListHandler),
-    (r'/schedule/.*', ScheduleHandler),
-    (r'/upload/', UploadHandler),
-])
+
+from views.schedule import ScheduleHandler
+from views.user import UploadHandler
+from views.comment import CommentHandler
+from views.user import AuthcodeHandler,  UserInfoHandler
+from views.video import PlaylistHandler, VideoHandler
 
 config = configparser.ConfigParser()
 config.read('config.ini')
 tempPath = config.get('path', 'tempPath')
 srcPath = config.get('path', 'srcPath')
 
+
 if __name__ == "__main__":
-    define("port", default=2222, help="the binding port", type=int)
-    define("ip", default="127.0.0.1", help="the binding ip")
-    parse_command_line()
+    app = tornado.web.Application([
+        (r"/video/list/(?P<num>\d*)",PlaylistHandler),
+        (r"/video/play/",VideoHandler),
+        (r"/comment/",CommentHandler),
+        (r"/user/sign_up/auth_code/",AuthcodeHandler),
+        (r"/user/upload/",UploadHandler),
+        (r"/user/info/",UserInfoHandler),
+        (r'/schedule/.*', ScheduleHandler),
+        ],
+        **setting.set,
+    )
+
     os.popen('celery multi start w1 -A tasks -l info --logfile=/var/www/log/celery.log --pidfile=/var/www/log/celery.pid')
-    print("Listening to " + options.ip + ":" + str(options.port))
-    APP.listen(options.port, address=options.ip)
-    ioloop.IOLoop.instance().start()
+    httpServer = tornado.httpserver.HTTPServer(app)
+    httpServer.listen(2222)
+    tornado.ioloop.IOLoop.current().start()

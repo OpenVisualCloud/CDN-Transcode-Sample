@@ -171,6 +171,14 @@ data = yaml_utils.load_yaml_file(yaml_file)
 data = yaml_utils.update_nodeSelector(data, node_name)
 yaml_utils.dump_yaml_file(data, yaml_file)
 
+#mysql
+node_name = input_node_name("mysql service")
+yaml_file = sys.argv[1] + "/mysql-service-deployment.yaml"
+data = yaml_utils.load_yaml_file(yaml_file)
+data = yaml_utils.update_nodeSelector(data, node_name)
+data = yaml_utils.add_mysql_volume(data, nfs_server, cdn_directory)
+yaml_utils.dump_yaml_file(data, yaml_file)
+
 # cdn
 node_name = input_node_name("cdn-service")
 

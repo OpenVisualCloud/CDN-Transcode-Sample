@@ -1,0 +1,31 @@
+/*input[name="title"]*/
+#title
+{
+    height: 3.5vw;
+    width: 20vw;
+    margin: 1vw auto 0;
+    font-size: 1.5vw;
+}
+
+#title input
+{
+    width: 20vw;
+    text-align: center;
+    border-color: #0b0b0b;
+}
+
+#submit
+{
+    height: 5vw;
+    width: 10vw;
+    margin: 0 auto;
+    font-size: 1.5vw;
+}
+
+#submit input
+{
+    width: 10vw;
+    text-align: center;
+    border-color: #0b0b0b;
+}
+
