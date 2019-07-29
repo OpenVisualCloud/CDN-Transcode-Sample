@@ -13,8 +13,8 @@ The CDN Transcode Sample is licensed under the OSI-approved BSD 3-Clause license
 See [CONTRIBUTING](CONTRIBUTING.md) for details. Thank you!
 
 # Documents
--  [CDN Transcode Sample Getting Started Guide](doc/CDN_Transcode_Sample_Getting_Started_Guide.md)
--  [CDN Transcode Sample Reference Architecture](doc/CDN_Transcode_Sample_RA.md)
+-  [CDN Transcode Sample Getting Started Guide](https://github.com/OpenVisualCloud/CDN-Transcode-Sample/wiki/CDN-Transcode-Sample-Getting-Started-Guide)
+-  [CDN Transcode Sample Reference Architecture](https://github.com/OpenVisualCloud/CDN-Transcode-Sample/wiki/OVC-CDN-Transcode-E2E-Sample-Reference-Architecture)
 
 # What's in this project
 The CDN Transcode Sample contains below components:
