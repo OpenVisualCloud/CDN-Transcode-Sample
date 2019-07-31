@@ -23,8 +23,8 @@ function commentlist(){
         success: function(res) {
             if(res.status==="success"){
                 if(res.data.length > 0){
-        	    document.querySelector(".media-grids").setAttribute("start",parseInt(start)+parseInt(res.data.length))
-        	    for (var i = 0; i <res.data.length ; i++) {
+                    document.querySelector(".media-grids").setAttribute("start",parseInt(start)+parseInt(res.data.length))
+                    for (var i = 0; i <res.data.length ; i++) {
                         var data=res.data[i];
                         $('.media-grids').append(
                             '<div class="media">'

@@ -26,7 +26,7 @@ var userInfo = function () {
                     userInfo()
                 })
             }else {
-            	document.getElementById("signin_0").innerText="Sign Up"
+                document.getElementById("signin_0").innerText="Sign Up"
                 document.getElementById("signin_1").innerHTML='Sign In'
             }
         }

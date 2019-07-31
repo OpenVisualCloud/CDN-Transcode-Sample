@@ -84,7 +84,7 @@ var searchlist = function(){
                     }
                 }
                 else{
-            	    $('.top-grids').append(
+                    $('.top-grids').append(
                     '<div class="col-md-4 resent-grid recommended-grid slider-top-grids"><h5>Sorry, no relevant video was found. </h5></div>')
                 };
             }else{

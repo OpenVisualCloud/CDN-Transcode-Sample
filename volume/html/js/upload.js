@@ -78,6 +78,6 @@ function upload(){
 	}
     },100)
 }
-		
+
 window.onload = userInfo(),html_top(), document.getElementById('identifying_code').addEventListener('click',identifying_code_click),document.getElementById("signup_2_0").addEventListener('click',signup_20),document.getElementById("signup_0_0").addEventListener('click',signup_00), setTimeout(function(){hideMask('#mask')},1000)
 

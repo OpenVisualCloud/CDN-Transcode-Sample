@@ -19,10 +19,10 @@ var recommendedlist = function(start,count){
                         +recommendedlist_name
                         +'</h3>'
                         +'</div>'
-                    ) 
+                    )
                     for (var i = 0; i <res.data.length ; i++) {
                         var data=res.data[i];
-                      	$('#recommended').append(
+                        $('#recommended').append(
                             '<div class="col-md-3 resent-grid recommended-grid">'
                             +'<div class="resent-grid-img recommended-grid-img">'
                             +'<a href="' + data.url + '"><img src="' + data.img + '" alt="" /></a>'
@@ -39,7 +39,7 @@ var recommendedlist = function(start,count){
                             +'<li><p class="author author-info"><a href="' + data.url + '" class="author">' + data.uname + '</a></p></li>'
                             +'</ul>'
                             +'</div>'
-                            +'</div>'							
+                            +'</div>'
                         );
                     }
                     $('#recommended').append(
@@ -62,14 +62,14 @@ var sportlist = function(start,count){
         success: function(res) {
             if(res.status==="success"){
                 if(res.data.length > 0){
-                    $('#sport').empty()	
+                    $('#sport').empty()
                     $('#sport').append(
                         '<div class="recommended-info">'
                         +'<h3>'
                         +sportlist_name
                         +'</h3>'
                         +'</div>'
-                    )				
+                    )
                     for (var i = 0; i <res.data.length ; i++) {
                         var data=res.data[i];
                         $('#sport').append(
@@ -89,7 +89,7 @@ var sportlist = function(start,count){
                             +'<li><p class="author author-info"><a href="' + data.authorurl + '" class="author">' + data.uname + '</a></p></li>'
                             +'</ul>'
                             +'</div>'
-                            +'</div>'								
+                            +'</div>'
                         );
                     }
                     $('#sport').append('<div class="clearfix"> </div>')

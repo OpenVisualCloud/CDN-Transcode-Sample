@@ -2,6 +2,8 @@ from model.user import User
 from setting import session
 
 def comment_ser(obj):
+    if not obj:
+        return {}
     return {
         "id":obj.id,
         "content":obj.content,
@@ -10,6 +12,8 @@ def comment_ser(obj):
     }
 
 def video_ser(obj, listname):
+    if not obj:
+        return {}
     comment_count=len(obj.v2c)
     uid=obj.uid
     if listname == 'hls':
@@ -31,6 +35,8 @@ def video_ser(obj, listname):
     }
 
 def user_ser(obj):
+    if not obj:
+        return {}
     return {
         'id':obj.id,
         'mobile':obj.mobile,

@@ -36,6 +36,8 @@ var timeTransformation = function(time){
 }
 
 setInterval(function () {
+    var video = document.querySelector("video")
+    var duration = $('#duration').attr("name")
     document.querySelector(".progress-bar").style.width = video.currentTime/duration * 100+"%";
     if (video.paused==true){
         var ispause="&nbsp;&Delta;&nbsp;&nbsp;"
@@ -47,6 +49,7 @@ setInterval(function () {
 },500)
 
 document.querySelector(".progress").addEventListener('click', function(e){
+    var video = document.querySelector("video")
     var offsetX = e.clientX - document.querySelector(".progress").clientLeft
     var left = $(".progress").offset().left
     video.currentTime = video.duration * ((offsetX - left)/$(".progress").width())
@@ -57,8 +60,8 @@ playBtn.addEventListener('click', function(){
     if(video.paused==true){
         video.play()
     }else{
-         video.pause()
-         };
+        video.pause()
+    };
 });
 
 velocity.addEventListener('click',function(){
@@ -88,7 +91,6 @@ function fullscreen(){
     }else if(elem.requestFullScreen){
         elem.requestFullScreen();
     }else{
-    
     }
    // fullBtn.removeEventListener('click', fullscreen)
    // fullBtn.addEventListener('click', exitFullscreen)
@@ -105,7 +107,6 @@ function exitFullscreen(){
     }else if(elem.msExitFullScreen){
         elem.msExitFullScreen();
     }else{
-    
     }
     fullBtn.removeEventListener('click',exitFullscreen)
     fullBtn.addEventListener('click', fullscreen)
@@ -153,10 +154,10 @@ function commentSend(e){
             data: postData,
             success: function(res) {
                 if(res.status==="success"){
-                    myalert('send')
+                    myalert('Send success')
                     $("#comment-form textarea").val('')
                 }else{
-                    myalert('send error')
+                    myalert('Send error, please try again')
                 }
             }
         })
@@ -264,13 +265,16 @@ function videoPlay(btn,e) {
             $(".media-grids").attr("start",0)
 	    video.setAttribute('name',res.data["id"])
 	    $('#duration').attr("name",res.data['duration'])
+	    velocity.innerHTML=video.playbackRate.toFixed(1) + 'X'
+	    document.getElementById("comment_count").innerHTML='ALL Comments (' + res.data['comment_count'] + ')'
             videoInit()
             }
         },
     })
+    return video;
 }
 
-window.onload=html_top(), single_playlist(0,3), userInfo(), setTimeout(function(){hideMask('#mask'),controlSize()},1000)
+window.onload=html_top(), single_playlist(0,3), userInfo(), setTimeout(function(){hideMask('#mask'),controlSize()},2000)
 document.getElementById('identifying_code').addEventListener('click',identifying_code_click)
 document.getElementById("signup_0_0").addEventListener('click',signup_00)
 document.getElementById("signup_2_0").addEventListener('click',signup_20)

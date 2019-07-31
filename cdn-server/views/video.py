@@ -20,9 +20,6 @@ class PlaylistHandler(RequestHandler):
                 start = 0
         try:
             videos = session.query(Video).filter(Video.is_delete=="0")[start:start+count]
-            print('000000000000000\n\n\n\n')
-            print(videos)
-            print('\n\n\n')
             videos_data = []
             for i in videos:
                 videos_data.append(video_ser(i, listname))
@@ -31,7 +28,6 @@ class PlaylistHandler(RequestHandler):
                 "status": "success",
                 }
         except Exception as e:
-            print(e)
             res = {
                 "data": "data error",
                 "status": "error",
@@ -76,12 +72,10 @@ class VideoHandler(RequestHandler):
         video_id = self.get_argument("id",None)
         try:
             video = session.query(Video).filter(Video.id == video_id, Video.is_delete == '0').first()
-            print('-------------cccc--------------')
             video_data = video_ser(video, listname)
         except Exception as e:
             session.rollback()
             session.close()
-            raise e
         if re.search("id=", Referer) and video_id:
             res = {
                 "data": video_data,
@@ -90,6 +84,3 @@ class VideoHandler(RequestHandler):
             self.write(json.dumps(res))
         elif video_id:
             self.render("/var/www/html/single.html",video_data=video_data)
-
-
-

@@ -1,7 +1,7 @@
 body{
-	background:#fff;
-	font-size:100%;
-	font-family: 'Open Sans', sans-serif;
+    background:#fff;
+    font-size:100%;
+    font-family: 'Open Sans', sans-serif;
 }
 
 #mask{
@@ -10,16 +10,15 @@ body{
     opacity: 0;
 }
 
-
 body a {
-  transition: 0.5s all;
-  -webkit-transition: 0.5s all;																																												
-  -o-transition: 0.5s all;
-  -moz-transition: 0.5s all;
-  -ms-transition: 0.5s all;
+    transition: 0.5s all;
+    -webkit-transition: 0.5s all;
+    -o-transition: 0.5s all;
+    -moz-transition: 0.5s all;
+    -ms-transition: 0.5s all;
 }
 a.navbar-brand {
-   padding: 0 0 0 1em;
+    padding: 0 0 0 1em;
 }
 nav.navbar.navbar-inverse.navbar-fixed-top {
     padding: 1.5em 0;
@@ -171,20 +170,20 @@ ul.nav.nav-sidebar li a:focus {
     position: relative;
 }
 .menu,.menu1:hover{
-	color:#ff4c4c;
+    color:#ff4c4c;
 }
 .sidebar.top-navigation{
-	display:none;
+    display:none;
 }
 ul.cl-effect-1,ul.cl-effect-2 {
-	display: none;
+    display: none;
 }
 .nav-sidebar ul {
-	padding: 0;
-	margin: 0;
-	z-index: 999;
-	width: 100%;
-	left:0;
+    padding: 0;
+    margin: 0;
+    z-index: 999;
+    width: 100%;
+    left:0;
 }
 .nav-sidebar ul.cl-effect-1 li,.nav-sidebar ul.cl-effect-2 li {
     display: block;
@@ -196,11 +195,11 @@ ul.cl-effect-1,ul.cl-effect-2 {
     text-decoration: none;
 }
 .glyphicon-film{
-	margin: 0 2em 0 0;
-    font-size: 16px !important;	
+    margin: 0 2em 0 0;
+    font-size: 16px !important;
 }
 .glyphicon-home {
-	margin: 0 2em 0 0;
+    margin: 0 2em 0 0;
     font-size: 16px !important;
 }
 .glyphicon-music {
@@ -208,7 +207,7 @@ ul.cl-effect-1,ul.cl-effect-2 {
     font-size: 16px !important;
 }
 .news-icon span.glyphicon-envelope{
-	margin: 0 2em 0 0;
+    margin: 0 2em 0 0;
     font-size: 16px !important;
 }
 .glyphicon-menu-down{
@@ -218,10 +217,10 @@ ul.cl-effect-1,ul.cl-effect-2 {
 /*-- Slider Part starts Here --*/
 #slider2,
 #slider3 {
-  box-shadow: none;
-  -moz-box-shadow: none;
-  -webkit-box-shadow: none;
-  margin: 0 auto;
+    box-shadow: none;
+    -moz-box-shadow: none;
+    -webkit-box-shadow: none;
+    margin: 0 auto;
 }
 .rslides_tabs {
   list-style: none;
@@ -817,7 +816,7 @@ color: rgba(255, 255, 255, 0.54);
 }
 select.form-control.bfh-countries:hover {
    transition: 0.5s all;
-  -webkit-transition: 0.5s all;																																												
+  -webkit-transition: 0.5s all;
   -o-transition: 0.5s all;
   -moz-transition: 0.5s all;
   -ms-transition: 0.5s all;
@@ -1098,7 +1097,7 @@ select.form-control.bfh-countries:hover {
 #myList ul{
 margin:0;
 }
-#myList li{ 
+#myList li{
 	display:none;
 	list-style-type:none;
 }
@@ -1110,7 +1109,7 @@ width:100%;
 }
 
 #loadMore {
-	color: #FFFFFF;
+    color: #FFFFFF;
     font-size: 16px;
     transition: .5s all;
     -webkit-transition: .5s all;
@@ -1154,7 +1153,7 @@ width:100%;
 	color: #9E9E9E;
 	margin:0;
 	line-height: 1.8em;
-}	
+}
 .load-grid a{
     font-size: 14px;
     color: #0076CC;
@@ -1304,7 +1303,7 @@ width:100%;
 }
 .single-right-grids {
   margin: 0 0 1.5em 0;
-}	
+}
 .single-right-grid-left a img{
 	width:100%;
 }
@@ -1561,14 +1560,14 @@ span.glyphicon.glyphicon-user {
 	padding:3em 0;
 }
 .creators-bottom-grids-info h3{
-	text-align: center;
+    text-align: center;
     color: #21DEEF;
     font-size: 24px;
     margin: 0;
 }
 .creators-bottom-grids{
 	margin: 6em 0 0 0;
-}	
+}
 .creators-bottom-grid{
 	text-align:center;
 }
@@ -2783,9 +2782,6 @@ background: url(../images/social.png) no-repeat 0px 0px;
 	}
 }
 
-
-/*自制弹窗样式*/
-
 .mark {
   display: none;
   position: fixed;
@@ -2795,7 +2791,7 @@ background: url(../images/social.png) no-repeat 0px 0px;
   left: 0;
   margin: auto;
   width: 30%;
-  padding-bottom:20%;         /*相对父元素宽度*/
+  padding-bottom:20%;
   height:0;
     border-radius: 2rem;
     z-index: 999999;
@@ -2804,6 +2800,6 @@ background: url(../images/social.png) no-repeat 0px 0px;
 .mark div{
     margin: 25% auto;
     font-size: 2rem;
-    text-align: center;/*让文字水平居中*/
+    text-align: center;
     color: #DF2229;
 }

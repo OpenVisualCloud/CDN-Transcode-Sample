@@ -42,7 +42,7 @@ CREATE TABLE `comment` (
   KEY `vid` (`vid`),
   CONSTRAINT `comment_ibfk_1` FOREIGN KEY (`uid`) REFERENCES `user` (`id`),
   CONSTRAINT `comment_ibfk_2` FOREIGN KEY (`vid`) REFERENCES `video` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -51,7 +51,6 @@ CREATE TABLE `comment` (
 
 LOCK TABLES `comment` WRITE;
 /*!40000 ALTER TABLE `comment` DISABLE KEYS */;
-INSERT INTO `comment` VALUES (1,'ggh','2019-07-23 18:29:58',0,6,13),(2,'content','2019-07-26 16:35:45',0,6,14),(3,'content','2019-07-26 16:36:22',0,7,14),(4,'content','2019-07-26 16:36:31',0,7,14),(5,'content','2019-07-26 16:36:33',0,7,14),(6,'content','2019-07-26 16:36:36',0,7,14),(7,'content','2019-07-26 16:36:38',0,7,14),(8,'content','2019-07-26 16:37:44',0,7,13),(9,'content','2019-07-26 16:37:50',0,7,13),(10,'content','2019-07-26 16:37:52',0,7,13),(11,'content','2019-07-26 16:37:54',0,7,13),(12,'content','2019-07-26 16:37:57',0,7,13);
 /*!40000 ALTER TABLE `comment` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -76,7 +75,7 @@ CREATE TABLE `user` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `name` (`name`),
   UNIQUE KEY `mobile` (`mobile`)
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -85,7 +84,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,NULL,'6263jjkkk','5566888888','13555767654',NULL,'2019-07-19 17:53:19',NULL,NULL,0),(2,NULL,'626e4w3kkk','5566888888','13578767654',NULL,'2019-07-19 17:57:20',NULL,NULL,0),(3,NULL,'rfasc','retweh','13473523572',NULL,'2019-07-20 01:00:25',NULL,NULL,0),(4,NULL,'dsve','3425325','13232737472',NULL,'2019-07-20 01:04:46',NULL,NULL,0),(5,NULL,'awefsrvs','djfjsgjksd','14334453653',NULL,'2019-07-20 01:08:10',NULL,NULL,0),(6,NULL,'sdfa','12124412','14634634723',NULL,'2019-07-22 21:20:02',NULL,NULL,0),(7,NULL,'media','intel123','13666666666',NULL,'2019-07-26 16:35:14',NULL,NULL,0);
+INSERT INTO `user` VALUES (1,NULL,'media','intel123','13366666669',NULL,'2019-07-29 22:23:13',NULL,NULL,0);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -110,7 +109,7 @@ CREATE TABLE `video` (
   UNIQUE KEY `title` (`title`),
   KEY `uid` (`uid`),
   CONSTRAINT `video_ibfk_1` FOREIGN KEY (`uid`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -119,7 +118,7 @@ CREATE TABLE `video` (
 
 LOCK TABLES `video` WRITE;
 /*!40000 ALTER TABLE `video` DISABLE KEYS */;
-INSERT INTO `video` VALUES (13,'bbb_sunflower',NULL,'/bbb_sunflower_1080p_30fps_normal.mp4','/thumbnail/bbb_sunflower_1080p_30fps_normal.mp4.png','2019-07-23 18:14:46',0,2,634),(14,'Nature.mp4',NULL,'/bbb_sunflower_1080p_30fps_normal.mp4','/thumbnail/bbb_sunflower_1080p_30fps_normal.mp4.png','2019-07-26 16:31:13',0,6,60),(15,'Nature_test.mp4',NULL,'/bbb_sunflower_1080p_30fps_normal.mp4','/thumbnail/bbb_sunflower_1080p_30fps_normal.mp4.png','2019-07-26 16:33:33',0,6,60),(17,'Nature_test2.mp4',NULL,'/bbb_sunflower_1080p_30fps_normal.mp4','/thumbnail/bbb_sunflower_1080p_30fps_normal.mp4.png','2019-07-26 23:54:36',0,7,60);
+INSERT INTO `video` VALUES (2,'bbb_sunflower',NULL,'/bbb_sunflower_1080p_30fps_normal.mp4','/thumbnail/bbb_sunflower_1080p_30fps_normal.mp4.png','2019-07-29 22:27:41',0,1,634),(4,'bbb_sunflower_2',NULL,'/bbb_sunflower_1080p_30fps_normal.mp4','/thumbnail/bbb_sunflower_1080p_30fps_normal.mp4.png','2019-07-29 22:27:55',0,1,634),(5,'bbb_sunflower_3',NULL,'/bbb_sunflower_1080p_30fps_normal.mp4','/thumbnail/bbb_sunflower_1080p_30fps_normal.mp4.png','2019-07-29 22:28:05',0,1,634),(6,'bbb_sunflower_4',NULL,'/bbb_sunflower_1080p_30fps_normal.mp4','/thumbnail/bbb_sunflower_1080p_30fps_normal.mp4.png','2019-07-29 22:28:41',0,1,634),(7,'bbb_sunflower_5',NULL,'/bbb_sunflower_1080p_30fps_normal.mp4','/thumbnail/bbb_sunflower_1080p_30fps_normal.mp4.png','2019-07-29 22:28:41',0,1,634);
 /*!40000 ALTER TABLE `video` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -132,4 +131,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-07-26 23:56:42
+-- Dump completed on 2019-07-29 22:34:20

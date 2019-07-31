@@ -16,7 +16,7 @@ with open('/mysql/mysql-secret', 'r') as f:
 
 # mysql
 connect = create_engine("mysql+pymysql://root:" + password + "@"+ "mysql-service" +":3306/Player",
-                        echo=True)
+                        echo=False)
 DBsession = sessionmaker(bind=connect)
 session = DBsession()
 Base = declarative_base(connect)
