@@ -11,7 +11,6 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 <link href="/css/bootstrap.min.css" rel='stylesheet' type='text/css' media="all" />
 <!-- //bootstrap -->
 <link href="/css/dashboard.css" rel="stylesheet">
-<!--新增video样式-->
 <link href="/css/single.css" rel="stylesheet">
 <!-- Custom Theme files -->
 <link href="/css/style.css" rel='stylesheet' type='text/css' media="all" />
@@ -34,13 +33,13 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
                                 <li class="active"><a href="/index.html" class="home-icon"><span class="glyphicon glyphicon-home" aria-hidden="true"></span>Home</a></li>
                           </ul>
                           <!-- script-for-menu -->
-                                        <script>
-                                                $( ".top-navigation" ).click(function() {
-                                                $( ".drop-navigation" ).slideToggle( 300, function() {
-                                                // Animation complete.
-                                                });
-                                                });
-                                        </script>
+                                <script>
+                                        $( ".top-navigation" ).click(function() {
+                                        $( ".drop-navigation" ).slideToggle( 300, function() {
+                                        // Animation complete.
+                                        });
+                                        });
+                                </script>
                         </div>
         </div>
 
@@ -65,39 +64,20 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 								<li id="pause"></li>
 								<li id="time"></li>
 								<li id='velocity'> 1.0X </li>
-                                                                <li id="minvideo"> min </li>
-                                                                <li id="maxvideo"> max </li>
-								<!--<li id="format">
-									<button>mp0</button>
-									<div>
-										<button>mp1</button>
-										<button>mp1</button>
-										<button>mp1</button>
-										<button>mp1</button>
-									</div>
-								</li>-->
+                                                                <li id="minvideo"> &#9635; </li>
+                                                                <li id="maxvideo"> &#10016; </li>
 							</ul>
 							</div>
 						</div>
 					</div>
 				</div>
-				<!--<div class="song-grid-right">
-					<div class="share">
-						<h5>Share this</h5>
-						<ul>
-							<li><a href="#" class="icon qq-icon">QQ</a></li>
-							<li><a href="#" class="icon wx-icon">WeiXin</a></li>
-							<li><a href="#" class="icon comment-icon">Comments</a></li>
-						</ul>
-					</div>
-				</div>-->
 				<div class="clearfix"> </div>
 				<div class="all-comments">
 					<div class="all-comments-info">
 						<a href="#" id="comment_count">All Comments ({{video_data['comment_count']}})</a>
 						<div class="box">
 							<form id='comment-form'>
-								<textarea placeholder="Message" id="comment-content" maxlength="150" required=" "></textarea>
+								<textarea placeholder="Message" id="comment-content" maxlength="150" onkeyup="value=value.replace(/[\u4e00-\u9fa5]/ig,'')" required=" "></textarea>
 								<input type="submit" id='comment-submit' value="SEND">
 								<div class="clearfix"> </div>
 							</form>
@@ -113,8 +93,8 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 				<div class="single-grid-right" start=0 classify="{{video_data['classify']}}">
 					<div class="clearfix">
 						<ul>
-							<li id="last">LAST</li>
-							<li id="next">NEXT</li>
+							<li id="last">&lt;&lt;</li>
+							<li id="next">&gt;&gt;</li>
 						</ul>
 					</div>
 					<!--Ajax-->

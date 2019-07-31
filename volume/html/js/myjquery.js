@@ -53,7 +53,7 @@ var html_top = function () {
         "        <div id=\"navbar\" class=\"navbar-collapse collapse\">\n" +
         "\t\t\t<div class=\"top-search\">\n" +
         "\t\t\t\t<form class=\"navbar-form navbar-right\" action=\"/video/list/\" method=\"post\">\n" +
-        "\t\t\t\t\t<input type=\"text\" class=\"form-control\" placeholder=\"Search...\" name=\"search_word\">\n" +
+        "\t\t\t\t\t<input type=\"text\" class=\"form-control\" onkeyup=\"value=value.replace(/[\u4e00-\u9fa5]/ig,'')\" placeholder=\"Search...\" name=\"search_word\">\n" +
         "\t\t\t\t\t<input type=\"submit\" value=\" \">\n" +
         "\t\t\t\t</form>\n" +
         "\t\t\t</div>\n" +
