@@ -8,6 +8,9 @@ services:
         restart: always
         deploy:
             replicas: 1
+            placement:
+                constraints:
+                    - node.hostname == master.machine
         command:
             redis-server
 
