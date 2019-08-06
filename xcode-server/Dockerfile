@@ -156,7 +156,7 @@ RUN git clone ${SVT_HEVC_REPO} && \
     make install
 
 # Fetch SVT-AV1
-ARG SVT_AV1_VER=2bebd2df01b28a64dcd834b40f0a5ed090143945
+ARG SVT_AV1_VER=97d9dc625236c1cf83ea20315dfa985001837698
 ARG SVT_AV1_REPO=https://github.com/OpenVisualCloud/SVT-AV1.git
 
 RUN git clone ${SVT_AV1_REPO} && \
@@ -223,22 +223,24 @@ RUN wget -O - ${MSDK_REPO} | tar xz && mv MediaSDK-${MSDK_VER} MediaSDK && \
 # Fetch FFmpeg source
 ARG FFMPEG_VER=n4.1
 ARG FFMPEG_REPO=https://github.com/FFmpeg/FFmpeg/archive/${FFMPEG_VER}.tar.gz
-ARG FFMPEG_FLV_PATCH_REPO=https://raw.githubusercontent.com/VCDP/CDN/master/The-RTMP-protocol-extensions-for-H.265-HEVC.patch
+ARG FFMPEG_HEVC_FLV_PATCH_REPO=https://raw.githubusercontent.com/VCDP/CDN/master/The-RTMP-protocol-extensions-for-H.265-HEVC.patch
 ARG FFMPEG_1TN_PATCH_REPO=https://patchwork.ffmpeg.org/patch/11625/raw
 ARG FFMPEG_THREAD_PATCH_REPO=https://patchwork.ffmpeg.org/patch/11035/raw
 ARG FFMPEG_HW_LOOP_PATCH_REPO=https://patchwork.ffmpeg.org/patch/8173/raw
 ARG FFMPEG_ENCODE_THREAD_PATCH_REPO=https://patchwork.ffmpeg.org/patch/11179/raw
+ARG FFMPEG_AV1_FLV_PATCH_REPO=https://raw.githubusercontent.com/VCDP/CDN/master/v1-0001-Add-svt-AV1-FLV-support.patch
 # ARG FFMPEG_RTMP_WORKAROUD_REPO=https://raw.githubusercontent.com/VCDP/CDN/master/Check_rtmp_packet_timestamp_workaround_ffmpeg.patch
 
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y -q --no-install-recommends libvdpau-dev libsdl2-dev libxcb1-dev libxcb-shm0-dev libxcb-xfixes0-dev zlib1g-dev libssl-dev
 RUN wget -O - ${FFMPEG_REPO} | tar xz && mv FFmpeg-${FFMPEG_VER} FFmpeg && \
     cd FFmpeg && \
-    wget -O - ${FFMPEG_FLV_PATCH_REPO} | patch -p1 && \
+    wget -O - ${FFMPEG_HEVC_FLV_PATCH_REPO} | patch -p1 && \
     wget -O - ${FFMPEG_1TN_PATCH_REPO} | patch -p1 && \
     wget -O - ${FFMPEG_THREAD_PATCH_REPO} | patch -p1 && \
     wget -O - ${FFMPEG_HW_LOOP_PATCH_REPO} | patch -p1 && \
-    wget -O - ${FFMPEG_ENCODE_THREAD_PATCH_REPO} | patch -p1
+    wget -O - ${FFMPEG_ENCODE_THREAD_PATCH_REPO} | patch -p1 && \
+    wget -O - ${FFMPEG_AV1_FLV_PATCH_REPO} | patch -p1
 #   wget -O - ${FFMPEG_RTMP_WORKAROUD_REPO} | patch -p1
 
 # Patch FFmpeg source for SVT-HEVC and SVT-AV1

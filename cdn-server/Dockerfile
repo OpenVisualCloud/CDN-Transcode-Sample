@@ -22,16 +22,20 @@ ARG AUTOMAKE_REPO=https://ftp.gnu.org/pub/gnu/automake/automake-${AUTOMAKE_VER}.
 # Build nginx-http-flv
 ARG NGINX_HTTP_FLV_VER=04dc8369b260c8c851f12fc30ea2f9df03f73c4e
 ARG NGINX_HTTP_FLV_REPO=https://github.com/winshining/nginx-http-flv-module.git
-ARG NGINX_HTTP_FLV_PATCH_HLS=https://raw.githubusercontent.com/VCDP/CDN/master/0001-Add-hevc-support-for-rtmp-and-hls-on-Nginx-Http-Flv.patch
-ARG NGINX_HTTP_FLV_PATCH_DASH=https://raw.githubusercontent.com/VCDP/CDN/master/0002-add-HEVC-support-for-dash.patch
-ARG NGINX_HTTP_FLV_PATCH_DASH_ABR=https://raw.githubusercontent.com/VCDP/CDN/master/0001-Add-dash-ABR-mode-support-on-Nginx-Http-Flv.patch
+ARG NGINX_HTTP_FLV_PATCH_HEVC_HLS=https://raw.githubusercontent.com/VCDP/CDN/master/0001-Add-hevc-support-for-rtmp-and-hls-on-Nginx-Http-Flv.patch
+ARG NGINX_HTTP_FLV_PATCH_HEVC_DASH=https://raw.githubusercontent.com/VCDP/CDN/master/0002-add-HEVC-support-for-dash.patch
+ARG NGINX_HTTP_FLV_PATCH_HEVC_DASH_ABR=https://raw.githubusercontent.com/VCDP/CDN/master/0001-Add-dash-ABR-mode-support-on-Nginx-Http-Flv.patch
+ARG NGINX_HTTP_FLV_PATCH_AV1_RTMP=https://raw.githubusercontent.com/VCDP/CDN/master/0001-Add-AV1-support-for-rtmp-on-Nginx-HTTP-FLV.patch
+ARG NGINX_HTTP_FLV_PATCH_AV1_DASH=https://raw.githubusercontent.com/VCDP/CDN/master/0001-Add-AV1-support-for-dash-on-Nginx-HTTP-FLV.patch
 
 RUN git clone ${NGINX_HTTP_FLV_REPO} && \
     cd nginx-http-flv-module && \
     git checkout ${NGINX_HTTP_FLV_VER} && \
-    wget -O - ${NGINX_HTTP_FLV_PATCH_HLS} | patch -p1 && \
-    wget -O - ${NGINX_HTTP_FLV_PATCH_DASH} | patch -p1 && \
-    wget -O - ${NGINX_HTTP_FLV_PATCH_DASH_ABR} | patch -p1
+    wget -O - ${NGINX_HTTP_FLV_PATCH_HEVC_HLS} | patch -p1 && \
+    wget -O - ${NGINX_HTTP_FLV_PATCH_HEVC_DASH} | patch -p1 && \
+    wget -O - ${NGINX_HTTP_FLV_PATCH_HEVC_DASH_ABR} | patch -p1 && \
+    wget -O - ${NGINX_HTTP_FLV_PATCH_AV1_RTMP} | patch -p1 && \
+    wget -O - ${NGINX_HTTP_FLV_PATCH_AV1_DASH} | patch -p1
 
 
 # Build nginx & nginx-rtmp
