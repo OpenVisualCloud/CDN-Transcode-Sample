@@ -6,17 +6,13 @@ var fullBtn = document.getElementById("maxvideo")
 var playBtn=document.getElementById("pause")
 var velocity = document.getElementById("velocity")
 var duration = $('#duration').attr("name")
+var volume = document.getElementById('volume')
 
 var controlSize = function(){
-    setTimeout(function(){var height = $('.video-grid-video').outerHeight()
-        $('.control').css('marginTop',-height*15/100);
-        $('.control').css('height',height*10/100);
-    },500)
+    var height = $('.video-grid-video').outerHeight()
+    $('.control').css('marginTop',-height*12/100);
+    $('.control').css('height',height*10/100);
 }
-
-$(window).resize(function(){
-    controlSize()
-})
 
 videogrid.onmouseenter = function (){
     controlSize()
@@ -25,6 +21,24 @@ videogrid.onmouseenter = function (){
 videogrid.onmouseleave = function (){
     $(".control").slideUp(200)
 };
+
+volume.onmouseenter = function(){
+    document.querySelector("#volume .progress").style.display='inline-block';
+    document.querySelector("#volume .progress-bar").style.display='inline-block';
+}
+volume.onmouseleave = function(){
+    document.querySelector("#volume .progress").style.display='none';
+    document.querySelector("#volume .progress-bar").style.display='none';
+}
+$('#volume span').click(function(){
+    if (video.volume == 0){
+        video.volume = $("#volume .progress-bar").width()/$("#volume .progress").width()
+        $(this).attr('class', 'glyphicon glyphicon-volume-up')
+    }else{
+        video.volume = 0
+        $(this).attr('class', 'glyphicon glyphicon-volume-off')
+    }
+})
 
 var timeTransformation = function(time){
     var h = Math.floor(time/60);
@@ -43,7 +57,7 @@ setInterval(function () {
     if (video.paused==true){
         var ispause="&#9658;"
     }else {
-        var ispause ="&#10073; &#10073;"
+        var ispause ="II"
     }
     playBtn.innerHTML=ispause
     document.getElementById("time").innerHTML = timeTransformation(video.currentTime.toFixed(0)) + '/' + timeTransformation(duration)
@@ -56,22 +70,53 @@ document.querySelector(".progress").addEventListener('click', function(e){
     video.currentTime = video.duration * ((offsetX - left)/$(".progress").width())
     video.play()
 })
+document.querySelector("#volume .progress").addEventListener('click', function(e){
+    var offsetX = e.clientX - document.querySelector("#volume .progress").clientLeft
+    var left = $("#volume .progress").offset().left
+    $("#volume .progress-bar").width(offsetX - left);
+    video.volume = $("#volume .progress-bar").width()/$("#volume .progress").width()
+})
 
-playBtn.addEventListener('click', function(){
+function videoStatus(){
     if(video.paused==true){
         video.play()
     }else{
         video.pause()
     };
-});
+};
+playBtn.onclick=function(){
+    videoStatus()
+}
+document.querySelector("video").onclick=function(){
+    videoStatus()
+}
 
 document.onkeydown=function(event){
+    var Ele = $('input:focus,textarea:focus')
+    if (Ele.length != 0){
+        return
+    }
+    event.preventDefault()
     var video = document.querySelector("video")
     var e=event || window.event || argument.callee.caller.arguments(0);
     if (e && e.keyCode==37){
         video.currentTime=video.currentTime - 5
     }else if (e && e.keyCode==39){
         video.currentTime=video.currentTime + 5
+    }else if (e && e.keyCode==38){
+        if (video.volume > 0.9){
+            video.volume = 1
+        }else{
+            video.volume += 0.1
+        }
+        $("#volume .progress-bar").width($("#volume .progress").width() * video.volume);
+    }else if (e && e.keyCode==40){
+        if (video.volume < 0.1){
+            video.volume = 0
+        }else{
+            video.volume -= 0.1
+        }
+    $("#volume .progress-bar").width($("#volume .progress").width() * video.volume);
     }
 }
 
@@ -84,50 +129,54 @@ velocity.addEventListener('click',function(){
         video.playbackRate="1.0"
     };
     video.play()
-    velocity.innerHTML=video.playbackRate.toFixed(1) + 'X'
+    velocity.innerHTML=video.playbackRate.toFixed(1)
 });
 
 document.getElementById("minvideo").addEventListener('click',function(){
     video.requestPictureInPicture();
 });
 
-fullBtn.addEventListener('click',fullscreen);
-
+fullBtn.onclick = function(){
+    fullscreen();
+};
+window.onresize = function(){
+    var fullScreenEle = document.fullscreenElement || document.mozFullScreenElement || document.webkitFullscreenElement;
+    if(!fullScreenEle){
+        fullBtn.setAttribute('class', 'glyphicon glyphicon-resize-full')
+        fullBtn.onclick = function(){
+            fullscreen();
+        };
+    }else if(fullScreenEle){
+        fullBtn.setAttribute('class', 'glyphicon glyphicon-resize-small')
+        fullBtn.onclick = function(){
+            exitFullscreen();
+        };
+    };
+    controlSize()
+};
 function fullscreen(){
-    var elem =  document.querySelector('.video-grid');
-    if(elem.webkitRequestFullScreen){
-        elem.webkitRequestFullScreen();
-    }else if(elem.mozRequestFullScreen){
-        elem.mozRequestFullScreen();
-    }else if(elem.requestFullScreen){
-        elem.requestFullScreen();
+    var element = document.querySelector('.video-grid');
+    var requestMethod = element.requestFullScreen || element.webkitRequestFullScreen || element.mozRequestFullScreen || element.msRequestFullScreen;
+    if (requestMethod){
+        requestMethod.call(element)
     }else{
+        return false
     }
-   // fullBtn.removeEventListener('click', fullscreen)
-   // fullBtn.addEventListener('click', exitFullscreen)
 }
-
 function exitFullscreen(){
-    var elem =  document.querySelector('.video-grid');
-    if(elem.webkitCancelFullScreen){
-        elem.webkitCancelFullScreen();
-    }else if(elem.mozCancelFullScreen){
-        elem.mozCancelFullScreen();
-    }else if(elem.cancelFullScreen){
-        elem.cancelFullScreen();
-    }else if(elem.msExitFullScreen){
-        elem.msExitFullScreen();
+    var exitMethod = document.exitFullScreen || document.mozCancelFullScreen || document.webkitCancelFullScreen || document.msExitFullScreen;
+    if (exitMethod){
+        exitMethod.call(document)
     }else{
+        return false
     }
-    fullBtn.removeEventListener('click',exitFullscreen)
-    fullBtn.addEventListener('click', fullscreen)
 }
 
 $(window).scroll(function(){
-　　var scrollTop = $(this).scrollTop();
-　　var scrollHeight = $(document).height();
-　　var windowHeight = $(this).height();
-　　if(scrollTop + windowHeight >= scrollHeight){
+    var scrollTop = $(this).scrollTop();
+    var scrollHeight = $(document).height();
+    var windowHeight = $(this).height();
+    if(scrollTop + windowHeight >= scrollHeight){
         commentlist()
     }
 });
@@ -267,25 +316,25 @@ function videoPlay(btn,e) {
         type:'GET',
         dataType:'json',
         success:function(res) {
-        if(res.status == "error"){
-            myalert(res.error)
-        }else if(res.status=='success'){
-            video.setAttribute('src',res.data['addr'])
-            video.setAttribute('poster',res.data['img'])
-            $(".media-grids").empty()
-            $(".media-grids").attr("start",0)
-	    video.setAttribute('name',res.data["id"])
-	    $('#duration').attr("name",res.data['duration'])
-	    velocity.innerHTML=video.playbackRate.toFixed(1) + 'X'
-	    document.getElementById("comment_count").innerHTML='ALL Comments (' + res.data['comment_count'] + ')'
-            videoInit()
+            if(res.status == "error"){
+                myalert(res.error)
+            }else if(res.status=='success'){
+                video.setAttribute('src',res.data['addr'])
+                video.setAttribute('poster',res.data['img'])
+                $(".media-grids").empty()
+                $(".media-grids").attr("start",0)
+                video.setAttribute('name',res.data["id"])
+                $('#duration').attr("name",res.data['duration'])
+                velocity.innerHTML=video.playbackRate.toFixed(1) + 'X'
+                document.getElementById("comment_count").innerHTML='ALL Comments (' + res.data['comment_count'] + ')'
+                videoInit()
             }
         },
     })
     return video;
 }
 
-window.onload=html_top(), single_playlist(0,3), userInfo(), setTimeout(function(){hideMask('#mask'),controlSize()},2000)
+window.onload=html_top(), single_playlist(0,3), userInfo(), setTimeout(function(){hideMask('#mask')},2000)
 document.getElementById('identifying_code').addEventListener('click',identifying_code_click)
 document.getElementById("signup_0_0").addEventListener('click',signup_00)
 document.getElementById("signup_2_0").addEventListener('click',signup_20)

@@ -57,9 +57,9 @@ function dash_play(page, video, url) {
     });
 }
 
-//$("#pause").on(":click", function (e) {
 var videoInit = function(){
-    var url = $("#player video").attr("src")	
+    var video = document.querySelector("video")
+    var url = $("#player video").attr("src")
     var page=$(this);
     if (url.endsWith(".m3u8") || url.endsWith(".M3U8")) {
         hls_play(page, video, url);
