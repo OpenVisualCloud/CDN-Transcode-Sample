@@ -19,14 +19,12 @@ video{
 }
 
 video::-webkit-media-controls{
-        display:none !important;
+    display:none !important;
 }
-
-/*-internal-media-controls-button-panel*/
 
 .control {
     width: 100%;
-    background: rgba(0, 0, 0, 0) none repeat scroll !important;
+    background: rgba(255, 255, 255, 0) none repeat scroll !important;
     border-top: 0px solid #fff;
     position: relative;
     display:none;
@@ -35,30 +33,33 @@ video::-webkit-media-controls{
 
 .control .progress{
     width: 95%;
-    height: 15%;
+    height: 10%;
     margin: 0px auto 1px;
     cursor:pointer;
+    background-color: rgba(223, 217, 217, 0.5);
 }
 
 .choose-bar{
-    width: 95%;
+    width: 100%;
     height: 2vw;
     margin: 0px auto;
-    background: #EEEEEE;
+    background-color: rgba(223, 217, 217, 0.0);
 }
 
 .control ul{
+    width: 90%;
     height:100%;
     margin: 0px;
     padding-left: 2vw;
 }
 
 .control ul li{
+    top:0px;
     margin: 0px 5% 0px 0px;
     list-style: none;
-    height:100%;
-    width: 15%;
-    color: skyblue;
+    height:2vw;
+    width: 10%;
+    color: rgb(5, 225, 245);
     float: left;
     font-size: 1.2vw;
     line-height: 2vw;
@@ -67,18 +68,49 @@ video::-webkit-media-controls{
     text-overflow:ellipsis;
 }
 
+.control ul #pause{
+    height:2vw;
+    line-height: 2vw;
+}
+
+
+.control ul #volume{
+    width: 20%;
+    cursor: default;
+}
+
+.control ul #volume .progress{
+    width: 80%;
+    line-height: 0.5vw;
+    height: 0.5vw;
+    display: none;
+    cursor:pointer;
+    background-color: rgba(223, 217, 217, 0.5);
+}
+
+.control ul #volume .progress-bar{
+    display: none;
+    background-color: rgba(53, 213, 29, 0.8);
+}
+
+.choose-bar ul #volume .glyphicon{
+    top:0px;
+    font-size: 1.2vw;
+    line-height: 1.2vw;
+    height: 1.2vw;
+    vertical-align:middle;
+}
+
+.control ul #volume span{
+    cursor:pointer;
+    width: 20%;
+}
+
 .control ul #time{
     font-size: 1vw;
     margin-left: -10%;
-    width: 25%;
-}
-
-#format div{
-    width: 10%;
-    display: flex;
-    justify-content: center;
-    position: absolute;
-    top: -300%;
+    width: 20%;
+    cursor: default;
 }
 
 .single-grid-right ul{

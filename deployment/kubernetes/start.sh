@@ -1,4 +1,4 @@
-#!/bin/bash -e
+#!/bin/bash +e
 
 DIR=$(dirname $(readlink -f "$0"))
 EXT=*.yaml
