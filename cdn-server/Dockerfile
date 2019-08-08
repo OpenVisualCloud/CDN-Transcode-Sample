@@ -68,8 +68,7 @@ WORKDIR /home
 
 # Prerequisites
 RUN ln -sf /usr/share/zoneinfo/UTC /etc/localtime && \
-    DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y -q --no-install-recommends libxml2 libssl-dev libpcre3 zlib1g libxslt1.1 python3-setuptools python3-tornado python3-kafka python3-pip python3-bs4 python3-kazoo vim openssh-server ffmpeg && \
-    pip3 install redis celery && \
+    DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y -q --no-install-recommends libxml2 libssl-dev libpcre3 zlib1g libxslt1.1 python3-setuptools python3-redis python-celery-common python3-tornado python3-kafka python3-pip python3-bs4 python3-kazoo vim openssh-server ffmpeg && \
     rm -rf /var/lib/apt/lists/*
 # Install
 COPY --from=build /home/build /
