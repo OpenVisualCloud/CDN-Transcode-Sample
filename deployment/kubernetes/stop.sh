@@ -26,7 +26,7 @@ fi
 
 try_command hash kubectl > /dev/null
 
-for i in $(find "$DIR" -path "$DIR/dashboard" -prune -o -type f -name "*service.yaml" -print); do
+for i in $(find "$DIR" -maxdepth 1 -name "*service.yaml"); do
     len=$(echo $DIR | wc -m)
     i1=$(echo ${i:${len}} | sed 's/-service.yaml//')
     for j in $(kubectl get svc | awk '{print $1}' | sed -n '2, $p' | grep -v 'kubernetes'); do
@@ -36,7 +36,7 @@ for i in $(find "$DIR" -path "$DIR/dashboard" -prune -o -type f -name "*service.
     done
 done
 
-for i in $(find "$DIR" -name "*deployment.yaml"); do
+for i in $(find "$DIR" -maxdepth 1 -name "*deployment.yaml"); do
     len=$(echo $DIR | wc -m)
     i1=$(echo ${i:${len}} | sed 's/-deployment.yaml//')
     for j in $(kubectl get pod | awk '{print $1}' | sed -n '2, $p' | awk -F '-' '{$NF=""; $(NF-1)=""; gsub("  ", "");gsub(" ", "-"); print}'); do
@@ -46,7 +46,7 @@ for i in $(find "$DIR" -name "*deployment.yaml"); do
     done
 done
 
-for i in $(find "$DIR" -name "*certificates.yaml"); do
+for i in $(find "$DIR" -maxdepth 1 -name "*certificates.yaml"); do
     len=$(echo $DIR | wc -m)
     i1=$(echo ${i:${len}} | sed 's/.yaml//')
     for j in $(kubectl get secret | awk '{print $1}' | sed -n '2, $p' | grep -v 'default-token'); do
