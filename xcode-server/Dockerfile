@@ -143,7 +143,7 @@ RUN  wget -O - ${X265_REPO} | tar xz && mv x265-${X265_VER} x265 && \
      make install
 
 # Fetch SVT-HEVC
-ARG SVT_HEVC_VER=252ff3d18bc1997a5af989ad4e67e025c93dbf68
+ARG SVT_HEVC_VER=v1.4.1
 ARG SVT_HEVC_REPO=https://github.com/OpenVisualCloud/SVT-HEVC.git
 
 RUN git clone ${SVT_HEVC_REPO} && \
@@ -192,7 +192,7 @@ RUN wget -O - ${LIBVA_REPO} | tar xz && \
 
 
 # Build media driver
-ARG MEDIA_DRIVER_VER=intel-media-kbl-19.1.0
+ARG MEDIA_DRIVER_VER=intel-media-kbl-19.1.1
 ARG MEDIA_DRIVER_REPO=https://github.com/VCDP/media-driver/archive/${MEDIA_DRIVER_VER}.tar.gz
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y -q --no-install-recommends libdrm-dev libpciaccess-dev libx11-dev xorg-dev libgl1-mesa-dev
@@ -207,7 +207,7 @@ RUN wget -O - ${MEDIA_DRIVER_REPO} | tar xz && mv media-driver-${MEDIA_DRIVER_VE
 
 
 # Build Intel(R) Media SDK
-ARG MSDK_VER=MSS-KBL-2019-R1
+ARG MSDK_VER=MSS-KBL-2019-R1-HF1
 ARG MSDK_REPO=https://github.com/Intel-Media-SDK/MediaSDK/archive/${MSDK_VER}.tar.gz
 
 RUN wget -O - ${MSDK_REPO} | tar xz && mv MediaSDK-${MSDK_VER} MediaSDK && \
@@ -221,26 +221,23 @@ RUN wget -O - ${MSDK_REPO} | tar xz && mv MediaSDK-${MSDK_VER} MediaSDK && \
     make install;
 
 # Fetch FFmpeg source
-ARG FFMPEG_VER=n4.1
+ARG FFMPEG_VER=n4.2
 ARG FFMPEG_REPO=https://github.com/FFmpeg/FFmpeg/archive/${FFMPEG_VER}.tar.gz
-ARG FFMPEG_HEVC_FLV_PATCH_REPO=https://raw.githubusercontent.com/VCDP/CDN/master/The-RTMP-protocol-extensions-for-H.265-HEVC.patch
+ARG FFMPEG_HEVC_FLV_PATCH_REPO=https://raw.githubusercontent.com/VCDP/CDN/master/0001-Add-SVT-HEVC-FLV-support-on-FFmpeg.patch
 ARG FFMPEG_1TN_PATCH_REPO=https://patchwork.ffmpeg.org/patch/11625/raw
-ARG FFMPEG_THREAD_PATCH_REPO=https://patchwork.ffmpeg.org/patch/11035/raw
 ARG FFMPEG_HW_LOOP_PATCH_REPO=https://patchwork.ffmpeg.org/patch/8173/raw
-ARG FFMPEG_ENCODE_THREAD_PATCH_REPO=https://patchwork.ffmpeg.org/patch/11179/raw
-ARG FFMPEG_AV1_FLV_PATCH_REPO=https://raw.githubusercontent.com/VCDP/CDN/master/v1-0001-Add-svt-AV1-FLV-support.patch
+ARG FFMPEG_AV1_FLV_PATCH_REPO=https://raw.githubusercontent.com/VCDP/CDN/master/0001-Add-SVT-AV1-FLV-support-on-FFmpeg.patch
+ARG FFMPEG_2kqhd_PATCH_REPO=https://raw.githubusercontent.com/VCDP/CDN/master/0001-Add-2560x1440-Quad-HD-definition-on-FFmpeg.patch
 # ARG FFMPEG_RTMP_WORKAROUD_REPO=https://raw.githubusercontent.com/VCDP/CDN/master/Check_rtmp_packet_timestamp_workaround_ffmpeg.patch
-
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y -q --no-install-recommends libvdpau-dev libsdl2-dev libxcb1-dev libxcb-shm0-dev libxcb-xfixes0-dev zlib1g-dev libssl-dev
 RUN wget -O - ${FFMPEG_REPO} | tar xz && mv FFmpeg-${FFMPEG_VER} FFmpeg && \
     cd FFmpeg && \
     wget -O - ${FFMPEG_HEVC_FLV_PATCH_REPO} | patch -p1 && \
     wget -O - ${FFMPEG_1TN_PATCH_REPO} | patch -p1 && \
-    wget -O - ${FFMPEG_THREAD_PATCH_REPO} | patch -p1 && \
     wget -O - ${FFMPEG_HW_LOOP_PATCH_REPO} | patch -p1 && \
-    wget -O - ${FFMPEG_ENCODE_THREAD_PATCH_REPO} | patch -p1 && \
-    wget -O - ${FFMPEG_AV1_FLV_PATCH_REPO} | patch -p1
+    wget -O - ${FFMPEG_AV1_FLV_PATCH_REPO} | patch -p1 && \
+    wget -O - ${FFMPEG_2kqhd_PATCH_REPO} | patch -p1
 #   wget -O - ${FFMPEG_RTMP_WORKAROUD_REPO} | patch -p1
 
 # Patch FFmpeg source for SVT-HEVC and SVT-AV1

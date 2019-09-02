@@ -58,7 +58,7 @@ if [ "$LINUX_DISTRO" == "Ubuntu" ]; then
 deb https://apt.kubernetes.io/ kubernetes-xenial main
 EOF
     try_command apt-get update
-    try_command apt-get install -y kubelet kubeadm kubectl
+    try_command apt-get install -y kubelet kubeadm kubectl openssh-client fabric
     try_command apt-mark hold kubelet kubeadm kubectl
 elif [ "$LINUX_DISTRO" == "CentOS" ]; then
     cat <<EOF > /etc/yum.repos.d/kubernetes.repo
@@ -71,7 +71,7 @@ repo_gpgcheck=1
 gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
 exclude=kube*
 EOF
-yum install -y kubelet kubeadm kubectl --disableexcludes=kubernetes
+yum install -y kubelet kubeadm kubectl openssh-clients fabric --disableexcludes=kubernetes
 else
     echo -e $ECHO_PREFIX_INFO "The installation will be cancelled."
     echo -e $ECHO_PREFIX_INFO "The CDN-Transcode-Sample does not support this OS, please use Ubuntu 18.04 or CentOS 7.6.\n"

@@ -26,7 +26,7 @@ fi
 
 try_command hash kubectl > /dev/null
 
-for i in $(find "$DIR" -path "$DIR/dashboard" -prune -o -type f -name "*service.yaml" -print); do
+for i in $(find "$DIR" -maxdepth 1 -name "*service.yaml"); do
     len=$(echo $DIR | wc -m)
     i1=$(echo ${i:${len}} | sed 's/-service.yaml//')
     for j in $(kubectl get svc | awk '{print $1}' | sed -n '2, $p' | grep -v 'kubernetes'); do
@@ -36,7 +36,7 @@ for i in $(find "$DIR" -path "$DIR/dashboard" -prune -o -type f -name "*service.
     done
 done
 
-for i in $(find "$DIR" -name "*deployment.yaml"); do
+for i in $(find "$DIR" -maxdepth 1 -name "*deployment.yaml"); do
     len=$(echo $DIR | wc -m)
     i1=$(echo ${i:${len}} | sed 's/-deployment.yaml//')
     for j in $(kubectl get pod | awk '{print $1}' | sed -n '2, $p' | awk -F '-' '{$NF=""; $(NF-1)=""; gsub("  ", "");gsub(" ", "-"); print}'); do
@@ -46,7 +46,7 @@ for i in $(find "$DIR" -name "*deployment.yaml"); do
     done
 done
 
-for i in $(find "$DIR" -name "*certificates.yaml"); do
+for i in $(find "$DIR" -maxdepth 1 -name "*certificates.yaml"); do
     len=$(echo $DIR | wc -m)
     i1=$(echo ${i:${len}} | sed 's/.yaml//')
     for j in $(kubectl get secret | awk '{print $1}' | sed -n '2, $p' | grep -v 'default-token'); do
@@ -73,23 +73,23 @@ fi
 
 try_command kompose convert -f "$yml" -o "$DIR"
 
-try_command "$DIR/update_yaml.py" "$DIR"
+"$DIR/update_yaml.py" "$DIR"
 
 try_command kubectl create secret generic ovc-ssl-certificates --from-file=self.key="$DIR/../../self-certificates/self.key" --from-file=self.crt="$DIR/../../self-certificates/self.crt" --from-file=dhparam.pem="$DIR/../../self-certificates/dhparam.pem" --dry-run -o yaml > "$DIR/ovc-ssl-certificates.yaml"
 
 try_command kubectl apply -f "$DIR/ovc-ssl-certificates.yaml"
 
-for i in $(find "$DIR" -path "$DIR/dashboard" -prune -o -type f -name "*service.yaml" -print); do
+for i in $(find "$DIR" -maxdepth 1 -name "*service.yaml"); do
     kubectl apply -f "$i"
 done
 
-for i in $(find "$DIR" -name "*deployment.yaml" | grep -v 'live-transcode*'); do
+for i in $(find "$DIR" -maxdepth 1 -name "*deployment.yaml" | grep -v 'live-transcode*'); do
     kubectl apply -f "$i"
 done
 
 sleep 2s
 
-for i in $(find "$DIR" -name "*deployment.yaml" | grep -v 'live-transcode*'); do
+for i in $(find "$DIR" -maxdepth 1 -name "*deployment.yaml" | grep -v 'live-transcode*'); do
     len=$(echo $DIR | wc -m)
     i1=$(echo ${i:${len}} | sed 's/-deployment.yaml//')
 
@@ -104,7 +104,7 @@ done
 
 sleep 2s
 
-for i in $(find "$DIR" -name "live-transcode*.yaml"); do
+for i in $(find "$DIR" -maxdepth 1 -name "live-transcode*.yaml"); do
     kubectl apply -f "$i"
 done
 
