@@ -27,11 +27,6 @@ def update_command(data, imageName, num):
     return data
 
 def update_imageName(data, imageName, isVOD):
-    if imageName == "hw" or not isVOD:
-        replicas_caps = 1
-    else:
-        replicas_caps = 2
-    data['spec']['replicas'] = replicas_caps
     if imageName == "hw":
         limits_caps = { 'limits': {'gpu.intel.com/i915': 1} }
         data['spec']['template']['spec']['containers'][0]['resources'] = limits_caps
