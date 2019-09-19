@@ -58,7 +58,7 @@ if [ "$LINUX_DISTRO" == "Ubuntu" ]; then
 deb https://apt.kubernetes.io/ kubernetes-xenial main
 EOF
     try_command apt-get update
-    try_command apt-get install -y kubelet kubeadm kubectl openssh-client fabric
+    try_command apt-get install -y kubelet=1.15.3-00 kubeadm=1.15.3-00 kubectl=1.15.3-00 openssh-client fabric
     try_command apt-mark hold kubelet kubeadm kubectl
 elif [ "$LINUX_DISTRO" == "CentOS" ]; then
     cat <<EOF > /etc/yum.repos.d/kubernetes.repo
@@ -71,7 +71,7 @@ repo_gpgcheck=1
 gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
 exclude=kube*
 EOF
-yum install -y kubelet kubeadm kubectl openssh-clients fabric --disableexcludes=kubernetes
+yum install -y kubelet-1.15.3 kubeadm-1.15.3 kubectl-1.15.3 openssh-clients fabric --disableexcludes=kubernetes
 else
     echo -e $ECHO_PREFIX_INFO "The installation will be cancelled."
     echo -e $ECHO_PREFIX_INFO "The CDN-Transcode-Sample does not support this OS, please use Ubuntu 18.04 or CentOS 7.6.\n"
@@ -108,7 +108,7 @@ try_command systemctl restart kubelet
 # Kubeadm init
 unset http_proxy
 unset https_proxy
-try_command kubeadm init --pod-network-cidr=10.244.0.0/16
+try_command kubeadm init --kubernetes-version=v1.15.3 --pod-network-cidr=10.244.0.0/16
 try_command mkdir -p $HOME/.kube
 try_command cp -f /etc/kubernetes/admin.conf $HOME/.kube/config
 try_command chown $(id -u):$(id -g) $HOME/.kube/config
