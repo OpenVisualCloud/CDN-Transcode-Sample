@@ -223,22 +223,20 @@ RUN wget -O - ${MSDK_REPO} | tar xz && mv MediaSDK-${MSDK_VER} MediaSDK && \
 # Fetch FFmpeg source
 ARG FFMPEG_VER=n4.2
 ARG FFMPEG_REPO=https://github.com/FFmpeg/FFmpeg/archive/${FFMPEG_VER}.tar.gz
-ARG FFMPEG_HEVC_FLV_PATCH_REPO=https://raw.githubusercontent.com/VCDP/CDN/master/0001-Add-SVT-HEVC-FLV-support-on-FFmpeg.patch
 ARG FFMPEG_1TN_PATCH_REPO=https://patchwork.ffmpeg.org/patch/11625/raw
 ARG FFMPEG_HW_LOOP_PATCH_REPO=https://patchwork.ffmpeg.org/patch/8173/raw
-ARG FFMPEG_AV1_FLV_PATCH_REPO=https://raw.githubusercontent.com/VCDP/CDN/master/0001-Add-SVT-AV1-FLV-support-on-FFmpeg.patch
-ARG FFMPEG_2kqhd_PATCH_REPO=https://raw.githubusercontent.com/VCDP/CDN/master/0001-Add-2560x1440-Quad-HD-definition-on-FFmpeg.patch
-# ARG FFMPEG_RTMP_WORKAROUD_REPO=https://raw.githubusercontent.com/VCDP/CDN/master/Check_rtmp_packet_timestamp_workaround_ffmpeg.patch
+
+ARG FFMPEG_PATCHES_RELEASE_VER=0.1
+ARG FFMPEG_PATCHES_RELEASE_URL=https://github.com/VCDP/CDN/archive/v${FFMPEG_PATCHES_RELEASE_VER}.tar.gz
+ARG FFMPEG_PATCHES_PATH=/home/CDN-${FFMPEG_PATCHES_RELEASE_VER}
+RUN wget -O - ${FFMPEG_PATCHES_RELEASE_URL} | tar xz
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y -q --no-install-recommends libvdpau-dev libsdl2-dev libxcb1-dev libxcb-shm0-dev libxcb-xfixes0-dev zlib1g-dev libssl-dev
 RUN wget -O - ${FFMPEG_REPO} | tar xz && mv FFmpeg-${FFMPEG_VER} FFmpeg && \
     cd FFmpeg && \
-    wget -O - ${FFMPEG_HEVC_FLV_PATCH_REPO} | patch -p1 && \
     wget -O - ${FFMPEG_1TN_PATCH_REPO} | patch -p1 && \
     wget -O - ${FFMPEG_HW_LOOP_PATCH_REPO} | patch -p1 && \
-    wget -O - ${FFMPEG_AV1_FLV_PATCH_REPO} | patch -p1 && \
-    wget -O - ${FFMPEG_2kqhd_PATCH_REPO} | patch -p1
-#   wget -O - ${FFMPEG_RTMP_WORKAROUD_REPO} | patch -p1
+    find ${FFMPEG_PATCHES_PATH}/FFmpeg_patches -type f -name '*.patch' -print0 | sort -z | xargs -t -0 -n 1 patch -p1 -i;
 
 # Patch FFmpeg source for SVT-HEVC and SVT-AV1
 RUN cd /home/FFmpeg && \
