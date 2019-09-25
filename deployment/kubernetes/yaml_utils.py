@@ -25,7 +25,7 @@ def update_command(data, imageName, num, live_args_list):
     else:
         command = 'ffmpeg -re -stream_loop -1 -i /var/www/archive/' + live_args_list[num]['input_video']
     for key, value in live_args_list[num]['output_dict'].items():
-        command += ' -vf ' + scale_dict[imageName] + '=' + value[1] + ' -c:v ' + live_args_list[num]['codec_type'] + ' -b:v ' + value[2] + 'M -g 32 -forced-idr 1 -an -f flv rtmp://cdn-service/' + value[0] + '/' + key + "_" + str(num)
+        command += ' -vf ' + scale_dict[imageName] + '=' + value[1] + ' -c:v ' + value[3] + ' -b:v ' + value[2] + 'M -g 32 -forced-idr 1 -an -f flv rtmp://cdn-service/' + value[0] + '/' + key + "_" + str(num)
     command_caps = [ 'bash', '-c', command + ' -abr_pipeline']
     data['spec']['template']['spec']['containers'][0].update({'args' : command_caps})
     return data
