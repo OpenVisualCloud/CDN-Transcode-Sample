@@ -191,10 +191,18 @@ def configure_live_transcode_args(deploy_type, image_name):
     output_dict = {}
     protocol_dict = {"a": "HLS", "b": "DASH"}
     protocol_str = ', '.join([("\033[0;31;40m" + key + "\033[0m: " + value) for key, value in protocol_dict.items()])
-    resolution_dict = {"a": ["hd480", "852:480"], "b": ["hd720", "1280:720"], "c": ["hd1080", "1920:1080"], "d": ["2kqhd", "2560:1440"]}
+    resolution_dict = {"a": ["hd480", "856:480"], "b": ["hd720", "1280:720"], "c": ["hd1080", "1920:1080"], "d": ["2kqhd", "2560:1440"]}
     resolution_str = ', '.join([("\033[0;31;40m" + key + "\033[0m: " + value[0]) for key, value in resolution_dict.items()])
 
     for i in range(int(output_channel)):
+        codec_dict = {"sw": {"AVC": "libx264", "HEVC": "libsvt_hevc", "AV1": "libsvt_av1"}, "hw": {"AVC": "h264_vaapi", "HEVC": "hevc_vaapi"}}
+        codec = input("Please choose which encoder you want to use (" + str(list(codec_dict[image_name].keys()))[1:-1] + "): ")
+        while True:
+            if codec_dict[image_name].get(codec.upper()):
+                break
+            else:
+                codec = input("Input error, please choose which encoder you want to use again (" + str(list(codec_dict[image_name].keys()))[1:-1] + "): ")
+
         resolution_key = input("Please choose the output %d resolution (%s): " % (i + 1, resolution_str))
         while True:
             if resolution_key.lower() in resolution_dict.keys():
@@ -226,8 +234,8 @@ def configure_live_transcode_args(deploy_type, image_name):
             else:
                 output_name = input("Input error, please enter the output %d video clip name again: " % (i + 1))
 
-        output_dict[output_name] = [protocol_dict[protocol_key.lower()].lower(), resolution_dict[resolution_key.lower()][1], bitrate]
-    live_args = {"input_video": input_video, "output_dict": output_dict, "codec_type": codec_dict[image_name].get(codec.upper())}
+        output_dict[output_name] = [protocol_dict[protocol_key.lower()].lower(), resolution_dict[resolution_key.lower()][1], bitrate, codec_dict[image_name].get(codec.upper())]
+    live_args = {"input_video": input_video, "output_dict": output_dict}
     return live_args
 
 def configure_trancode_service(yaml_file, service_name):
