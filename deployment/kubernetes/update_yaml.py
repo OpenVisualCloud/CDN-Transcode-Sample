@@ -91,7 +91,7 @@ def configure_basic_module(node_num):
     if node_num > 1:
         nfs_server = input("Please input where the video clips server is ([NFS server IP address]): ")
         while True:
-            if re.match("((25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d)))\.){3}(25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d)))",nfs_server):
+            if re.match("((25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d)))\.){3}(25[0-5]|2[0-4]\d|((1\d{2})|([1-9]?\d)))$",nfs_server):
                 if not ping(nfs_server):
                    nfs_server = input("Can't ping your NFS server ip address, Please input where the video clips server is again ([NFS server IP address]): ")
                    continue
