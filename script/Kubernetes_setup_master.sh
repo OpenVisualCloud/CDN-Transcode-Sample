@@ -45,6 +45,10 @@ proxy_https=$https_proxy
 export http_proxy=$proxy_http
 export https_proxy=$proxy_https
 
+if [[ -z `grep "swapoff -a" "${HOME}/.bashrc"` ]]; then
+    echo "swapoff -a" >> "${HOME}/.bashrc"
+fi
+
 try_command swapoff -a
 
 try_command lsb_release -si > /dev/null

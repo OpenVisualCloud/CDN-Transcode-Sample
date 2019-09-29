@@ -40,6 +40,10 @@ fi
 
 # Install packages
 # Set Proxy if need
+if [[ -z `grep "swapoff -a" "${HOME}/.bashrc"` ]]; then
+    echo "swapoff -a" >> "${HOME}/.bashrc"
+fi
+
 try_command swapoff -a
 
 try_command lsb_release -si > /dev/null
