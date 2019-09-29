@@ -73,14 +73,14 @@ As mentioned above, Streaing Server is not a must, you can skip this section if 
 ```sh
 sudo apt-get install -y ffmpeg
 ```
-- Install Nginx and Nginx RTMP Module
+- Install Nginx and Nginx HTTP FLV Module
 ```
-git clone https://github.com/arut/nginx-rtmp-module.git
+git clone https://github.com/winshining/nginx-http-flv-module.git
 
-wget http://nginx.org/download/nginx-1.14.2.tar.gz
-tar -xvzf nginx-1.14.2.tar.gz
-cd nginx-1.14.2
-./configure --prefix=/usr/local/nginx --conf-path=/etc/nginx/nginx.conf --add-module=/path/to/nginx-rtmp-module
+wget http://nginx.org/download/nginx-1.15.12.tar.gz
+tar -xvzf nginx-1.15.12.tar.gz
+cd nginx-1.15.12
+./configure --prefix=/usr/local/nginx --conf-path=/etc/nginx/nginx.conf --add-module=/path/to/nginx-http-flv-module
 make && sudo make install
 ```
 
