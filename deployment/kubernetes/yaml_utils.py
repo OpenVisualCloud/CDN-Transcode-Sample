@@ -60,6 +60,9 @@ def add_volumeMounts(data, isCDN):
         volumemounts_caps += [ {'name': 'html',
                                 'mountPath': '/var/www/html',
                                 'readOnly': True},
+                               {'name': 'logs',
+                                'mountPath': '/var/www/logs',
+                                'readOnly': False},
                                {'name': 'secrets',
                                 'mountPath': '/var/run/secrets',
                                 'readOnly': True} ]
@@ -82,6 +85,9 @@ def add_volumes(data, nfs_server, isCDN, volume_directory):
             volumes_caps += [{'name': 'html',
                               'hostPath':
                               {'path': volume_directory + '/volume/html'} },
+                             {'name': 'logs',
+                              'hostPath':
+                              {'path': volume_directory + '/volume/logs'} },
                              {'name': 'secrets',
                               'secret': {'secretName': 'ovc-ssl-certificates'} } ]
     else:
@@ -102,6 +108,10 @@ def add_volumes(data, nfs_server, isCDN, volume_directory):
             volumes_caps += [ {'name': 'html',
                                'nfs':
                                {'path': volume_directory + '/volume/html',
+                                'server': nfs_server} },
+                              {'name': 'logs',
+                               'nfs':
+                               {'path': volume_directory + '/volume/logs',
                                 'server': nfs_server} },
                               {'name': 'secrets',
                                'secret': {'secretName': 'ovc-ssl-certificates'} } ]
