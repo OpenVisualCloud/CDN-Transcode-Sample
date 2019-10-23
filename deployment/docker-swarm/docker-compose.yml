@@ -60,6 +60,7 @@ services:
             - ${VIDEO_ARCHIVE_VOLUME}:/var/www/archive:rw
             - ${VIDEO_DASH_VOLUME}:/var/www/dash:rw
             - ${VIDEO_HLS_VOLUME}:/var/www/hls:rw
+            - ${NGINX_LOGS_VOLUME}:/var/www/logs:rw
         depends_on:
             - kafka-service
         deploy:

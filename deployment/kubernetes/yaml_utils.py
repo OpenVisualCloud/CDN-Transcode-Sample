@@ -82,6 +82,9 @@ def add_volumes(data, nfs_server, isCDN, volume_directory):
             volumes_caps += [{'name': 'html',
                               'hostPath':
                               {'path': volume_directory + '/volume/html'} },
+                             {'name': 'logs',
+                              'hostPath':
+                              {'path': volume_directory + '/volume/logs'} }, 
                              {'name': 'secrets',
                               'secret': {'secretName': 'ovc-ssl-certificates'} } ]
     else:

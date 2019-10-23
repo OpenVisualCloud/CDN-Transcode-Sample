@@ -4,6 +4,7 @@ DIR=$(dirname $(readlink -f "$0"))
 export VIDEO_ARCHIVE_VOLUME=$(readlink -f "$DIR/../../volume/video/archive")
 export VIDEO_DASH_VOLUME=$(readlink -f "$DIR/../../volume/video/dash")
 export VIDEO_HLS_VOLUME=$(readlink -f "$DIR/../../volume/video/hls")
+export NGINX_LOGS_VOLUME=$(readlink -f "$DIR/../../volume/logs")
 export HTML_VOLUME=$(readlink -f "$DIR/../../volume/html")
 export SECRETS_VOLUME=$(readlink -f "$DIR/../../self-certificates")
 
