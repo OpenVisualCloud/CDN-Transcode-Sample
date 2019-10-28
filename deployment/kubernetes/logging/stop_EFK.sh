@@ -6,9 +6,9 @@ DIR=$(dirname $(readlink -f "$0"))
 ECHO_PREFIX_INFO="\033[1;32;40mINFO...\033[0;0m"
 ECHO_PREFIX_ERROR="\033[1;31;40mError...\033[0;0m"
 
-# Try command for test command result.
+# Try command for test command result
 function try_command {
-    "$@"
+    "$@" 2> /dev/null
     status=$?
     if [ $status -ne 0 ]; then
         echo -e $ECHO_PREFIX_ERROR "ERROR with \"$@\", Return status $status."
@@ -27,6 +27,8 @@ set +e
 try_command hash kubectl > /dev/null
 set -e
 
-for i in $DIR; do
-    kubectl delete -f "$i"
+for i in $(ls $DIR/*.yaml); do
+    kubectl delete -f "$i" &> /dev/null
 done
+
+rm -rf $DIR/*[0-9].yaml

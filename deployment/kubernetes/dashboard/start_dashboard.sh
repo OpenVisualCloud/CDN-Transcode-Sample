@@ -23,7 +23,9 @@ if [[ $EUID -ne 0 ]]; then
     exit 1
 fi
 
+set +e
 try_command hash kubectl > /dev/null
+set -e
 
 for i in $(find "$DIR" -name "*service.yaml"); do
     len=$(echo $DIR | wc -m)
