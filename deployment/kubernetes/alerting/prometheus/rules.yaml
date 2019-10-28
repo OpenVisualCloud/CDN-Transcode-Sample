@@ -1,0 +1,39 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: prometheus-rules
+  namespace: kube-prometheus
+data:
+  CDN-Transcode-Sample_rules.yml: |
+    groups:
+    - name: CDN-Transcode-Sample-nodes
+      rules:
+      - alert: InstanceDown
+        expr: up{job="CDN-Transcode-Sample-nodes"} == 0
+        for: 5s
+        annotations:
+          summary: "Instance down --------- {{ $labels.job }} ----------------"
+          description: "has been down for more {{ $value }} than minutes."
+
+    - name: kubernetes-nodes
+      rules:
+      - alert: NodeMemoryUsage
+        expr: (node_memory_MemTotal_bytes - (node_memory_MemFree_bytes + node_memory_Buffers_bytes + node_memory_Cached_bytes)) / node_memory_MemTotal_bytes * 100 > 20
+        for: 2m
+        annotations:
+          summary: "{{$labels.instance}}: High Memory usage detected"
+          description: "{{$labels.instance}}: Memory usage is above 20%, current value is: {{$value}}"
+
+      - alert: NodeCPUUsage
+        expr: (100 - (avg by (instance) (irate(node_cpu{job="kubernetes-node-exporter",mode="idle"}[5m])) * 100)) > 80
+        for: 2m
+        annotations:
+          summary: "{{$labels.instance}}: High CPU usage detected"
+          description: "{{$labels.instance}}: CPU usage is above 80% (current value is: {{ $value }}"
+
+      - alert: NodeFilesystemUsage
+        expr: (node_filesystem_size{device="rootfs"} - node_filesystem_free{device="rootfs"}) / node_filesystem_size{device="rootfs"} * 100 > 80 
+        for: 2m
+        annotations:
+          summary: "{{$labels.instance}}: High Filesystem usage detected"
+          description: "{{$labels.instance}}: Filesystem usage is above 80%, current value is: {{ $value }}"

@@ -1,0 +1,16 @@
+---
+kind: Service
+apiVersion: v1
+metadata:
+  labels:
+    app: alertmanager
+  name: alertmanager
+  namespace: kube-prometheus
+spec:
+  type: NodePort
+  ports:
+  - port: 9093
+    targetPort: 9093
+    nodePort: 9093
+  selector:
+    app: alertmanager
