@@ -25,7 +25,6 @@ fi
 
 set +e
 try_command hash kubectl > /dev/null
-set -e
 
 if (kubectl get namespace | awk '{print $1}' | grep -q "kube-prometheus"); then
     kubectl delete -f "$DIR/namespace/namespace.yaml"
@@ -34,5 +33,6 @@ if (kubectl get namespace | awk '{print $1}' | grep -q "kube-prometheus"); then
         kubectl delete -f "$i" &> /dev/null
     done
 fi
+set -e
 
 echo "Prometheus are stopping..."

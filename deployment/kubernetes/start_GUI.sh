@@ -71,13 +71,13 @@ if test "$mdcv" = "1.16"; then
     exit 0
 fi
 
-kompose convert -f "$yml" -o "$DIR"
+try_command kompose convert -f "$yml" -o "$DIR"
 
-"$DIR/run_with_command.py" "$DIR"
+"$DIR/run_with_GUI.py" "$DIR"
 
-kubectl create secret generic ovc-ssl-certificates --from-file=self.key="$DIR/../../self-certificates/self.key" --from-file=self.crt="$DIR/../../self-certificates/self.crt" --from-file=dhparam.pem="$DIR/../../self-certificates/dhparam.pem" --dry-run -o yaml > "$DIR/ovc-ssl-certificates.yaml"
+try_command kubectl create secret generic ovc-ssl-certificates --from-file=self.key="$DIR/../../self-certificates/self.key" --from-file=self.crt="$DIR/../../self-certificates/self.crt" --from-file=dhparam.pem="$DIR/../../self-certificates/dhparam.pem" --dry-run -o yaml > "$DIR/ovc-ssl-certificates.yaml"
 
-kubectl apply -f "$DIR/ovc-ssl-certificates.yaml"
+try_command kubectl apply -f "$DIR/ovc-ssl-certificates.yaml"
 
 for i in $(find "$DIR" -maxdepth 1 -name "*service.yaml"); do
     kubectl apply -f "$i"

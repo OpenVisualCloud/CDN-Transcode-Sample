@@ -58,8 +58,8 @@ if [ "$LINUX_DISTRO" == "Ubuntu" ]; then
     try_command curl -L "https://github.com/docker/compose/releases/download/1.24.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
     try_command curl -L https://github.com/kubernetes/kompose/releases/download/v1.18.0/kompose-linux-amd64 -o /usr/local/bin/kompose
     try_command chmod +x /usr/local/bin/kompose
-    try_command apt-get install -y python3-pip
-    try_command pip3 install ruamel.yaml
+    try_command apt-get install -y python3-pip libgtk-3-dev
+    try_command pip3 install ruamel.yaml fabric3 wxpython
 elif [ "$LINUX_DISTRO" == "CentOS" ]; then
     try_command yum install -y curl cmake
     yum remove docker docker-client docker-client-latest docker-common docker-latest docker-latest-logrotate docker-logrotate docker-engine
@@ -70,8 +70,8 @@ elif [ "$LINUX_DISTRO" == "CentOS" ]; then
     try_command curl -L https://github.com/kubernetes/kompose/releases/download/v1.18.0/kompose-linux-amd64 -o /usr/bin/kompose
     try_command chmod +x /usr/bin/kompose
     try_command yum install -y epel-release 
-    try_command yum install -y python36 python36-pip
-    try_command pip3 install ruamel.yaml
+    try_command yum install -y python36 python36-pip python3-devel gtk3-devel
+    try_command pip3 install ruamel.yaml fabric3 wxpython
 else
     echo -e $ECHO_PREFIX_INFO "The installation will be cancelled."
     echo -e $ECHO_PREFIX_INFO "The CDN-Transcode-Sample does not support this OS, please use Ubuntu 18.04 or CentOS 7.6.\n"

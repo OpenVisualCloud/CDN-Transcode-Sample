@@ -25,8 +25,8 @@ fi
 
 set +e
 try_command hash kubectl > /dev/null
-set -e
 
 for i in $DIR; do
     kubectl delete -f "$i"
 done
+set -e

@@ -10,6 +10,13 @@ services:
             redis-server
         deploy:
             replicas: 1
+            resources:
+                limits:
+                    cpus: '1.00'
+                    memory: 1000M
+                reservations:
+                    cpus: '0.50'
+                    memory: 500M
             placement:
                 constraints:
                     - node.hostname == master.machine
@@ -29,6 +36,13 @@ services:
         restart: always
         deploy:
             replicas: 1
+            resources:
+                limits:
+                    cpus: '1.00'
+                    memory: 1000M
+                reservations:
+                    cpus: '0.50'
+                    memory: 500M
             placement:
                 constraints:
                     - node.hostname == master.machine
@@ -61,6 +75,13 @@ services:
         restart: always
         deploy:
             replicas: 1
+            resources:
+                limits:
+                    cpus: '1.00'
+                    memory: 1000M
+                reservations:
+                    cpus: '0.50'
+                    memory: 500M
             placement:
                 constraints:
                     - node.hostname == master.machine
@@ -76,6 +97,13 @@ services:
             - kafka-service
         deploy:
             replicas: 1
+            resources:
+                limits:
+                    cpus: '1.00'
+                    memory: 3000M
+                reservations:
+                    cpus: '0.50'
+                    memory: 1500M
             placement:
                 constraints:
                     - node.hostname == master.machine
@@ -84,10 +112,17 @@ services:
             kompose.service.type: NodePort
             kompose.image-pull-policy: IfNotPresent 
 
-    vod-transcode-service-0:
+    vod-service:
         image: ovc_transcode_service:latest
         deploy:
             replicas: 1
+            resources:
+                limits:
+                    cpus: '4.00'
+                    memory: 6000M
+                reservations:
+                    cpus: '2.00'
+                    memory: 3000M
             placement:
                 constraints:
                     - node.hostname == master.machine
@@ -98,10 +133,17 @@ services:
         labels:
             kompose.image-pull-policy: IfNotPresent
 
-    live-transcode-service-0:
+    live-service:
         image: ovc_transcode_service:latest
         deploy:
             replicas: 1
+            resources:
+                limits:
+                    cpus: '4.00'
+                    memory: 6000M
+                reservations:
+                    cpus: '2.00'
+                    memory: 3000M
             placement:
                 constraints:
                     - node.hostname == master.machine

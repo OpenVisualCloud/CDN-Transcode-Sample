@@ -155,13 +155,19 @@ RUN git clone ${SVT_HEVC_REPO} && \
     make install DESTDIR=/home/build && \
     make install
 
+ARG XCODE_PATCHES_RELEASE_VER=0.2
+ARG XCODE_PATCHES_RELEASE_URL=https://github.com/VCDP/CDN/archive/v${XCODE_PATCHES_RELEASE_VER}.tar.gz
+ARG XCODE_PATCHES_PATH=/home/CDN-${XCODE_PATCHES_RELEASE_VER}
+RUN wget -O - ${XCODE_PATCHES_RELEASE_URL} | tar xz
+
 # Fetch SVT-AV1
-ARG SVT_AV1_VER=97d9dc625236c1cf83ea20315dfa985001837698
+ARG SVT_AV1_VER=v0.7.0
 ARG SVT_AV1_REPO=https://github.com/OpenVisualCloud/SVT-AV1.git
 
 RUN git clone ${SVT_AV1_REPO} && \
     cd SVT-AV1 && \
     git checkout ${SVT_AV1_VER} && \
+    find ${XCODE_PATCHES_PATH}/SVT-AV1_patches -type f -name '*.patch' -print0 | sort -z | xargs -t -0 -n 1 patch -p1 -i && \
     cd Build/linux && \
     mkdir -p ../../Bin/Release && \
     cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr -DCMAKE_INSTALL_LIBDIR=lib/x86_64-linux-gnu -DCMAKE_ASM_NASM_COMPILER=yasm ../.. && \
@@ -188,7 +194,7 @@ RUN wget -O - ${LIBVA_REPO} | tar xz && \
     ./autogen.sh --prefix=/usr --libdir=/usr/lib/x86_64-linux-gnu && \
     make -j8 && \
     make install DESTDIR=/home/build && \
-    make install;
+    make install
 
 
 # Build media driver
@@ -218,7 +224,7 @@ RUN wget -O - ${MSDK_REPO} | tar xz && mv MediaSDK-${MSDK_VER} MediaSDK && \
     make install DESTDIR=/home/build && \
     rm -rf /home/build/usr/samples && \
     rm -rf /home/build/usr/plugins && \
-    make install;
+    make install
 
 # Fetch FFmpeg source
 ARG FFMPEG_VER=n4.2
@@ -226,17 +232,12 @@ ARG FFMPEG_REPO=https://github.com/FFmpeg/FFmpeg/archive/${FFMPEG_VER}.tar.gz
 ARG FFMPEG_1TN_PATCH_REPO=https://patchwork.ffmpeg.org/patch/11625/raw
 ARG FFMPEG_HW_LOOP_PATCH_REPO=https://patchwork.ffmpeg.org/patch/8173/raw
 
-ARG FFMPEG_PATCHES_RELEASE_VER=0.1
-ARG FFMPEG_PATCHES_RELEASE_URL=https://github.com/VCDP/CDN/archive/v${FFMPEG_PATCHES_RELEASE_VER}.tar.gz
-ARG FFMPEG_PATCHES_PATH=/home/CDN-${FFMPEG_PATCHES_RELEASE_VER}
-RUN wget -O - ${FFMPEG_PATCHES_RELEASE_URL} | tar xz
-
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y -q --no-install-recommends libvdpau-dev libsdl2-dev libxcb1-dev libxcb-shm0-dev libxcb-xfixes0-dev zlib1g-dev libssl-dev
 RUN wget -O - ${FFMPEG_REPO} | tar xz && mv FFmpeg-${FFMPEG_VER} FFmpeg && \
     cd FFmpeg && \
     wget -O - ${FFMPEG_1TN_PATCH_REPO} | patch -p1 && \
     wget -O - ${FFMPEG_HW_LOOP_PATCH_REPO} | patch -p1 && \
-    find ${FFMPEG_PATCHES_PATH}/FFmpeg_patches -type f -name '*.patch' -print0 | sort -z | xargs -t -0 -n 1 patch -p1 -i;
+    find ${XCODE_PATCHES_PATH}/FFmpeg_patches -type f -name '*.patch' -print0 | sort -z | xargs -t -0 -n 1 patch -p1 -i
 
 # Patch FFmpeg source for SVT-HEVC and SVT-AV1
 RUN cd /home/FFmpeg && \

@@ -25,10 +25,10 @@ fi
 
 set +e
 try_command hash kubectl > /dev/null
-set -e
 
 for i in $(ls $DIR/*.yaml); do
     kubectl delete -f "$i" &> /dev/null
 done
+set -e
 
 rm -rf $DIR/*[0-9].yaml
