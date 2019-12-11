@@ -20,7 +20,7 @@ ARG AUTOMAKE_REPO=https://ftp.gnu.org/pub/gnu/automake/automake-${AUTOMAKE_VER}.
     RUN apt-get install -y -q automake
 
 # Build nginx-http-flv
-ARG NGINX_HTTP_FLV_VER=10bd726e6c4c3033be9e6169ea259c9355e9223a
+ARG NGINX_HTTP_FLV_VER=v1.2.7
 ARG NGINX_HTTP_FLV_REPO=https://github.com/winshining/nginx-http-flv-module.git
 
 ARG NGINX_HTTP_FLV_PATCHES_RELEASE_VER=0.2

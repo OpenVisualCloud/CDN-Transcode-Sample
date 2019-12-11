@@ -161,7 +161,7 @@ ARG XCODE_PATCHES_PATH=/home/CDN-${XCODE_PATCHES_RELEASE_VER}
 RUN wget -O - ${XCODE_PATCHES_RELEASE_URL} | tar xz
 
 # Fetch SVT-AV1
-ARG SVT_AV1_VER=v0.7.0
+ARG SVT_AV1_VER=v0.7.5
 ARG SVT_AV1_REPO=https://github.com/OpenVisualCloud/SVT-AV1.git
 
 RUN git clone ${SVT_AV1_REPO} && \
