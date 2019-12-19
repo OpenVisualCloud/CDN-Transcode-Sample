@@ -79,31 +79,6 @@ try_command kubectl create secret generic ovc-ssl-certificates --from-file=self.
 
 try_command kubectl apply -f "$DIR/ovc-ssl-certificates.yaml"
 
-for i in $(find "$DIR" -maxdepth 1 -name "*service.yaml"); do
-    kubectl apply -f "$i"
-done
-
-for i in $(find "$DIR" -maxdepth 1 -name "*deployment.yaml" | grep -v 'live-transcode*'); do
-    kubectl apply -f "$i"
-done
-
-sleep 2s
-
-for i in $(find "$DIR" -maxdepth 1 -name "*deployment.yaml" | grep -v 'live-transcode*'); do
-    len=$(echo $DIR | wc -m)
-    i1=$(echo ${i:${len}} | sed 's/-deployment.yaml//')
-
-    while true; do
-        if (kubectl get pod | awk '{print $1,$3}' | grep -q "${i1}.*Running"); then
-            break
-        else
-            sleep 2s
-        fi
-    done
-done
-
-sleep 2s
-
-for i in $(find "$DIR" -maxdepth 1 -name "live-transcode*.yaml"); do
+for i in $(find "$DIR" -maxdepth 1 -name "*.yaml"); do
     kubectl apply -f "$i"
 done

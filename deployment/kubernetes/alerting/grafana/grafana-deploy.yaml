@@ -1,0 +1,107 @@
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: k8s-pgmon-grafana
+  namespace: pgmon
+  labels:
+    app: grafana
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: grafana
+  template:
+    metadata:
+      labels:
+        app: grafana
+    spec:
+      containers:
+      - image: marksugar/grafana:5.4.3-p
+        name: grafana
+        ports:
+        - containerPort: 3000
+          name: http
+        readinessProbe:
+          httpGet:
+            path: /api/health
+            port: http
+        resources:
+          limits:
+            cpu: 100m
+            memory: 100Mi
+          requests:
+            cpu: 100m
+            memory: 100Mi
+        volumeMounts:
+        - mountPath: /var/lib/grafana
+          name: grafana-storage
+        - mountPath: /etc/grafana/provisioning/datasources
+          name: grafana-datasources
+          readOnly: true
+        - mountPath: /etc/grafana/provisioning/dashboards
+          name: grafana-dashboards
+          readOnly: false
+        - mountPath: /dashboard-grafana/k8s-☸-pgmon-cAdvisor-Brief
+          name: k8s-pgmon-cadvisor-brief
+          readOnly: false
+        - mountPath: /dashboard-grafana/k8s-☸-pgmon-cAdvisor-namespace
+          name: k8s-pgmon-cadvisor-namespace
+          readOnly: false
+        - mountPath: /dashboard-grafana/k8s-☸-pgmon-Docker-monitoring-ALL
+          name: k8s-pgmon-docker-monitoring-all
+          readOnly: false
+        - mountPath: /dashboard-grafana/k8s-☸-pgmon-Kubernetes-API
+          name: k8s-pgmon-kubernetes-api
+          readOnly: false
+        - mountPath: /dashboard-grafana/k8s-☸-pgmon_Node-Exporter-Server-Metrics
+          name: k8s-pgmon-node-exporter-server-metrics
+          readOnly: false
+        - mountPath: /dashboard-grafana/k8s-☸-pgmon_node-exporter-Brief
+          name: k8s-pgmon-node-exporter-brief
+          readOnly: false
+        - mountPath: /dashboard-grafana/k8s-☸-pgmon_node-exporter-describe
+          name: k8s-pgmon-node-exporter-describe
+          readOnly: false
+        - mountPath: /dashboard-grafana/k8s-☸-pgmon_node-exporter-docker
+          name: k8s-pgmon-node-exporter-docker
+          readOnly: false
+        env:
+        - name: GF_AUTH_BASIC_ENABLED
+          value: "true"
+        - name: GF_AUTH_ANONYMOUS_ENABLED
+          value: "false"
+        - name: GF_PATHS_PLUGINS
+          value: "/tmp/plugins/"
+      volumes:
+      - emptyDir: {}
+        name: grafana-storage
+      - name: grafana-datasources
+        configMap:
+          name: grafana-datasources
+      - name: grafana-dashboards
+        configMap:
+          name: grafana-dashboards
+      - name: k8s-pgmon-cadvisor-brief
+        configMap:
+          name: k8s-pgmon-cadvisor-brief
+      - name: k8s-pgmon-cadvisor-namespace
+        configMap:
+          name: k8s-pgmon-cadvisor-namespace
+      - name: k8s-pgmon-docker-monitoring-all
+        configMap:
+          name: k8s-pgmon-docker-monitoring-all
+      - name: k8s-pgmon-kubernetes-api
+        configMap:
+          name: k8s-pgmon-kubernetes-api
+      - name: k8s-pgmon-node-exporter-server-metrics
+        configMap:
+          name: k8s-pgmon-node-exporter-server-metrics
+      - name: k8s-pgmon-node-exporter-brief
+        configMap:
+          name: k8s-pgmon-node-exporter-brief
+      - name: k8s-pgmon-node-exporter-describe
+        configMap:
+          name: k8s-pgmon-node-exporter-describe
+      - name: k8s-pgmon-node-exporter-docker
+        configMap:
+          name: k8s-pgmon-node-exporter-docker
