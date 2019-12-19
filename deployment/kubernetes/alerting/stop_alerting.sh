@@ -26,7 +26,7 @@ fi
 set +e
 try_command hash kubectl > /dev/null
 
-if (kubectl get namespace | awk '{print $1}' | grep -q "kube-prometheus"); then
+if (kubectl get namespace | awk '{print $1}' | grep -q "pgmon"); then
     kubectl delete -f "$DIR/namespace/namespace.yaml"
 
     for i in $(find "$DIR" -path "$DIR/namespace" -a -prune -o -name "*.yaml" -print); do

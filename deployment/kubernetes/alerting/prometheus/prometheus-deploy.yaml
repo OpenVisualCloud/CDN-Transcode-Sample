@@ -1,0 +1,80 @@
+---
+apiVersion: apps/v1beta2
+kind: Deployment
+metadata:
+  name: k8s-pgmon-prometheus
+  namespace: pgmon
+  labels:
+    app: prometheus
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: prometheus
+  template:
+    metadata:
+      labels:
+        app: prometheus
+    spec:
+      containers:
+      - image: prom/prometheus:v2.14.0
+        name: prometheus
+        command:
+        - "/bin/prometheus"
+        args:
+        - "--config.file=/etc/prometheus/prometheus.yml"
+        - "--storage.tsdb.path=/prometheus"
+        - "--storage.tsdb.retention=3d"
+        - "--web.enable-lifecycle"
+        ports:
+        - containerPort: 9090
+          protocol: TCP
+        volumeMounts:
+        - mountPath: "/prometheus"
+          name: data
+        - mountPath: "/etc/prometheus"
+          name: config-volume
+        - mountPath: "/etc/prometheus/rules/"
+          name: k8s-pgmon-rules
+        resources:
+          requests:
+            cpu: 100m
+            memory: 100Mi
+          limits:
+            cpu: 500m
+            memory: 2500Mi
+      - name: prometheus-configmap-reload
+        image: "jimmidyson/configmap-reload:v0.3.0"
+        imagePullPolicy: "IfNotPresent"
+        args:
+          - --volume-dir=/etc/prometheus/rules/
+          - --volume-dir=/etc/prometheus/
+          - --volume-dir=/etc/prometheus/
+          - --webhook-url=http://localhost:9090/-/reload
+        volumeMounts:
+          - mountPath: "/prometheus"
+            name: data
+            readOnly: true
+          - mountPath: "/etc/prometheus"
+            name: config-volume
+            readOnly: true
+          - mountPath: "/etc/prometheus/rules/"
+            name: k8s-pgmon-rules
+            readOnly: true
+        resources:
+          limits:
+            cpu: 10m
+            memory: 10Mi
+          requests:
+            cpu: 10m
+            memory: 10Mi
+      serviceAccountName: k8s-pgmon-prometheus
+      volumes:
+      - name: data
+        emptyDir: {}
+      - name: config-volume
+        configMap:
+          name: prometheus-config
+      - name: k8s-pgmon-rules
+        configMap:
+          name: k8s-pgmon-rules
