@@ -1,16 +1,16 @@
----
-kind: Service
 apiVersion: v1
+kind: Service
 metadata:
+  name: k8s-pgmon-alertmanager
+  namespace: pgmon
   labels:
     app: alertmanager
-  name: alertmanager
-  namespace: kube-prometheus
 spec:
   type: NodePort
   ports:
   - port: 9093
+    protocol: TCP
     targetPort: 9093
-    nodePort: 9093
+    nodePort: 30004
   selector:
     app: alertmanager
