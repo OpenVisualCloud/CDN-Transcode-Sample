@@ -45,7 +45,10 @@ spec:
           mountPath: /usr/share/kibana/config
           readOnly: true
       nodeSelector:
-        kubernetes.io/hostname: master.machine
+        node-role.kubernetes.io/master: ""
+      tolerations:
+      - key: "node-role.kubernetes.io/master"
+        effect: "NoSchedule"
       volumes:
       - name: secrets
         secret:
