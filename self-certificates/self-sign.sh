@@ -17,8 +17,6 @@ nobody@intel.com
 EOL
     chmod 640 "/home/self.key"
     chmod 644 "/home/self.crt"
-    openssl dhparam -dsaparam -out /home/dhparam.pem 4096
-    chmod 644 "/home/dhparam.pem"
     ;;
 *)
     OPTIONS=("--volume=${DIR}:/home:rw")

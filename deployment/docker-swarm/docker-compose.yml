@@ -60,7 +60,7 @@ services:
             - ${VIDEO_ARCHIVE_VOLUME}:/var/www/archive:rw
             - ${VIDEO_DASH_VOLUME}:/var/www/dash:rw
             - ${VIDEO_HLS_VOLUME}:/var/www/hls:rw
-            - ${NGINX_LOGS_VOLUME}:/var/www/logs:rw
+            - ${NGINX_LOG_VOLUME}:/var/www/log:rw
         depends_on:
             - kafka-service
         deploy:
@@ -76,11 +76,6 @@ services:
               uid: ${USER_ID}
               gid: ${GROUP_ID}
               mode: 0440
-            - source: dhparam_pem
-              target: /var/run/secrets/dhparam.pem
-              uid: ${USER_ID}
-              gid: ${GROUP_ID}
-              mode: 0444
 
     vod-transcode-service:
         image: ovc_transcode_service:latest
@@ -108,5 +103,3 @@ secrets:
         file: ${SECRETS_VOLUME}/self.key
     self_crt:
         file: ${SECRETS_VOLUME}/self.crt
-    dhparam_pem:
-        file: ${SECRETS_VOLUME}/dhparam.pem

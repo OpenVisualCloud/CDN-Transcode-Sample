@@ -71,7 +71,6 @@ COPY *.xsl  /etc/nginx/
 COPY *.conf /etc/nginx/
 COPY *.ini  /home/
 COPY *.py   /home/
-COPY self-sign.sh /home/
 CMD  ["/bin/bash","-c","/home/main.py&/usr/sbin/nginx"]
 VOLUME /etc/nginx /var/www/html /var/www/tmp/client_body /var/www/tmp/proxy /var/www/tmp/fastcgi /var/www/tmp/uwsgi /var/www/tmp/scgi /var/www/cache
 EXPOSE 8080

@@ -23,7 +23,7 @@ set +e
 try_command hash kubectl > /dev/null
 set -e
 
-kubectl create secret generic kibana-ssl-certificates --namespace=kube-system --from-file=self.key="$DIR/../../../self-certificates/self.key" --from-file=self.crt="$DIR/../../../self-certificates/self.crt" --from-file=dhparam.pem="$DIR/../../../self-certificates/dhparam.pem" --dry-run -o yaml > "$DIR/kibana-ssl-certificates.yaml"
+kubectl create secret generic kibana-ssl-certificates --namespace=kube-system --from-file=self.key="$DIR/../../../self-certificates/self.key" --from-file=self.crt="$DIR/../../../self-certificates/self.crt" --dry-run -o yaml > "$DIR/kibana-ssl-certificates.yaml"
 
 "$DIR/update_EFK.py" "$DIR/"
 
