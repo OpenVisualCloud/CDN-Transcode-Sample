@@ -17,16 +17,18 @@ function try_command {
     return $status
 }
 
-"$DIR/stop_alerting.sh"
+# This script must be run as root
+if [[ $EUID -ne 0 ]]; then
+    echo -e $ECHO_PREFIX_ERROR "This script must be run as root!" 1>&2
+    exit 1
+fi
 
 set +e
 try_command hash kubectl > /dev/null
+
+for i in $(ls $DIR/*.yaml); do
+    kubectl delete -f "$i" &> /dev/null
+done
 set -e
 
-kubectl create -f "$DIR/namespace/namespace.yaml"
-
-for i in $(find "$DIR" -path "$DIR/namespace" -a -prune -o -name "*.yaml" -print); do
-    kubectl create -f "$i"
-done
-
-echo "Prometheus are running..."
+echo "Logging are stopping..."
