@@ -65,8 +65,8 @@ def add_volumeMounts(data, isCDN):
         volumemounts_caps += [{'name': 'html',
                                'mountPath': '/var/www/html',
                                'readOnly': True},
-                              {'name': 'logs',
-                               'mountPath': '/var/www/logs',
+                              {'name': 'log',
+                               'mountPath': '/var/www/log',
                                'readOnly': False},
                               {'name': 'secrets',
                                'mountPath': '/var/run/secrets',
@@ -91,9 +91,9 @@ def add_volumes(data, nfs_server, isCDN, volume_directory):
             volumes_caps += [{'name': 'html',
                               'hostPath':
                               {'path': volume_directory + '/volume/html'}},
-                             {'name': 'logs',
+                             {'name': 'log',
                               'hostPath':
-                              {'path': volume_directory + '/volume/logs'}},
+                              {'path': '/var/log/nginx'}},
                              {'name': 'secrets',
                               'secret': {'secretName': 'ovc-ssl-certificates'}}]
     else:
@@ -115,10 +115,9 @@ def add_volumes(data, nfs_server, isCDN, volume_directory):
                               'nfs':
                               {'path': volume_directory + '/volume/html',
                                'server': nfs_server}},
-                             {'name': 'logs',
-                              'nfs':
-                              {'path': volume_directory + '/volume/logs',
-                               'server': nfs_server}},
+                             {'name': 'log',
+                              'hostPath':
+                              {'path': '/var/log/nginx'}},
                              {'name': 'secrets',
                               'secret': {'secretName': 'ovc-ssl-certificates'}}]
     data['spec']['template']['spec'].update({'volumes': volumes_caps})

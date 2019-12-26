@@ -75,7 +75,7 @@ try_command kompose convert -f "$yml" -o "$DIR"
 
 "$DIR/run_with_GUI.py" "$DIR"
 
-try_command kubectl create secret generic ovc-ssl-certificates --from-file=self.key="$DIR/../../self-certificates/self.key" --from-file=self.crt="$DIR/../../self-certificates/self.crt" --from-file=dhparam.pem="$DIR/../../self-certificates/dhparam.pem" --dry-run -o yaml > "$DIR/ovc-ssl-certificates.yaml"
+try_command kubectl create secret generic ovc-ssl-certificates --from-file=self.key="$DIR/../../self-certificates/self.key" --from-file=self.crt="$DIR/../../self-certificates/self.crt" --dry-run -o yaml > "$DIR/ovc-ssl-certificates.yaml"
 
 try_command kubectl apply -f "$DIR/ovc-ssl-certificates.yaml"
 
