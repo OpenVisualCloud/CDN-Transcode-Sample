@@ -1,6 +1,8 @@
 #!/bin/bash -e
 
 DIR=$(dirname $(readlink -f "$0"))
+export NGINX_LOG_VOLUME=$(readlink -f "/var/log/nginx")
+
 EXT=*.yaml
 
 # Set Bash color
@@ -57,6 +59,8 @@ for i in $(find "$DIR" -maxdepth 1 -name "*certificates.yaml"); do
 done
 
 rm -rf $DIR/$EXT
+
+sudo mkdir -p "${NGINX_LOG_VOLUME}"
 
 yml="$DIR/docker-compose-template.yml"
 test -f "$yml"
