@@ -12,7 +12,7 @@ sudo docker container prune -f
 sudo docker volume prune -f
 sudo docker network prune -f
 sudo rm -rf "${VIDEO_DASH_VOLUME}" "${VIDEO_HLS_VOLUME}"
-sudo mkdir -p "${VIDEO_DASH_VOLUME}" "${VIDEO_HLS_VOLUME}"
+sudo mkdir -p "${VIDEO_DASH_VOLUME}" "${VIDEO_HLS_VOLUME}" "${NGINX_LOG_VOLUME}"
 
 yml="$DIR/docker-compose.$(hostname).yml"
 test -f "$yml" || yml="$DIR/docker-compose.yml"
