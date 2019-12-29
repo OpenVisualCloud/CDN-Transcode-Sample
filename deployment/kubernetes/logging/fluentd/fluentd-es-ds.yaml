@@ -49,18 +49,15 @@ metadata:
   namespace: kube-system
   labels:
     k8s-app: fluentd-es
-    version: v2.7.0
     addonmanager.kubernetes.io/mode: Reconcile
 spec:
   selector:
     matchLabels:
       k8s-app: fluentd-es
-      version: v2.7.0
   template:
     metadata:
       labels:
         k8s-app: fluentd-es
-        version: v2.7.0
       annotations:
         seccomp.security.alpha.kubernetes.io/pod: 'docker/default'
     spec:
@@ -68,7 +65,7 @@ spec:
       serviceAccountName: fluentd-es
       containers:
       - name: fluentd-es
-        image: quay.io/fluentd_elasticsearch/fluentd:v2.7.0
+        image: quay.io/fluentd_elasticsearch/fluentd:v2.8.0
         env:
         - name: FLUENTD_ARGS
           value: --no-supervisor -q
