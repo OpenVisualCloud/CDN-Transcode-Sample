@@ -27,12 +27,12 @@ spec:
           requests:
             cpu: 100m
         env:
-          - name: ELASTICSEARCH_HOSTS
-            value: http://elasticsearch-logging:9200
-          - name: SERVER_NAME
-            value: kibana-logging
-          - name: SERVER_REWRITEBASEPATH
-            value: "false"
+        - name: ELASTICSEARCH_HOSTS
+          value: http://elasticsearch-logging:9200
+        - name: SERVER_NAME
+          value: kibana-logging
+        - name: SERVER_REWRITEBASEPATH
+          value: "false"
         ports:
         - containerPort: 5601
           name: ui

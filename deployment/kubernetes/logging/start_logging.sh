@@ -27,7 +27,7 @@ kubectl create secret generic kibana-ssl-certificates --namespace=kube-system --
 
 "$DIR/update_logging.py" "$DIR/"
 
-for i in $(ls $DIR/*.yaml); do
+for i in $(find "$DIR" -name "*.yaml"); do
     kubectl create -f "$i"
 done
 
