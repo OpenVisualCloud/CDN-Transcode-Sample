@@ -47,7 +47,7 @@ LINUX_DISTRO=`lsb_release -si`
 if [ "$LINUX_DISTRO" == "Ubuntu" ]; then
     try_command apt-get install -y curl gnupg software-properties-common cmake
     apt-get remove -y docker docker-engine docker.io containerd runc
-    try_command curl -fsSL https://download.docker.com/linux/ubuntu/gpg | apt-key add -
+    try_command curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
     try_command apt-key fingerprint 0EBFCD88
     try_command add-apt-repository \
         "deb [arch=amd64] https://download.docker.com/linux/ubuntu \

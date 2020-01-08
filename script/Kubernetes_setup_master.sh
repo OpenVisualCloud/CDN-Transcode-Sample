@@ -57,7 +57,7 @@ LINUX_DISTRO=`lsb_release -si`
 
 if [ "$LINUX_DISTRO" == "Ubuntu" ]; then
     try_command apt-get update && apt-get install -y apt-transport-https curl
-    try_command curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -
+    try_command curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo  apt-key add -
     try_command cat <<EOF >/etc/apt/sources.list.d/kubernetes.list
 deb https://apt.kubernetes.io/ kubernetes-xenial main
 EOF
