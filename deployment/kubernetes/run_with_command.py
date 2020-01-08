@@ -144,7 +144,7 @@ def input_node_name(service_name, pods_dict, image_name="sw"):
 
 def input_request_cpu(service_name, node_dict, pods_dict):
     cpu_quota = input("Please input run " +
-                      service_name + " request cpu quota: ")
+                      service_name + " request cpu core number: ")
     while True:
         if re.match(r"\d{1,2}(\.\d+)?$", cpu_quota) and node_dict[pods_dict[service_name]["node"]]["cpu"] > float(cpu_quota) > 0:
             node_dict[pods_dict[service_name]
@@ -153,21 +153,21 @@ def input_request_cpu(service_name, node_dict, pods_dict):
             break
         else:
             cpu_quota = input("Input error, please input run " +
-                              service_name + " request cpu quota again: ")
+                              service_name + " request cpu core number again: ")
     return node_dict, pods_dict
 
 def input_request_mem(service_name, node_dict, pods_dict):
     mem_quota = input("Please input run " + service_name +
-                      " request memory quota: ")
+                      " request memory quota(MiB): ")
     while True:
-        if re.match(r"\d{1,2}(\.\d+)?$", mem_quota) and node_dict[pods_dict[service_name]["node"]]["memory"] > float(mem_quota) > 0:
+        if re.match(r"\d{3,5}$", mem_quota) and node_dict[pods_dict[service_name]["node"]]["memory"] > int(mem_quota) > 0:
             node_dict[pods_dict[service_name]["node"]
-                      ]["memory"] -= float(mem_quota)
-            pods_dict[service_name]["memory"] = float(mem_quota)
+                      ]["memory"] -= int(mem_quota)
+            pods_dict[service_name]["memory"] = int(mem_quota)
             break
         else:
             mem_quota = input("Input error, please input run " +
-                              service_name + " request memory quota again: ")
+                              service_name + " request memory quota(MiB) again: ")
     return node_dict, pods_dict
 
 def deploy_transcode_cluster(service_name):
@@ -290,25 +290,25 @@ def configure_transcode_service(service_name):
 
     i = 0
     while True:
-        service_name = re.search(
+        service_name_index = re.search(
             "((vod)|(live))(\d*)", service_name).group(1) + str(i)
-        pods.append(service_name)
-        pods_dict[service_name] = {}
+        pods.append(service_name_index)
+        pods_dict[service_name_index] = {}
         if hw_node_num > 0:
-            image_name = input("Please choose the transcode mode of the " + service_name +
+            image_name = input("Please choose the transcode mode of the " + str(i) + "th" + service_name +
                                " ([hw]: hardware is for E3/VCA2 or [sw]: software is for E5): ")
             while True:
                 if image_name.lower() == "sw" or image_name.lower() == "hw":
                     hw_node_num -= 1 if image_name.lower() == "hw" else 0
                     break
                 else:
-                    image_name = input("Input error, please choose the transcode mode of the " + service_name +
+                    image_name = input("Input error, please choose the transcode mode of the " + str(i) + "th" + service_name +
                                        " again ([hw]: hardware is for E3/VCA2 or [sw]: software is for E5): ")
         else:
             image_name = "sw"
-        pods_dict[service_name]["mode"] = image_name
+        pods_dict[service_name_index]["mode"] = image_name
 
-        if re.search("live\d+", service_name):
+        if re.search("live\d+", service_name_index):
             deploy_type = input(
                 "Do you need to deploy live-transcode-service by customizing parameters([y] or [n]): ")
             while True:
@@ -323,7 +323,7 @@ def configure_transcode_service(service_name):
                         "Input error, do you need to deploy live-transcode-service by customizing parameters([y] or [n]): ")
 
             configure_live_transcode_args(
-                service_name, deploy_type, image_name.lower())
+                service_name_index, deploy_type, image_name.lower())
 
         i += 1
         create_node = input("Do you still need to deploy the " +
@@ -349,7 +349,7 @@ def get_node_information():
         cpu = int(int(re.search(
             "cpu:\s+(\d+)", basic_info[index_list[i]: -1]).group(1)) - int(cpu_info[0])/1000)
         memory = int((int(re.search(
-            "memory:\s+(\d+)", basic_info[index_list[i]: -1]).group(1)) / 1024 - int(memory_info[0]))/1024)
+            "memory:\s+(\d+)", basic_info[index_list[i]: -1]).group(1)) / 1024 - int(memory_info[0])))
         if cpu > 0 and memory > 0:
             node_dict[re.search("Name:\s+(.+)", basic_info[index_list[i]: -1]
                                 ).group(1)] = {"cpu": cpu, "memory": memory}

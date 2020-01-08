@@ -28,7 +28,7 @@ class MyFrame_Config (wx.Frame):
             cpu = int(int(re.search(
                 "cpu:\s+(\d+)", basic_info[index_list[i]: -1]).group(1)) - int(cpu_info[0])/1000)
             memory = int((int(re.search(
-                "memory:\s+(\d+)", basic_info[index_list[i]: -1]).group(1)) / 1024 - int(memory_info[0]))/1024)
+                "memory:\s+(\d+)", basic_info[index_list[i]: -1]).group(1)) / 1024 - int(memory_info[0])))
             if cpu > 0 and memory > 0:
                 self.choice_list.append({"nodename": re.search(
                     "Name:\s+(.+)", basic_info[index_list[i]: -1]).group(1), "cpu": cpu, "memory": memory})
@@ -350,12 +350,12 @@ class MyFrame_Config (wx.Frame):
                     self.node_info[node["nodename"]]["modules"].append(key)
                     self.node_info[node["nodename"]]["cpu"] += float(
                         value["cpu"]) if len(value["cpu"]) > 0 else 0
-                    self.node_info[node["nodename"]]["memory"] += float(
+                    self.node_info[node["nodename"]]["memory"] += int(
                         value["memory"]) if len(value["memory"]) > 0 else 0
 
         text_info = ""
         for item in self.choice_list:
-            text_info += "Name:             %s\nPods:               %s\nCPU:                 capacity:  %-10d used:    %.1f\nMEMORY:      capacity:  %-8d used:    %.1f\n" % (item['nodename'], reduce(
+            text_info += "Name:             %s\nPods:               %s\nCPU:                 capacity:  %-10d used:    %.1f\nMEMORY:      capacity:  %-8d used:    %8d\n" % (item['nodename'], reduce(
                 lambda x, y: x + '   ' + y, self.node_info[item['nodename']]['modules']) if len(self.node_info[item['nodename']]['modules']) else None, item['cpu'], self.node_info[item['nodename']]['cpu'], item['memory'], self.node_info[item['nodename']]['memory'])
             text_info += "ERROR cpu undercapacity \n" if item['cpu'] < self.node_info[item['nodename']]['cpu'] else ""
             text_info += "ERROR memory undercapacity \n" if item['memory'] < self.node_info[item['nodename']]['memory'] else ""
@@ -369,7 +369,7 @@ class MyFrame_Config (wx.Frame):
         def fun(self, event):
             getattr(self, podname + "_cpu_choice").SetItems([["0.5"] + [str(num) for num in range(1, node["cpu"])]
                                                              for node in self.choice_list if node["nodename"] == getattr(self, podname + "_node_choice").GetStringSelection()][0])
-            getattr(self, podname + "_memory_choice").SetItems([["0.5"] + [str(num) for num in range(1, node["memory"])]
+            getattr(self, podname + "_memory_choice").SetItems([["500"] + [str(num) for num in range(1000, node["memory"], 500)]
                                                                 for node in self.choice_list if node["nodename"] == getattr(self, podname + "_node_choice").GetStringSelection()][0])
         return fun
 

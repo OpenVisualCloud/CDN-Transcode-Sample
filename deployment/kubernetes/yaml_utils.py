@@ -130,11 +130,11 @@ def set_nodePort(data, port):
 def update_resource_quotas(
         data, request_cpu, limit_cpu, request_memory, limit_memory):
     data["spec"]["template"]["spec"]["containers"][0]["resources"]["requests"] = {
-        "cpu": str(float(request_cpu) * 1000) + "m",
-        "memory": str(float(request_memory) * 1000) + "Mi"
+        "cpu": str(int(float(request_cpu) * 1000)) + "m",
+        "memory": str(request_memory) + "Mi"
     }
     data["spec"]["template"]["spec"]["containers"][0]["resources"]["limits"] = {
-        "cpu": str(float(limit_cpu) * 1000) + "m",
-        "memory": str(float(limit_memory) * 1000) + "Mi"
+        "cpu": str(int(float(limit_cpu) * 1000)) + "m",
+        "memory": str(limit_memory) + "Mi"
     }
     return data
