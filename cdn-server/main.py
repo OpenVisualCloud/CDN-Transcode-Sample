@@ -23,7 +23,7 @@ if __name__ == "__main__":
     define("port", default=2222, help="the binding port", type=int)
     define("ip", default="127.0.0.1", help="the binding ip")
     parse_command_line()
-    os.popen('celery multi start w1 -A tasks -l info --logfile=/var/www/log/celery.log --pidfile=/var/www/log/celery.pid')
+    os.popen('celery multi start w1 -A tasks -l info --logfile=/var/www/log/celery.log --pidfile=/var/www/celery.pid')
     print("Listening to " + options.ip + ":" + str(options.port))
     APP.listen(options.port, address=options.ip)
     ioloop.IOLoop.instance().start()

@@ -30,7 +30,7 @@ def update_yaml(nfs_server, volume_directory, dir_path, pods, pods_dict, node_di
         node = node_dict[node_name]
         limit_cpu = 2 * float(pods_dict[pod]["cpu"]) if 2 * float(
             pods_dict[pod]["cpu"]) < node["cpu"] else node["cpu"] - 1
-        limit_memory = 2 * float(pods_dict[pod]["memory"]) if 2 * float(
+        limit_memory = 2 * int(pods_dict[pod]["memory"]) if 2 * int(
             pods_dict[pod]["memory"]) < node["memory"] else node["memory"] - 1
 
         yaml_file = os.path.join(dir_path, re.match(
