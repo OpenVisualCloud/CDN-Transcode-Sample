@@ -71,7 +71,8 @@ elif [ "$LINUX_DISTRO" == "CentOS" ]; then
     try_command chmod +x /usr/bin/kompose
     try_command yum install -y epel-release 
     try_command yum install -y python36 python36-pip python3-devel gtk3-devel
-    try_command pip3 install ruamel.yaml fabric3 wxpython
+    try_command pip3 install ruamel.yaml fabric3
+    try_command yum -y install wxPython
 else
     echo -e $ECHO_PREFIX_INFO "The installation will be cancelled."
     echo -e $ECHO_PREFIX_INFO "The CDN-Transcode-Sample does not support this OS, please use Ubuntu 18.04 or CentOS 7.6.\n"
