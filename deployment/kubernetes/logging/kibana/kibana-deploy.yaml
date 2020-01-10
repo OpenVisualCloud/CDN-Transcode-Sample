@@ -42,8 +42,9 @@ spec:
           mountPath: /var/run/secrets
           readOnly: true
         - name: config
-          mountPath: /usr/share/kibana/config
+          mountPath: /usr/share/kibana/config/kibana.yml
           readOnly: true
+          subPath: kibana.yml
       nodeSelector:
         node-role.kubernetes.io/master: ""
       tolerations:
@@ -54,5 +55,5 @@ spec:
         secret:
           secretName: kibana-ssl-certificates
       - name: config
-        hostPath:
-          path:
+        configMap:
+          name: kibana-config

@@ -20,11 +20,12 @@ spec:
         name: grafana
         ports:
         - containerPort: 3000
-          name: http
+          name: https
         readinessProbe:
           httpGet:
             path: /api/health
-            port: http
+            port: https
+            scheme: HTTPS
         resources:
           limits:
             cpu: 100m
@@ -35,6 +36,9 @@ spec:
         volumeMounts:
         - mountPath: /var/lib/grafana
           name: grafana-storage
+        - mountPath: /var/run/secrets
+          name: secrets
+          readOnly: true
         - mountPath: /etc/grafana/provisioning/datasources
           name: grafana-datasources
           readOnly: true
@@ -72,9 +76,18 @@ spec:
           value: "false"
         - name: GF_PATHS_PLUGINS
           value: "/tmp/plugins/"
+        - name: GF_SERVER_PROTOCOL
+          value: "https"
+        - name: GF_SERVER_CERT_FILE
+          value: "/var/run/secrets/self.crt"
+        - name: GF_SERVER_CERT_KEY
+          value: "/var/run/secrets/self.key" 
       volumes:
       - emptyDir: {}
         name: grafana-storage
+      - name: secrets
+        secret:
+          secretName: grafana-ssl-certificates
       - name: grafana-datasources
         configMap:
           name: grafana-datasources
