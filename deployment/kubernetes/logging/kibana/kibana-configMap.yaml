@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: kibana-config
+  namespace: kube-system
+data:
+  kibana.yml: |
+    server.name: kibana
+    server.host: 0.0.0.0
+    elasticsearch.hosts: [ "http://elasticsearch:9200" ]
+    xpack.monitoring.ui.container.elasticsearch.enabled: true
+    server.ssl.enabled: true
+    server.ssl.key: /var/run/secrets/self.key
+    server.ssl.certificate: /var/run/secrets/self.crt

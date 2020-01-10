@@ -25,8 +25,6 @@ set -e
 
 kubectl create secret generic kibana-ssl-certificates --namespace=kube-system --from-file=self.key="$DIR/../../../self-certificates/self.key" --from-file=self.crt="$DIR/../../../self-certificates/self.crt" --dry-run -o yaml > "$DIR/kibana-ssl-certificates.yaml"
 
-"$DIR/update_logging.py" "$DIR/"
-
 for i in $(find "$DIR" -name "*.yaml"); do
     kubectl create -f "$i"
 done
