@@ -84,13 +84,15 @@ make
 - [Setup Kubernetes master environment for Ubuntu](https://github.com/OpenVisualCloud/CDN-Transcode-Sample/wiki/Setup-Kubernetes-master-environment-for-Ubuntu)
 - [Setup Kubernetes slave environment](https://github.com/OpenVisualCloud/CDN-Transcode-Sample/wiki/Setup-Kubernetes-slave-environment)
 - [Setup NFS environment](https://github.com/OpenVisualCloud/CDN-Transcode-Sample/wiki/Setup-NFS-environment)
-- [Remove Kubernetes environment](https://github.com/OpenVisualCloud/CDN-Transcode-Sample/wiki/Remove-Kubernetes-environment)
 
-Run the following commands to start/stop services
-
-**Tips:** [Configuration example for Kubernetes deploy](https://github.com/OpenVisualCloud/CDN-Transcode-Sample/wiki/Configuration-example-for-Kubernetes-deploy)
+Start CDN transcode service
 ```
 make start_kubernetes
+```
+**Tips:** [Configuration example for Kubernetes deploy](https://github.com/OpenVisualCloud/CDN-Transcode-Sample/wiki/Configuration-example-for-Kubernetes-deploy)
+
+Stop CDN transcode service
+```
 make stop_kubernetes
 ```
 
@@ -103,3 +105,4 @@ ____
 - [Setup proxy server](https://github.com/OpenVisualCloud/CDN-Transcode-Sample/wiki/Setup-proxy-server)
 - [Setup Kubernetes Logging](https://github.com/OpenVisualCloud/CDN-Transcode-Sample/wiki/Setup-Kubernetes-logging-environment)
 - [Setup Kubernetes Monitoring](https://github.com/OpenVisualCloud/CDN-Transcode-Sample/wiki/Setup-Kubernetes-monitoring-environment)
+- [Remove Kubernetes environment](https://github.com/OpenVisualCloud/CDN-Transcode-Sample/wiki/Remove-Kubernetes-environment)
