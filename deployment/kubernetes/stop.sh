@@ -46,14 +46,6 @@ for i in $(find "$DIR" -maxdepth 1 -name "*deployment.yaml"); do
     done
 done
 
-for i in $(find "$DIR" -maxdepth 1 -name "*certificates.yaml"); do
-    len=$(echo $DIR | wc -m)
-    i1=$(echo ${i:${len}} | sed 's/.yaml//')
-    for j in $(kubectl get secret | awk '{print $1}' | sed -n '2, $p' | grep -v 'default-token'); do
-        if [ ${i1} == ${j} ]; then
-            kubectl delete -f "${i}"
-        fi
-    done
-done
+kubectl delete secret self-signed-certificate 2> /dev/null || echo -n ""
 
 rm -rf $DIR/$EXT

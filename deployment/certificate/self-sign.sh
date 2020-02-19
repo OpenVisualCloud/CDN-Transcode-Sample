@@ -20,6 +20,6 @@ EOL
     ;;
 *)
     OPTIONS=("--volume=${DIR}:/home:rw")
-    . "$DIR/../script/shell.sh" /home/self-sign.sh $(hostname -f)
+    . "$DIR/../../script/shell.sh" /home/self-sign.sh $(hostname -f)
     ;;
 esac

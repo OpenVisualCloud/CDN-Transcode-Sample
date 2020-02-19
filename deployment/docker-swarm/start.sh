@@ -6,7 +6,7 @@ export VIDEO_DASH_VOLUME=$(readlink -f "$DIR/../../volume/video/dash")
 export VIDEO_HLS_VOLUME=$(readlink -f "$DIR/../../volume/video/hls")
 export NGINX_LOG_VOLUME=$(readlink -f "/var/log/nginx")
 export HTML_VOLUME=$(readlink -f "$DIR/../../volume/html")
-export SECRETS_VOLUME=$(readlink -f "$DIR/../../self-certificates")
+export SECRETS_VOLUME=$(readlink -f "$DIR/../certificate")
 
 sudo docker container prune -f
 sudo docker volume prune -f
@@ -35,6 +35,7 @@ docker_compose)
 *)
     export USER_ID=$(id -u)
     export GROUP_ID=$(id -g)
+    "$DIR/../certificate/self-sign.sh"
     sudo -E docker stack deploy -c "$yml" ovc
     ;;
 esac

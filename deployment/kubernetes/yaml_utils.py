@@ -95,7 +95,7 @@ def add_volumes(data, nfs_server, isCDN, volume_directory):
                               'hostPath':
                               {'path': '/var/log/nginx'}},
                              {'name': 'secrets',
-                              'secret': {'secretName': 'ovc-ssl-certificates'}}]
+                              'secret': {'secretName': 'self-signed-certificate'}}]
     else:
         volumes_caps = [{'name': 'archive',
                          'nfs':
@@ -119,7 +119,7 @@ def add_volumes(data, nfs_server, isCDN, volume_directory):
                               'hostPath':
                               {'path': '/var/log/nginx'}},
                              {'name': 'secrets',
-                              'secret': {'secretName': 'ovc-ssl-certificates'}}]
+                              'secret': {'secretName': 'self-signed-certificate'}}]
     data['spec']['template']['spec'].update({'volumes': volumes_caps})
     return data
 

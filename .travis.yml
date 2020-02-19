@@ -40,5 +40,5 @@ jobs:
         - mkdir build
         - cd build
         - cmake ..
-        - cd self-certificates
+        - cd deployment/certificate
         - make

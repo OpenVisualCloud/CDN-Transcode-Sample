@@ -3,5 +3,4 @@
 IMAGE="ovc_self_certificate"
 DIR=$(dirname $(readlink -f "$0"))
 
-. "$DIR/../script/build.sh"
-. "$DIR/self-sign.sh"
+. "$DIR/../../script/build.sh"
