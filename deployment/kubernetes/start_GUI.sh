@@ -20,6 +20,10 @@ function try_command {
     return $status
 }
 
+function create_secret {
+    kubectl create secret generic self-signed-certificate "--from-file=${DIR}/../certificate/self.crt" "--from-file=${DIR}/../certificate/self.key"
+}
+
 # This script must be run as root
 if [[ $EUID -ne 0 ]]; then
     echo -e $ECHO_PREFIX_ERROR "This script must be run as root!" 1>&2
@@ -79,9 +83,8 @@ try_command kompose convert -f "$yml" -o "$DIR"
 
 "$DIR/run_with_GUI.py" "$DIR"
 
-try_command kubectl create secret generic ovc-ssl-certificates --from-file=self.key="$DIR/../../self-certificates/self.key" --from-file=self.crt="$DIR/../../self-certificates/self.crt" --dry-run -o yaml > "$DIR/ovc-ssl-certificates.yaml"
-
-try_command kubectl apply -f "$DIR/ovc-ssl-certificates.yaml"
+"$DIR/../certificate/self-sign.sh"
+create_secret 2>/dev/null || (kubectl delete secret self-signed-certificate; create_secret)
 
 for i in $(find "$DIR" -maxdepth 1 -name "*.yaml"); do
     kubectl apply -f "$i"

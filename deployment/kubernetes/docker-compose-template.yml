@@ -107,13 +107,13 @@ services:
             placement:
                 constraints:
                     - node.hostname == master.machine
-        command: ["bash", "-c", "/home/main.py&/usr/sbin/nginx"]
+        command: ["bash", "-c", "/home/main.py&/usr/local/sbin/nginx"]
         labels:
             kompose.service.type: NodePort
             kompose.image-pull-policy: IfNotPresent 
 
     vod-service:
-        image: ovc_transcode_service:latest
+        image: ovc_software_transcode_service:latest
         deploy:
             replicas: 1
             resources:
@@ -134,7 +134,7 @@ services:
             kompose.image-pull-policy: IfNotPresent
 
     live-service:
-        image: ovc_transcode_service:latest
+        image: ovc_software_transcode_service:latest
         deploy:
             replicas: 1
             resources:
