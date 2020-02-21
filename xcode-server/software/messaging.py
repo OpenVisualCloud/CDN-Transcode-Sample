@@ -2,10 +2,13 @@
 
 import socket
 from kafka import KafkaProducer, KafkaConsumer, TopicPartition
+import traceback
+import socket
+import time
 
 KAFKA_HOSTS = ["kafka-service:9092"]
 
-class Producer():
+class Producer(object):
     def __init__(self):
         super(Producer, self).__init__()
         self._client_id = socket.gethostname()
@@ -16,20 +19,15 @@ class Producer():
             try:
                 self._producer = KafkaProducer(bootstrap_servers=KAFKA_HOSTS,
                                                client_id=self._client_id,
-                                               api_version=(0, 10), retries=1)
-            except Exception as e:
-                print(str(e))
+                                               api_version=(0, 10), acks=0)
+            except:
+                print(traceback.format_exc(), flush=True)
                 self._producer = None
 
-        if self._producer:
-            try:
-                self._producer.send(topic, message.encode('utf-8'))
-                print("send "+topic+": ")
-                print(message)
-            except Exception as e:
-                print(str(e))
-        else:
-            print("producer not available")
+        try:
+            self._producer.send(topic, message.encode('utf-8'))
+        except:
+            print(traceback.format_exc(), flush=True)
 
     def flush(self):
         if self._producer:
@@ -37,10 +35,10 @@ class Producer():
 
     def close(self):
         if self._producer:
-            self.flush()
             self._producer.close()
+            self._producer=None
 
-class Consumer():
+class Consumer(object):
     def __init__(self, group=None):
         super(Consumer, self).__init__()
         self._client_id = socket.gethostname()
@@ -48,22 +46,10 @@ class Consumer():
 
     def messages(self, topic, timeout=None):
         c = KafkaConsumer(topic, bootstrap_servers=KAFKA_HOSTS, client_id=self._client_id,
-                          group_id=self._group, api_version=(0, 10))
+                          group_id=self._group, auto_offset_reset="earliest", api_version=(0, 10))
 
-        partitions = c.partitions_for_topic(topic)
-        if not partitions:
-            raise Exception("Topic "+topic+" not exist")
-
-        timeout1 = 100 if timeout is None else timeout
-        while True:
-            partitions = c.poll(timeout1)
-            if partitions:
-                for p in partitions:
-                    for msg in partitions[p]:
-                        yield msg.value.decode('utf-8')
-            if timeout is not None:
-                yield ""
-
+        for msg in c:
+            yield msg.value.decode('utf-8')
         c.close()
 
     def debug(self, topic):

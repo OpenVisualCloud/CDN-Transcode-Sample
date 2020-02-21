@@ -1,50 +1,28 @@
 #!/usr/bin/python3
 
+from os.path import isfile
 from subprocess import call
 from os import mkdir
-from os import listdir
-from urllib.request import urlopen
-import configparser
-import time
-from bs4 import BeautifulSoup
 from zkstate import ZKState
 from messaging import Consumer
 from abr_hls_dash import GetABRCommand
+import traceback
+import time
 
 KAFKA_TOPIC = "content_provider_sched"
 KAFKA_GROUP = "content_provider_dash_hls_creator"
 
+ARCHIVE_ROOT = "/var/www/archive"
 DASH_ROOT = "/var/www/dash"
 HLS_ROOT = "/var/www/hls"
 
 def process_stream(stream):
-    streams = []
     stream_name = stream.split("/")[1]
-    config = configparser.ConfigParser()
-    config.read('config.ini')
-    src_mode = config.get('mode', 'srcMode')
-    src_path = config.get('path', 'srcPath')
-    src_protocol = ""
-    src_api = ""
-    if src_mode == "local":
-        streams = listdir(src_path)
-    elif src_mode == "live":
-        html = urlopen("http://"+src_path)
-        soup = BeautifulSoup(html, 'html.parser')
-        src_protocol = "rtmp://"
-        src_api = src_mode
-        for item in soup.findAll('a')[1:]:
-            streams.append(item.get('href'))
-    else:
+
+    if not isfile(ARCHIVE_ROOT+"/"+stream_name):
         return
 
-    if stream_name not in streams:
-        return
-
-    if src_mode == "live":
-        stream_name = stream_name[:stream_name.index('.')]
-
-    zk = ZKState(src_protocol+src_path+"/"+src_api+"/"+stream.replace("/", "_"))
+    zk = ZKState("/content_provider_transcoder/"+ARCHIVE_ROOT+"/"+stream)
     if zk.processed():
         zk.close()
         return
@@ -52,36 +30,35 @@ def process_stream(stream):
     if stream.endswith(".mpd"):
         try:
             mkdir(DASH_ROOT+"/"+stream_name)
-        except Exception as e:
-            print(str(e))
+        except:
+            pass
 
         if zk.process_start():
             try:
-                cmd = GetABRCommand(src_protocol+src_path+"/"+src_api+"/"+stream_name,
-                                    DASH_ROOT+"/"+stream_name, "dash")
+                cmd = GetABRCommand(ARCHIVE_ROOT+"/"+stream_name, DASH_ROOT+"/"+stream_name, "dash")
                 r = call(cmd)
                 if r:
                     raise Exception("status code: "+str(r))
                 zk.process_end()
-            except Exception as e:
-                print(str(e))
+            except:
+                print(traceback.format_exc(), flush=True)
                 zk.process_abort()
+
     if stream.endswith(".m3u8"):
         try:
             mkdir(HLS_ROOT+"/"+stream_name)
-        except Exception as e:
-            print(str(e))
+        except:
+            pass
 
         if zk.process_start():
             try:
-                cmd = GetABRCommand(src_protocol+src_path+"/"+src_api+"/"+stream_name,
-                                    HLS_ROOT+"/"+stream_name, "hls")
+                cmd = GetABRCommand(ARCHIVE_ROOT+"/"+stream_name, HLS_ROOT+"/"+stream_name, "hls")
                 r = call(cmd)
                 if r:
                     raise Exception("status code: "+str(r))
                 zk.process_end()
-            except Exception as e:
-                print(str(e))
+            except:
+                print(traceback.format_exc(), flush=True)
                 zk.process_abort()
 
     zk.close()
@@ -92,6 +69,7 @@ if __name__ == "__main__":
         try:
             for message in c.messages(KAFKA_TOPIC):
                 process_stream(message)
-        except Exception as e:
-            print(str(e))
-        time.sleep(2)
+        except:
+            print(traceback.format_exc(), flush=True)
+            time.sleep(2)
+    c.close()
