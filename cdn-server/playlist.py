@@ -1,12 +1,10 @@
 #!/usr/bin/python3
 
-
 from os import listdir
-from urllib.request import urlopen
-import configparser
 import json
-from bs4 import BeautifulSoup
 from tornado import web, gen
+
+ARCHIVE_ROOT = "/var/www/archive"
 
 class PlayListHandler(web.RequestHandler):
     def __init__(self, app, request, **kwargs):
@@ -16,19 +14,7 @@ class PlayListHandler(web.RequestHandler):
     @gen.coroutine
     def get(self):
         try:
-            streams = []
-            config = configparser.ConfigParser()
-            config.read('config.ini')
-            src_mode = config.get('mode', 'srcMode')
-            src_path = config.get('path', 'srcPath')
-            if src_mode == "local":
-                streams = [s for s in listdir(src_path) if s.endswith((".mp4", ".avi"))]
-            else:
-                html = urlopen("http://"+src_path)
-                soup = BeautifulSoup(html, 'html.parser')
-                for item in soup.findAll('a')[1:]:
-                    if item.get('href').endswith((".mp4", ".avi")):
-                        streams.append(item.get('href'))
+            streams = [s for s in listdir(ARCHIVE_ROOT) if s.endswith((".mp4", ".avi"))]
         except:
             self.set_status(404, "VIDEO NOT FOUND")
             return

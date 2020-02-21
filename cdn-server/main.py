@@ -6,18 +6,12 @@ from playlist import PlayListHandler
 from schedule import ScheduleHandler
 from upload import UploadHandler
 import os
-import configparser
 
 APP = web.Application([
     (r'/playlist', PlayListHandler),
     (r'/schedule/.*', ScheduleHandler),
     (r'/upload/', UploadHandler),
 ])
-
-config = configparser.ConfigParser()
-config.read('config.ini')
-tempPath = config.get('path', 'tempPath')
-srcPath = config.get('path', 'srcPath')
 
 if __name__ == "__main__":
     define("port", default=2222, help="the binding port", type=int)

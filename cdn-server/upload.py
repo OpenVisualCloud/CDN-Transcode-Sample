@@ -1,7 +1,11 @@
 import os
 import shutil
+import traceback
 from tornado.web import RequestHandler
 from tasks import in_out
+
+TEMP_ROOT = "/var/www/temp"
+ARCHIVE_ROOT = "/var/www/archive"
 
 class UploadHandler(RequestHandler):
     def post(self, *args, **kwargs):
@@ -10,9 +14,8 @@ class UploadHandler(RequestHandler):
         uploadStatus = self.get_body_argument('uploadStatus', None)
         timeStamp = self.get_body_argument('timeStamp', None)
         count = self.get_body_argument('count', None)
-        from main import tempPath,srcPath
         fileName = timeStamp + "-" + fileName
-        proPath = os.path.join(tempPath, fileName)
+        proPath = os.path.join(TEMP_ROOT, fileName)
         if not os.path.isdir(proPath):
             os.makedirs(proPath)
         try:
@@ -20,7 +23,7 @@ class UploadHandler(RequestHandler):
                 f.write(file[0]['body'])
                 self.set_status(200)
             if uploadStatus == 'end':
-                res = in_out.delay(proPath, srcPath, fileName, count)
-        except Exception as e:
+                res = in_out.delay(proPath, ARCHIVE_ROOT, fileName, count)
+        except:
             self.set_status(401)
-            print(e)
+            print(traceback.format_exc(), flush=True)
