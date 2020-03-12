@@ -1,5 +1,5 @@
 
-FROM openvisualcloud/xeon-ubuntu1804-media-nginx:20.2
+FROM openvisualcloud/xeon-ubuntu1804-media-nginx:20.3.1
 
 Run DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y -q --no-install-recommends python3-setuptools python3-redis python-celery-common python3-tornado python3-kafka python3-kazoo vim openssh-server && rm -rf /var/lib/apt/lists/*
 
