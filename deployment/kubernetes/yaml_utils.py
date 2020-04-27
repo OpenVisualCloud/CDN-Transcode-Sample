@@ -18,8 +18,8 @@ def dump_yaml_file(data, fileName):
 
 def update_service_name(data, service_name):
     data["metadata"]["name"] = service_name
-    data["spec"]["template"]["metadata"]["labels"]["io.kompose.service"] = service_name
-    data["metadata"]["labels"]["io.kompose.service"] = service_name
+    data["spec"]["template"]["metadata"]["labels"]["app"] = service_name
+    data["metadata"]["labels"]["app"] = service_name
     data["spec"]["template"]["spec"]["containers"][0]["name"] = service_name
     return data
 
@@ -33,7 +33,7 @@ def update_command(data, imageName, live_args):
     for key, value in live_args['output_dict'].items():
         data['spec']['template']['spec']['containers'][0]['lifecycle']['preStop']['exec']['command'].append( " /var/www/" + value[0] + '/' + key )
         thread = " -thread_count 96" if value[3].find('libsvt') != -1 else ""
-        command += ' -vf ' + scale_dict[imageName] + '=' + value[1] + ' -c:v ' + value[3] + ' -b:v ' + value[2] + 'M -g 32 -forced-idr 1' + thread + ' -an -f flv rtmp://cdn-service/' + value[0] + '/' + key
+        command += ' -vf ' + scale_dict[imageName] + '=' + value[1] + ' -c:v ' + value[3] + ' -b:v ' + value[2] + ' -r ' + value[4] + ' -g ' + value[5] + ' -bf ' + value[6] + ' -refs ' + value[7] + ' -preset ' + value[8] + ' -forced-idr 1' + thread + ' -an -f flv rtmp://cdn-service/' + value[0] + '/' + key
 
     command_caps = ['bash', '-c', command + ' -abr_pipeline']
     data['spec']['template']['spec']['containers'][0].update(
@@ -43,7 +43,6 @@ def update_command(data, imageName, live_args):
 def update_imageName(data, imageName, isVOD):
     if imageName == "hw":
         data['spec']['template']['spec']['containers'][0]['resources']['limits']['gpu.intel.com/i915'] = 1
-
     return data
 
 def update_nodeSelector(data, nodeName):

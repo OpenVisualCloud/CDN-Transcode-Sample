@@ -48,4 +48,5 @@ done
 
 kubectl delete secret self-signed-certificate 2> /dev/null || echo -n ""
 
-rm -rf $DIR/$EXT
+rm -rf $DIR/../../volume/video/hls/*
+rm -rf $DIR/../../volume/video/dash/*
