@@ -3,8 +3,6 @@
 DIR=$(dirname $(readlink -f "$0"))
 export NGINX_LOG_VOLUME=$(readlink -f "/var/log/nginx")
 
-EXT=*.yaml
-
 # Set Bash color
 ECHO_PREFIX_INFO="\033[1;32;40mINFO...\033[0;0m"
 ECHO_PREFIX_ERROR="\033[1;31;40mError...\033[0;0m"
@@ -62,26 +60,15 @@ for i in $(find "$DIR" -maxdepth 1 -name "*certificates.yaml"); do
     done
 done
 
-rm -rf $DIR/$EXT
+rm -rf $DIR/../../volume/video/hls/*
+rm -rf $DIR/../../volume/video/dash/*
 
 sudo mkdir -p "${NGINX_LOG_VOLUME}"
 
-yml="$DIR/docker-compose-template.yml"
-test -f "$yml"
-
-dcv="$(kompose version | cut -f1 -d' ')"
-mdcv="$(printf '%s\n' $dcv 1.16 | sort -r -V | head -n 1)"
-if test "$mdcv" = "1.16"; then
-    echo ""
-    echo "kompose >=1.16 is required."
-    echo "Please upgrade kompose at https://docs.docker.com/compose/install."
-    echo ""
-    exit 0
-fi
-
-kompose convert -f "$yml" -o "$DIR"
-
-"$DIR/run_with_command.py" "$DIR"
+NVODS="${2:-1}"
+NLIVES="${3:-1}"
+echo "Generating yamls with NVODS=${NVODS}, NLIVES=${NLIVES}"
+"$DIR/run_with_command.py" "$DIR" ${NVODS} ${NLIVES}
 
 "$DIR/../certificate/self-sign.sh"
 create_secret 2>/dev/null || (kubectl delete secret self-signed-certificate; create_secret)

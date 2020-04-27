@@ -3,3 +3,8 @@ volume/video/*
 deployment/docker-swarm/dhparam.pem
 deployment/docker-swarm/self.crt
 deployment/docker-swarm/self.key
+deployment/kubernetes/*.yaml
+deployment/kubernetes/*.cfg
+deployment/kubernetes/__pycache__/
+deployment/certificate/self.crt
+deployment/certificate/self.key

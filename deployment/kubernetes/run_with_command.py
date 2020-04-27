@@ -11,7 +11,6 @@ import socket
 import functools
 sys.path.append(sys.argv[1])
 
-
 def get_node_num():
     node_num = int(os.popen(
         "kubectl get node | awk '{print $1}' | sed -n '2, $p' | wc -l").read())
@@ -142,200 +141,60 @@ def input_node_name(service_name, pods_dict, image_name="sw"):
     pods_dict[service_name]["node"] = node_name
     return pods_dict
 
-def input_request_cpu(service_name, node_dict, pods_dict):
-    cpu_quota = input("Please input run " +
-                      service_name + " request cpu core number: ")
-    while True:
-        if re.match(r"\d{1,2}(\.\d+)?$", cpu_quota) and node_dict[pods_dict[service_name]["node"]]["cpu"] > float(cpu_quota) > 0:
-            node_dict[pods_dict[service_name]
-                      ["node"]]["cpu"] -= float(cpu_quota)
-            pods_dict[service_name]["cpu"] = float(cpu_quota)
-            break
-        else:
-            cpu_quota = input("Input error, please input run " +
-                              service_name + " request cpu core number again: ")
-    return node_dict, pods_dict
-
-def input_request_mem(service_name, node_dict, pods_dict):
-    mem_quota = input("Please input run " + service_name +
-                      " request memory quota(MiB): ")
-    while True:
-        if re.match(r"\d{3,5}$", mem_quota) and node_dict[pods_dict[service_name]["node"]]["memory"] > int(mem_quota) > 0:
-            node_dict[pods_dict[service_name]["node"]
-                      ]["memory"] -= int(mem_quota)
-            pods_dict[service_name]["memory"] = int(mem_quota)
-            break
-        else:
-            mem_quota = input("Input error, please input run " +
-                              service_name + " request memory quota(MiB) again: ")
-    return node_dict, pods_dict
-
-def deploy_transcode_cluster(service_name):
-    ret = input("Do you need to deploy the " + service_name +
-                " transcode service? ([y] or [n]): ")
-    while True:
-        if ret.lower() == "y":
-            configure_transcode_service(service_name)
-            break
-        elif ret.lower() == "n":
-            break
-        else:
-            ret = input("Input error, do you need to deploy the " +
-                        service_name + " transcode service? ([y] or [n]): ")
-
-def configure_live_transcode_args(service_name, deploy_type, image_name):
-    if deploy_type == "auto":
-        pods_dict[service_name]["input"] = video_list[0]
-        pods_dict[service_name]["transcode0"] = {
-            'codec': 'AVC', 'protocol': 'HLS', 'resolution': '856:480', 'bitrate': '5', 'output': 'output_name'}
-        return
-
-    if len(video_list) == 1:
-        input_video = video_list[0]
+def input_request_cpu(service_name, node_dict, pods_dict, cpu_quota):
+    if re.match(r"\d{1,2}(\.\d+)?$", cpu_quota) and node_dict[pods_dict[service_name]["node"]]["cpu"] > float(cpu_quota) > 0:
+        node_dict[pods_dict[service_name]
+                  ["node"]]["cpu"] -= float(cpu_quota)
+        pods_dict[service_name]["cpu"] = float(cpu_quota)
     else:
-        input_video = input(
-            "Please choose the one video clip to transcode (" + str(video_list)[1:-1] + "): ")
-        while True:
-            if input_video in video_list:
-                break
-            else:
-                input_video = input(
-                    "Input error, please choose the one video clip to transcode again (" + str(video_list)[1:-1] + "): ")
-    pods_dict[service_name]["input"] = input_video
+        print("Error: Overload! Pleaes redistribute cpu request in cpu_mem_managerment.cfg")
+        os._exit()
+    return node_dict, pods_dict
 
-    output_channel = input("Please choose the output channel (1, 2 ,3, 4): ")
-    while True:
-        if output_channel in ["1", "2", "3", "4"]:
-            break
-        else:
-            output_channel = input(
-                "Input error, please choose the output channel again (1, 2 ,3, 4): ")
+def input_request_mem(service_name, node_dict, pods_dict, mem_quota):
+    if re.match(r"\d{3,5}$", mem_quota) and node_dict[pods_dict[service_name]["node"]]["memory"] > int(mem_quota) > 0:
+        node_dict[pods_dict[service_name]["node"]
+                  ]["memory"] -= int(mem_quota)
+        pods_dict[service_name]["memory"] = int(mem_quota)
+    else:
+        print("Error: Overload! Pleaes redistribute memory request in cpu_mem_managerment.cfg")
+        os._exit()
+    return node_dict, pods_dict
 
-    output_dict = {}
-    protocol_dict = {"a": "HLS", "b": "DASH"}
-    protocol_str = ', '.join([("\033[0;31;40m" + key + "\033[0m: " + value)
-                              for key, value in protocol_dict.items()])
-    resolution_dict = {"a": ["hd480", "856:480"], "b": ["hd720", "1280:720"], "c": [
-        "hd1080", "1920:1080"], "d": ["2kqhd", "2560:1440"]}
-    resolution_str = ', '.join([("\033[0;31;40m" + key + "\033[0m: " + value[0])
-                                for key, value in resolution_dict.items()])
-    codec_dict = {"sw": {"AVC": "libx264", "HEVC": "libsvt_hevc",
-                         "AV1": "libsvt_av1"}, "hw": {"AVC": "h264_vaapi", "HEVC": "hevc_vaapi"}}
-
-    for i in range(int(output_channel)):
-        pods_dict[service_name]["transcode" + str(i)] = {}
-        codec = input("Please choose the %dth output encoder (%s): " % (
-            i + 1, str(list(codec_dict[image_name].keys()))[1:-1]))
-        while True:
-            if codec_dict[image_name].get(codec.upper()):
-                break
-            else:
-                codec = input("Input error, please choose the %dth output encoder again (%s): " % (
-                    i + 1, str(list(codec_dict[image_name].keys()))[1:-1]))
-
-        pods_dict[service_name]["transcode" + str(i)]["codec"] = codec.upper()
-
-        resolution_key = input(
-            "Please choose the %dth output resolution (%s): " % (i + 1, resolution_str))
-        while True:
-            if resolution_key.lower() in resolution_dict.keys():
-                break
-            else:
-                resolution_key = input(
-                    "Input error, please choose the %dth output resolution again(%s): " % (i + 1, resolution_str))
-
-        pods_dict[service_name]["transcode" +
-                                str(i)]["resolution"] = resolution_dict[resolution_key.lower()][1]
-
-        bitrate = input(
-            "Please enter the %dth output bitrate([1-20]Mbps): " % (i + 1))
-        while True:
-            if re.match(r"(([1-9])|(1\d))$", bitrate):
-                break
-            else:
-                bitrate = input(
-                    "Input error, please enter the %dth output bitrate again([1-20]Mbps): " % (i + 1))
-
-        pods_dict[service_name]["transcode" + str(i)]["bitrate"] = bitrate
-
-        protocol_key = input(
-            "Please choose the %dth output streaming media communication protocol(%s): " % (i + 1, protocol_str))
-        while True:
-            if protocol_key.lower() in protocol_dict.keys():
-                break
-            else:
-                protocol_key = input(
-                    "Input error, please choose the %dth output streaming media communication protocol again (%s): " % (i + 1, protocol_str))
-
-        pods_dict[service_name]["transcode" +
-                                str(i)]["protocol"] = protocol_dict[protocol_key.lower()]
-
-        output_name = input(
-            "Please enter the %dth output video clip name: " % (i + 1))
-        while True:
-            if re.match(r'^[^\\\s/:\*\?"<>\|]+$', output_name):
-                if output_name in output_dict.keys():
-                    output_name = input(
-                        "The output video clip name already exists, please enter the %dth output video clip name again: " % (i + 1))
-                else:
-                    break
-            else:
-                output_name = input(
-                    "Input error, please enter the %dth output video clip name again: " % (i + 1))
-        pods_dict[service_name]["transcode" + str(i)]["output"] = output_name
+def configure_live_transcode_args(service_name, num, trans_cfg_dict, image_name):
+    pods_dict[service_name]["input"] = trans_cfg_dict[service_name]['url']
+    for trans_num in range(int(trans_cfg_dict[service_name]['density'])):
+        pods_dict[service_name]["transcode" + str(trans_num)] = {
+        'codec': trans_cfg_dict[service_name]['encoder_type'], 'protocol': trans_cfg_dict[service_name]['protocol'], 'resolution': trans_cfg_dict[service_name]['width_height'], 'bitrate': trans_cfg_dict[service_name]['bitrate'], 'framerate':trans_cfg_dict[service_name]['framerate'], 'gop': trans_cfg_dict[service_name]['gop'], 'maxbFrames': trans_cfg_dict[service_name]['maxbframes'], 'refsNum': trans_cfg_dict[service_name]['refsnum'], 'preset': trans_cfg_dict[service_name]['preset'], 'output': 'output_name'}
     return
 
-def configure_transcode_service(service_name):
+def configure_transcode_service(service_name, num, trans_cfg_dict):
     global hw_node_num
 
-    i = 0
-    while True:
-        service_name_index = re.search(
-            "((vod)|(live))(\d*)", service_name).group(1) + str(i)
-        pods.append(service_name_index)
-        pods_dict[service_name_index] = {}
-        if hw_node_num > 0:
-            image_name = input("Please choose the transcode mode of the " + str(i) + "th" + service_name +
-                               " ([hw]: hardware is for E3/VCA2 or [sw]: software is for E5): ")
-            while True:
-                if image_name.lower() == "sw" or image_name.lower() == "hw":
-                    hw_node_num -= 1 if image_name.lower() == "hw" else 0
-                    break
-                else:
-                    image_name = input("Input error, please choose the transcode mode of the " + str(i) + "th" + service_name +
-                                       " again ([hw]: hardware is for E3/VCA2 or [sw]: software is for E5): ")
-        else:
-            image_name = "sw"
-        pods_dict[service_name_index]["mode"] = image_name
+    for i in range(int(num)):
+       service_name_index = re.search(
+           "((vod)|(live))(\d*)", service_name).group(1) + str(i)
+       pods.append(service_name_index)
+       pods_dict[service_name_index] = {}
+       if hw_node_num > 0:
+           if trans_cfg_dict[service_name_index]['hwaccel'] == 'true':
+               image_name = "hw"
+           elif trans_cfg_dict[service_name_index]['hwaccel'] == 'false':
+               image_name = "sw"
+           while True:
+               if image_name.lower() == "sw" or image_name.lower() == "hw":
+                   hw_node_num -= 1 if image_name.lower() == "hw" else 0
+                   break
+               else:
+                   image_name = input("Input error, please choose the transcode mode of the " + str(i) + "th" + service_name +
+                                      " again ([hw]: hardware is for E3/VCA2 or [sw]: software is for E5): ")
+       else:
+           image_name = "sw"
+       pods_dict[service_name_index]["mode"] = image_name
 
-        if re.search("live\d+", service_name_index):
-            deploy_type = input(
-                "Do you need to deploy live-transcode-service by customizing parameters([y] or [n]): ")
-            while True:
-                if deploy_type.lower() == "y":
-                    deploy_type = "manual"
-                    break
-                elif deploy_type.lower() == "n":
-                    deploy_type = "auto"
-                    break
-                else:
-                    deploy_type = input(
-                        "Input error, do you need to deploy live-transcode-service by customizing parameters([y] or [n]): ")
-
-            configure_live_transcode_args(
-                service_name_index, deploy_type, image_name.lower())
-
-        i += 1
-        create_node = input("Do you still need to deploy the " +
-                            str(i + 1) + "th " + service_name + "? ([y] or [n]): ")
-        while True:
-            if create_node.lower() == "y" or create_node.lower() == "n":
-                break
-            else:
-                create_node = input("Input error, do you still need to deploy the " +
-                                    str(i + 1) + "th " + service_name + "? ([y] or [n]): ")
-        if create_node.lower() == "n":
-            break
+       if re.search("live\d+", service_name_index):
+           configure_live_transcode_args(
+               service_name_index, num, trans_cfg_dict, image_name.lower())
 
 def get_node_information():
     node_dict = {}
@@ -355,6 +214,14 @@ def get_node_information():
                                 ).group(1)] = {"cpu": cpu, "memory": memory}
     return node_dict
 
+def get_config(config_file):
+    import configparser
+    config = configparser.ConfigParser()
+    config.read(config_file)
+    config_dict = dict(config._sections)
+    for k in config_dict:
+        config_dict[k] = dict(config_dict[k])
+    return config_dict
 
 node_num = get_node_num()
 
@@ -369,13 +236,20 @@ pods_dict = {"cdn": {}, "redis": {}, "zookeeper": {}, "kafka": {}}
 node_dict = get_node_information()
 pods = ["cdn", "redis", "zookeeper", "kafka"]
 
-deploy_transcode_cluster("vod")
-deploy_transcode_cluster("live")
+DIRS = sys.argv[1]
+NVODS = sys.argv[2]
+NLIVES = sys.argv[3]
+transcode_cfg = DIRS + '/transcode.cfg'
+cpu_mem_cfg = DIRS + '/cpu_mem_managerment.cfg'
+trans_cfg_dict = get_config(transcode_cfg)
+cpu_mem_cfg_dict = get_config(cpu_mem_cfg)
+
+configure_transcode_service("vod", NVODS, trans_cfg_dict)
+configure_transcode_service("live", NLIVES, trans_cfg_dict)
 
 for pod in pods:
     pods_dict = input_node_name(pod, pods_dict)
-    node_dict, pods_dict = input_request_cpu(pod, node_dict, pods_dict)
-    node_dict, pods_dict = input_request_mem(pod, node_dict, pods_dict)
+    node_dict, pods_dict = input_request_cpu(pod, node_dict, pods_dict, cpu_mem_cfg_dict[pod]['cpu'])
+    node_dict, pods_dict = input_request_mem(pod, node_dict, pods_dict, cpu_mem_cfg_dict[pod]['mem'])
 
-update_yaml.update_yaml(nfs_server, volume_directory, sys.argv[1],
-                        pods, pods_dict, get_node_information())
+update_yaml.update_yaml(nfs_server, volume_directory, sys.argv[1], pods, pods_dict, get_node_information(),trans_cfg_dict)
