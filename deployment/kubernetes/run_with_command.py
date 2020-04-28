@@ -239,13 +239,16 @@ pods = ["cdn", "redis", "zookeeper", "kafka"]
 DIRS = sys.argv[1]
 NVODS = sys.argv[2]
 NLIVES = sys.argv[3]
-transcode_cfg = DIRS + '/transcode.cfg'
+live_transcode_cfg = DIRS + '/live-transcode.cfg'
+vod_transcode_cfg = DIRS + '/vod-transcode.cfg'
 cpu_mem_cfg = DIRS + '/cpu_mem_managerment.cfg'
-trans_cfg_dict = get_config(transcode_cfg)
+live_trans_cfg_dict = get_config(live_transcode_cfg)
+vod_trans_cfg_dict = get_config(vod_transcode_cfg)
 cpu_mem_cfg_dict = get_config(cpu_mem_cfg)
+trans_cfg_dict = {**live_trans_cfg_dict, **vod_trans_cfg_dict}
 
-configure_transcode_service("vod", NVODS, trans_cfg_dict)
-configure_transcode_service("live", NLIVES, trans_cfg_dict)
+configure_transcode_service("vod", NVODS, vod_trans_cfg_dict)
+configure_transcode_service("live", NLIVES, live_trans_cfg_dict)
 
 for pod in pods:
     pods_dict = input_node_name(pod, pods_dict)

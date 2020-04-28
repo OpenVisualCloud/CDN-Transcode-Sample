@@ -1,14 +1,17 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: heapster
   namespace: kube-system
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: heapster
   template:
     metadata:
       labels:
-        k8s-app: heapster
+        app: heapster
     spec:
       serviceAccountName: admin
       containers:

@@ -19,7 +19,7 @@ cat <<EOF >> ${DIR}/cpu_mem_managerment.cfg
 cpu = 2
 mem = 2000
 [redis]
-cpu = 0.5
+cpu = 1
 mem = 500
 [zookeeper]
 cpu = 1
@@ -32,10 +32,10 @@ EOF
 for ((VODIDX=0;VODIDX<${NVODS};VODIDX++)); do
     cat <<EOF >> ${DIR}/cpu_mem_managerment.cfg
 [vod${VODIDX}]
-cpu = 1.5
+cpu = 3
 mem = 3000
 EOF
-    cat <<EOF >> ${DIR}/transcode.cfg
+    cat <<EOF >> ${DIR}/vod-transcode.cfg
 [vod${VODIDX}]
 hwaccel = false
 EOF
@@ -44,10 +44,10 @@ done
 for ((LIVEIDX=0;LIVEIDX<${NLIVES};LIVEIDX++)); do
     cat <<EOF >> ${DIR}/cpu_mem_managerment.cfg
 [live${LIVEIDX}]
-cpu = 1.5
+cpu = 4
 mem = 3000
 EOF
-    cat <<EOF >> ${DIR}/transcode.cfg
+    cat <<EOF >> ${DIR}/live-transcode.cfg
 [live${LIVEIDX}]
 url = bbb_sunflower_1080p_30fps_normal.mp4
 width_height = 856x480
