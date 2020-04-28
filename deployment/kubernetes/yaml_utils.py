@@ -21,6 +21,7 @@ def update_service_name(data, service_name):
     data["spec"]["template"]["metadata"]["labels"]["app"] = service_name
     data["metadata"]["labels"]["app"] = service_name
     data["spec"]["template"]["spec"]["containers"][0]["name"] = service_name
+    data["spec"]["selector"]["matchLabels"]["app"] = service_name
     return data
 
 def update_command(data, imageName, live_args):

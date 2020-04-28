@@ -62,7 +62,7 @@ if [ "$LINUX_DISTRO" == "Ubuntu" ]; then
 deb https://apt.kubernetes.io/ kubernetes-xenial main
 EOF
     try_command apt-get update
-    try_command apt-get install -y kubelet=1.15.3-00 kubeadm=1.15.3-00 kubectl=1.15.3-00 openssh-client fabric
+    try_command apt-get install -y kubelet=1.18.2-00 kubeadm=1.18.2-00 kubectl=1.18.2-00 openssh-client fabric
     try_command apt-mark hold kubelet kubeadm kubectl
 elif [ "$LINUX_DISTRO" == "CentOS" ]; then
     cat <<EOF > /etc/yum.repos.d/kubernetes.repo
@@ -75,7 +75,7 @@ repo_gpgcheck=1
 gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
 exclude=kube*
 EOF
-yum install -y kubelet-1.15.3 kubeadm-1.15.3 kubectl-1.15.3 openssh-clients fabric --disableexcludes=kubernetes
+    try_command yum install -y kubelet-1.18.2-0 kubeadm-1.18.2-0 kubectl-1.18.2-0 openssh-clients fabric --disableexcludes=kubernetes
 else
     echo -e $ECHO_PREFIX_INFO "The installation will be cancelled."
     echo -e $ECHO_PREFIX_INFO "The CDN-Transcode-Sample does not support this OS, please use Ubuntu 18.04 or CentOS 7.6.\n"
@@ -112,7 +112,7 @@ try_command systemctl restart kubelet
 # Kubeadm init
 unset http_proxy
 unset https_proxy
-try_command kubeadm init --kubernetes-version=v1.15.3 --pod-network-cidr=10.244.0.0/16
+try_command kubeadm init --kubernetes-version=v1.18.2 --pod-network-cidr=10.244.0.0/16
 try_command mkdir -p $HOME/.kube
 try_command cp -f /etc/kubernetes/admin.conf $HOME/.kube/config
 try_command chown $(id -u):$(id -g) $HOME/.kube/config
@@ -122,7 +122,7 @@ try_command kubectl taint nodes --all node-role.kubernetes.io/master-
 # Set Proxy if need
 export http_proxy=$proxy_http
 export https_proxy=$proxy_https
-try_command kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/a70459be0084506e4ec919aa1c114638878db11b/Documentation/kube-flannel.yml
+try_command kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/2140ac876ef134e0ed5af15c65e414cf26827915/Documentation/kube-flannel.yml
 try_command sed -i '/- kube-apiserver/a\\    - --service-node-port-range=1-65535' /etc/kubernetes/manifests/kube-apiserver.yaml
 
 echo -e $ECHO_PREFIX_INFO "Installation completed."

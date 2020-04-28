@@ -1,10 +1,13 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
     app: zookeeper-service
   name: zookeeper-service
 spec:
+  selector:
+    matchLabels:
+      app: zookeeper-service
   replicas: 1
   template:
     metadata:

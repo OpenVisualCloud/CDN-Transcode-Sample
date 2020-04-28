@@ -1,10 +1,13 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
     app: redis-service
   name: redis-service
 spec:
+  selector:
+    matchLabels:
+      app: redis-service
   replicas: 1
   template:
     metadata:

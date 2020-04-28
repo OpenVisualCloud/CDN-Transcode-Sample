@@ -25,7 +25,7 @@ set -e
 
 kubectl create -f "$DIR/namespace/namespace.yaml"
 
-kubectl create secret generic grafana-ssl-certificates --namespace=pgmon --from-file=self.key="$DIR/../../../self-certificates/self.key" --from-file=self.crt="$DIR/../../../self-certificates/self.crt" --dry-run -o yaml > "$DIR/grafana-ssl-certificates.yaml"
+kubectl create secret generic grafana-ssl-certificates --namespace=pgmon --from-file=self.key="$DIR/../../certificate/self.key" --from-file=self.crt="$DIR/../../certificate/self.crt" --dry-run -o yaml > "$DIR/grafana-ssl-certificates.yaml"
 
 for i in $(find "$DIR" -path "$DIR/namespace" -a -prune -o -name "*.yaml" -print); do
     kubectl create -f "$i"

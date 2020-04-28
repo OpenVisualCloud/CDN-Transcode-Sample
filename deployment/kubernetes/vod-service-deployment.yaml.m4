@@ -1,10 +1,13 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
     app: vod-service
   name: vod-service
 spec:
+  selector:
+    matchLabels:
+      app: vod-service
   replicas: 1
   template:
     metadata:

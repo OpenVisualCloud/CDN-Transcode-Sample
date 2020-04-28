@@ -1,10 +1,13 @@
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
     app: live-service
   name: live-service
 spec:
+  selector:
+    matchLabels:
+      app: live-service
   replicas: 1
   template:
     metadata:

@@ -42,7 +42,7 @@ try_command lsb_release -si > /dev/null
 LINUX_DISTRO=`lsb_release -si`
 
 if [ "$LINUX_DISTRO" == "Ubuntu" ]; then
-    try_command apt-get remove kubelet kubeadm kubectl
+    try_command apt-get purge kubelet kubeadm kubectl
     try_command apt -y autoremove
 elif [ "$LINUX_DISTRO" == "CentOS" ]; then
     try_command yum autoremove kubelet kubeadm kubectl
