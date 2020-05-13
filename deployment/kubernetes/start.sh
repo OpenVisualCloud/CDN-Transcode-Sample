@@ -68,7 +68,7 @@ sudo mkdir -p "${NGINX_LOG_VOLUME}"
 NVODS="${2:-1}"
 NLIVES="${3:-1}"
 echo "Generating yamls with NVODS=${NVODS}, NLIVES=${NLIVES}"
-NODES=$(kubectl get node | awk '{print $1}' | sed -n '2, $p')
+NODES="$(kubectl get node | awk '{print $1}' | sed -n '2, $p')"
 DESCRIPTIONS="$(kubectl get node --no-headers -o custom-columns=NAME:metadata.name,CPU:status.capacity.cpu,MEM:status.capacity.memory)"
 "$DIR/run_with_command.py" "$DIR" ${NVODS} ${NLIVES} "$NODES" "$DESCRIPTIONS"
 

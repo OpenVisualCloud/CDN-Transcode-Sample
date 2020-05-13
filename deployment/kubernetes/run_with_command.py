@@ -205,7 +205,7 @@ def get_config(config_file):
         config_dict[k] = dict(config_dict[k])
     return config_dict
 
-sw_node_name_list = sys.argv[4].split(" ")
+sw_node_name_list = sys.argv[4].split("\n")
 node_num=len(sw_node_name_list)
 sw_node_name_list = list(filter(None, sw_node_name_list))
 hw_node_name_list = copy.deepcopy(sw_node_name_list)
