@@ -11,16 +11,6 @@ import socket
 import functools
 sys.path.append(sys.argv[1])
 
-def get_node_num():
-    node_num = int(os.popen(
-        "kubectl get node | awk '{print $1}' | sed -n '2, $p' | wc -l").read())
-    if node_num == 0:
-        print("Error, no nodes were found, please check environment!!!")
-        os._exit(1)
-    print("There are " + str(node_num) +
-          " kubernetes nodes on your host server!!!")
-    return node_num
-
 def ping(host):
     cmd = 'ping -c %d %s' % (1, host)
     p = subprocess.Popen(args=cmd, shell=True,
@@ -196,22 +186,14 @@ def configure_transcode_service(service_name, num, trans_cfg_dict):
            configure_live_transcode_args(
                service_name_index, num, trans_cfg_dict, image_name.lower())
 
-def get_node_information():
-    node_dict = {}
-    basic_info = os.popen("kubectl describe node").read()
-    index_list = [i.start() for i in re.finditer("Name:", basic_info)]
-    for i in range(len(index_list)):
-        cpu_info = re.findall(
-            "(\d+)", os.popen("kubectl describe node | awk -F ' ' '$1==\"cpu\"' |awk 'NR==" + str(i+1) + "'").read())
-        memory_info = re.findall(
-            "(\d+)", os.popen("kubectl describe node | awk -F ' ' '$1==\"memory\" {print $0}'").read())
-        cpu = int(int(re.search(
-            "cpu:\s+(\d+)", basic_info[index_list[i]: -1]).group(1)) - int(cpu_info[0])/1000)
-        memory = int((int(re.search(
-            "memory:\s+(\d+)", basic_info[index_list[i]: -1]).group(1)) / 1024 - int(memory_info[0])))
-        if cpu > 0 and memory > 0:
-            node_dict[re.search("Name:\s+(.+)", basic_info[index_list[i]: -1]
-                                ).group(1)] = {"cpu": cpu, "memory": memory}
+def get_node_information(description):
+    node_dict={}
+    for line in description.split("\n"):
+        fields=line.split()
+        if fields[2].endswith("Ki"): memory=int(fields[2][:-2])/1024
+        if fields[2].endswith("Mi"): memory=int(fields[2][:-2])
+        if fields[2].endswith("Gi"): memory=int(fields[2][:-2])*1024
+        node_dict[fields[0]]={ "cpu": int(fields[1]), "memory": int(memory) }
     return node_dict
 
 def get_config(config_file):
@@ -223,22 +205,23 @@ def get_config(config_file):
         config_dict[k] = dict(config_dict[k])
     return config_dict
 
-node_num = get_node_num()
-
-sw_node_name_list = os.popen(
-    "kubectl get node | awk '{print $1}' | sed -n '2, $p'").read().split("\n")
+sw_node_name_list = sys.argv[4].split(" ")
+node_num=len(sw_node_name_list)
 sw_node_name_list = list(filter(None, sw_node_name_list))
 hw_node_name_list = copy.deepcopy(sw_node_name_list)
 hw_node_num = len(hw_node_name_list)
 nfs_server, volume_directory, video_list = configure_basic_module(node_num)
 
 pods_dict = {"cdn": {}, "redis": {}, "zookeeper": {}, "kafka": {}}
-node_dict = get_node_information()
+node_dict = get_node_information(sys.argv[5])
 pods = ["cdn", "redis", "zookeeper", "kafka"]
 
 DIRS = sys.argv[1]
 NVODS = sys.argv[2]
 NLIVES = sys.argv[3]
+NNODES = sys.argv[4]
+NODE_DESCRIPTION = sys.argv[5]
+
 live_transcode_cfg = DIRS + '/live-transcode.cfg'
 vod_transcode_cfg = DIRS + '/vod-transcode.cfg'
 cpu_mem_cfg = DIRS + '/cpu_mem_managerment.cfg'

@@ -8,9 +8,9 @@ export NGINX_LOG_VOLUME=$(readlink -f "/var/log/nginx")
 export HTML_VOLUME=$(readlink -f "$DIR/../../volume/html")
 export SECRETS_VOLUME=$(readlink -f "$DIR/../certificate")
 
-sudo docker container prune -f
-sudo docker volume prune -f
-sudo docker network prune -f
+docker container prune -f
+docker volume prune -f
+docker network prune -f
 sudo rm -rf "${VIDEO_DASH_VOLUME}" "${VIDEO_HLS_VOLUME}"
 sudo mkdir -p "${VIDEO_DASH_VOLUME}" "${VIDEO_HLS_VOLUME}" "${NGINX_LOG_VOLUME}"
 
@@ -30,12 +30,12 @@ docker_compose)
     fi
     export USER_ID=$(id -u)
     export GROUP_ID=$(id -g)
-    sudo -E docker-compose -f "$yml" -p ovc --compatibility up
+    docker-compose -f "$yml" -p ovc --compatibility up
     ;;
 *)
     export USER_ID=$(id -u)
     export GROUP_ID=$(id -g)
     "$DIR/../certificate/self-sign.sh"
-    sudo -E docker stack deploy -c "$yml" ovc
+    docker stack deploy -c "$yml" ovc
     ;;
 esac

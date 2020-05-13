@@ -15,13 +15,13 @@ docker_compose)
         echo ""
         exit 0
     fi
-    sudo docker-compose -f "$yml" -p ovc --compatibility down
+    docker-compose -f "$yml" -p ovc --compatibility down
     ;;
 *)
-    sudo docker stack rm ovc
+    docker stack rm ovc
     ;;
 esac
 
-sudo docker container prune -f
-sudo docker volume prune -f
-sudo docker network prune -f
+docker container prune -f
+docker volume prune -f
+docker network prune -f
