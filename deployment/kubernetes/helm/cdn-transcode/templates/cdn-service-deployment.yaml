@@ -33,6 +33,13 @@ spec:
           - mountPath: /var/www/html
             name: html
             readOnly: true
+          - mountPath: /var/www/archive
+            name: archive
+            readOnly: true
+          - mountPath: /var/www/dash
+            name: dash
+          - mountPath: /var/www/hls
+            name: hls
       volumes:
         - name: secrets
           secret:
@@ -40,4 +47,13 @@ spec:
         - name: html
           persistentVolumeClaim:
             claimName: html
+        - name: archive
+          persistentVolumeClaim:
+            claimName: video-archive
+        - name: dash
+          persistentVolumeClaim:
+            claimName: video-dash
+        - name: hls
+          persistentVolumeClaim:
+            claimName: video-hls
       restartPolicy: Always

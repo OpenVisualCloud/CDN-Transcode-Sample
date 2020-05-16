@@ -1,0 +1,13 @@
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: video-dash
+spec:
+  accessModes:
+    - ReadWriteMany
+  storageClassName: video-dash
+  resources:
+    requests:
+      storage: "{{ .Values.volume.video.dash.size }}"
+
