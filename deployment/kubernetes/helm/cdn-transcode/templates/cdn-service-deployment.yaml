@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: cdn-service
+  name: cdn-service
+spec:
+  selector:
+    matchLabels:
+      app: cdn-service
+  replicas: 1
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: cdn-service
+    spec:
+      containers:
+      - args:
+        - bash
+        - -c
+        - /home/main.py&/usr/local/sbin/nginx
+        image: ovc_cdn_service:latest
+        imagePullPolicy: IfNotPresent
+        name: cdn-service
+        ports:
+        - containerPort: 8080
+        - containerPort: 1935
+        volumeMounts:
+          - mountPath: /var/run/secrets
+            name: secrets
+            readOnly: true
+          - mountPath: /var/www/html
+            name: html
+            readOnly: true
+      volumes:
+        - name: secrets
+          secret:
+            secretName: self-signed-certificate
+        - name: html
+          persistentVolumeClaim:
+            claimName: html
+      restartPolicy: Always
