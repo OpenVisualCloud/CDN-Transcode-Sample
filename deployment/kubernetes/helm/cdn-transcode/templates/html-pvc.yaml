@@ -1,0 +1,13 @@
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: html
+spec:
+  accessModes:
+    - ReadOnlyMany
+  storageClassName: html
+  resources:
+    requests:
+      storage: "{{ .Values.volume.html.size }}"
+

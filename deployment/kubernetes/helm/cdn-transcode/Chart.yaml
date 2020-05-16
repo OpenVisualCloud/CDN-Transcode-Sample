@@ -1,0 +1,10 @@
+apiVersion: v2
+appVersion: 0.1.0
+description: A Helm chart for the CDN Transcode sample
+home: https://github.com/OpenVisualCloud/CDN-Transocde-Sample
+icon: https://raw.githubusercontent.com/OpenVisualCloud/CDN-Transcode-Sample/master/volume/html/favicon.ico
+name: cdn-transcode-sample
+sources:
+- https://github.com/OpenVisualCloud/CDN-Transcode-Sample
+type: application
+version: 0.1.0

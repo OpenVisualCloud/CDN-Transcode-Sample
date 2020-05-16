@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: vod-service
+  name: vod-service
+spec:
+  selector:
+    matchLabels:
+      app: vod-service
+  replicas: {{ .Values.vodTranscode.replicas }}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: vod-service
+    spec:
+      containers:
+      - args:
+        - bash
+        - -c
+        - /home/main.py
+        image: ovc_software_transcode_service:latest
+        imagePullPolicy: IfNotPresent
+        name: vod-service
+      restartPolicy: Always
