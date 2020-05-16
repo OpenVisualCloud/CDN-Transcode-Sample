@@ -13,4 +13,4 @@ create_secret 2>/dev/null || (kubectl delete secret self-signed-certificate; cre
 for yaml in $(find "$DIR" -maxdepth 1 -name "*-pv.yaml" -print); do
     kubectl apply -f "$yaml"
 done
-helm install smtc "$DIR/cdn-transcode"
+helm install cdn-transcode "$DIR/cdn-transcode"

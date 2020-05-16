@@ -2,7 +2,7 @@
 
 DIR=$(dirname $(readlink -f "$0"))
 
-helm uninstall smtc
+helm uninstall cdn-transcode
 
 # delete pvs and scs
 for yaml in $(find "${DIR}" -maxdepth 1 -name "*-pv.yaml" -print); do
