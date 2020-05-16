@@ -1,25 +1,52 @@
+
+{{- range $i,$v1 := .Values.liveTranscode.streams }}
+{{- if lt (int $i) (int $.Values.liveTranscode.replicas) }}
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: live-service
-  name: live-service
+    app: live-service-{{ $i }}
+  name: live-service-{{ $i }}
 spec:
   selector:
     matchLabels:
-      app: live-service
-  replicas: {{ .Values.liveTranscode.replicas }}
+      app: live-service-{{ $i }}
+  replicas: 1
   template:
     metadata:
       creationTimestamp: null
       labels:
-        app: live-service
+        app: live-service-{{ $i }}
     spec:
       containers:
       - image: ovc_software_transcode_service:latest
-        command: ["/bin/bash","-c","ffmpeg -re -stream_loop -1 -i /var/www/archive/bbb_sunflower_1080p_30fps_normal.mp4 -vf scale=2560:1440 -c:v libsvt_hevc -b:v 15M -forced-idr 1 -f flv rtmp://cdn-service/hls/big_buck_bunny_2560x1440 -vf scale=1920:1080 -c:v libsvt_hevc -b:v 10M -forced-idr 1 -f flv rtmp://cdn-service/hls/big_buck_bunny_1920x1080 -vf scale=1280:720 -c:v libx264 -b:v 8M -f flv rtmp://cdn-service/hls/big_buck_bunny_1280x720 -vf scale=854:480 -c:v libx264 -b:v 6M -f flv rtmp://cdn-service/hls/big_buck_bunny_854x480 -abr_pipeline"]
         imagePullPolicy: IfNotPresent
-        name: live-service
+        command: ["/usr/local/bin/ffmpeg","-re","-stream_loop","-1",
+            "-i","{{ .name }}",
+{{- range $k,$v2 := .transcode }}
+            "-vf","scale={{ .scale }}",
+            "-c:v","{{ .encoderType }}",
+            "-b:v","{{ .bitrate }}",
+            "-r","{{ .framerate }}",
+            "-g","{{ .gop }}",
+            "-bf","{{ .maxbframes }}",
+            "-refs","{{ .refsNum }}",
+            "-preset","{{ .preset }}",
+            "-forced-idr","1",
+{{- if eq ( hasPrefix "libsvt" .encoderType ) true }}
+            "-thread_count","96",
+{{- end }}
+            "-an",
+            "-f","flv","rtmp://cdn-service/{{ .protocol }}/media_{{ $i }}_{{ $k }}",
+{{- end }}
+            "-abr_pipeline"]
+        name: live-service-{{ $i }}
+        env:
+          - name: NO_PROXY
+            value: "cdn-service"
+          - name: no_proxy
+            value: "cdn-service"
         volumeMounts:
           - mountPath: /var/www/archive
             name: archive
@@ -29,3 +56,7 @@ spec:
           persistentVolumeClaim:
             claimName: video-archive
       restartPolicy: Always
+
+---
+{{- end }}
+{{- end }}
