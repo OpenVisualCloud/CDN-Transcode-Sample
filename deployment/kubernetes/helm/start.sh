@@ -10,5 +10,7 @@ function create_secret {
 "$DIR/../../certificate/self-sign.sh"
 create_secret 2>/dev/null || (kubectl delete secret self-signed-certificate; create_secret)
 
-kubectl apply -f "$DIR"/*-pv.yaml
+for yaml in $(find "$DIR" -maxdepth 1 -name "*-pv.yaml" -print); do
+    kubectl apply -f "$yaml"
+done
 helm install smtc "$DIR/cdn-transcode"

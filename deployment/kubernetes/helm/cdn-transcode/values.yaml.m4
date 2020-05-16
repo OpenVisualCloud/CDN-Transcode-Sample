@@ -17,3 +17,10 @@ cdn:
 volume:
   html: 
     size: defn(`HTML_VOLUME_SIZE')
+  video:
+    archive:
+      size: defn(`ARCHIVE_VOLUME_SIZE')
+    dash:
+      size: defn(`DASH_VOLUME_SIZE')
+    hls:
+      size: defn(`HLS_VOLUME_SIZE')

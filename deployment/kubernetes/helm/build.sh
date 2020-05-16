@@ -19,6 +19,18 @@ export HTML_VOLUME_PATH=/tmp/volume/html
 export HTML_VOLUME_SIZE=1Gi
 export HTML_VOLUME_HOST=${hosts[0]}
 
+export ARCHIVE_VOLUME_PATH=/tmp/volume/video/archive
+export ARCHIVE_VOLUME_SIZE=1Gi
+export ARCHIVE_VOLUME_HOST=${hosts[0]}
+
+export DASH_VOLUME_PATH=/tmp/volume/video/dash
+export DASH_VOLUME_SIZE=1Gi
+export DASH_VOLUME_HOST=${hosts[1]}
+
+export HLS_VOLUME_PATH=/tmp/volume/video/hls
+export HLS_VOLUME_SIZE=1Gi
+export HLS_VOLUME_HOST=${hosts[1]}
+
 for pv in "$DIR"/*-pv.yaml.m4; do
     m4 $(env | grep _VOLUME_ | sed 's/^/-D/') "$pv" > "${pv/.m4/}"
 done
