@@ -5,6 +5,10 @@ NVODS="${1:-1}"
 NLIVES="${2:-1}"
 HOSTIP=$(ip route get 8.8.8.8 | awk '/ src /{split(substr($0,index($0," src ")),f);print f[2];exit}')
 
+if [ ! -x /usr/bin/helm ] && [ ! -x /usr/local/bin/helm ]; then
+    exit 0
+fi 
+
 echo "Generating persistent volume yaml(s)"
 # list all workers
 hosts=($(kubectl get node -l vcac-zone!=yes -o custom-columns=NAME:metadata.name,STATUS:status.conditions[-1].type,TAINT:spec.taints | grep " Ready " | grep -v "NoSchedule" | cut -f1 -d' '))
