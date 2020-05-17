@@ -28,7 +28,7 @@ liveTranscode:
           gop: 100
           maxbframes: 2
           refsNum: 2
-          preset: veryfast
+          preset: 9
           encoderType: libsvt_hevc
 
 vodTranscode:
