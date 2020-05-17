@@ -19,6 +19,8 @@ liveTranscode:
           refsNum: 2
           preset: veryfast
           encoderType: libx264
+    - name: "/var/www/archive/bbb_sunflower_1080p_30fps_normal.mp4"
+      transcode:
         - protocol: hls
           scale: "856:480"
           bitrate: "8000000"
