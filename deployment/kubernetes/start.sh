@@ -67,14 +67,12 @@ sudo mkdir -p "${NGINX_LOG_VOLUME}"
 
 NVODS="${2:-1}"
 NLIVES="${3:-1}"
-REGISTRY="$4"
-
 echo "Generating yamls with NVODS=${NVODS}, NLIVES=${NLIVES}"
 NODES="$(kubectl get node | awk '{print $1}' | sed -n '2, $p')"
 DESCRIPTIONS="$(kubectl get node --no-headers -o custom-columns=NAME:metadata.name,CPU:status.capacity.cpu,MEM:status.capacity.memory)"
 "$DIR/run_with_command.py" "$DIR" ${NVODS} ${NLIVES} "$NODES" "$DESCRIPTIONS"
 
-"$DIR/../certificate/self-sign.sh" "$REGISTRY"
+"$DIR/../certificate/self-sign.sh"
 create_secret 2>/dev/null || (kubectl delete secret self-signed-certificate; create_secret)
 
 for i in $(find "$DIR" -maxdepth 1 -name "*.yaml"); do
