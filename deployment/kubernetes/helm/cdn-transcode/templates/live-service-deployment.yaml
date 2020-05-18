@@ -20,7 +20,7 @@ spec:
         app: live-service-{{ $i }}
     spec:
       containers:
-      - image: ovc_software_transcode_service:latest
+      - image: {{ $.Values.registryPrefix }}ovc_software_transcode_service:latest
         imagePullPolicy: IfNotPresent
         command: ["/usr/local/bin/ffmpeg","-re","-stream_loop","-1",
             "-i","{{ .name }}",

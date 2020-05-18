@@ -20,7 +20,7 @@ spec:
         - bash
         - -c
         - /home/main.py
-        image: ovc_software_transcode_service:latest
+        image: defn(`REGISTRY_PREFIX')ovc_software_transcode_service:latest
         imagePullPolicy: IfNotPresent
         name: vod-service
         resources:

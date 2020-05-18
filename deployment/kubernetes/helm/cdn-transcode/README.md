@@ -14,6 +14,12 @@ cmake ..
 make
 ```
 
+---
+
+If you deploy the sample to a cluster, please configure the sample, as `cmake -DREGISTRY=<registry-url> ..`, to push the sample images to the private docker registry after each build.
+
+---
+
 ### Create Shared Volumes:
 
 ```bash

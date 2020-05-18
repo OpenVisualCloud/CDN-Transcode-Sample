@@ -5,6 +5,8 @@ if test -z "${DIR}"; then
     exit -1
 fi
 
+REGISTRY="$3"
+
 # build image(s) in order (to satisfy dependencies)
 for dep in .8 .7 .6 .5 .4 .3 .2 .1 ''; do
     if test -f "${DIR}/Dockerfile$dep"; then
@@ -16,5 +18,11 @@ for dep in .8 .7 .6 .5 .4 .3 .2 .1 ''; do
         fi
 
         docker build --network=host --file="${DIR}/Dockerfile$dep" -t "$image:latest" "$DIR" $(env | grep -E '_(proxy|REPO|VER)=' | sed 's/^/--build-arg /') --build-arg UID=$(id -u) --build-arg GID=$(id -g)
+
+        # if REGISTRY is specified, push image to the private registry
+        if [ -n "$REGISTRY" ]; then
+            docker tag "$image:latest" "$REGISTRY$image:latest"
+            docker push "$REGISTRY$image:latest"
+        fi
     fi
 done
