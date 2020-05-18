@@ -7,7 +7,8 @@ function create_secret {
 }
 
 # create secrets
-"$DIR/../../certificate/self-sign.sh"
+REGISTRY="$4"
+"$DIR/../../certificate/self-sign.sh" "$REGISTRY"
 create_secret 2>/dev/null || (kubectl delete secret self-signed-certificate; create_secret)
 
 for yaml in $(find "$DIR" -maxdepth 1 -name "*-pv.yaml" -print); do
