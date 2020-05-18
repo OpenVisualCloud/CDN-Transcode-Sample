@@ -1,7 +1,6 @@
 #!/bin/bash -e
 
-REGISTRY="$1"
-IMAGE="${REGISTRY}ovc_self_certificate"
+IMAGE="ovc_self_certificate"
 DIR=$(dirname $(readlink -f "$0"))
 
 case "$(cat /proc/1/sched | head -n 1)" in

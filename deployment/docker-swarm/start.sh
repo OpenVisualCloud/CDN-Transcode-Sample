@@ -17,7 +17,6 @@ sudo mkdir -p "${VIDEO_DASH_VOLUME}" "${VIDEO_HLS_VOLUME}" "${NGINX_LOG_VOLUME}"
 yml="$DIR/docker-compose.$(hostname).yml"
 test -f "$yml" || yml="$DIR/docker-compose.yml"
 
-REGISTRY="$4"
 case "$1" in
 docker_compose)
     dcv="$(docker-compose --version | cut -f3 -d' ' | cut -f1 -d',')"
@@ -36,7 +35,7 @@ docker_compose)
 *)
     export USER_ID=$(id -u)
     export GROUP_ID=$(id -g)
-    "$DIR/../certificate/self-sign.sh" "$REGISTRY"
+    "$DIR/../certificate/self-sign.sh"
     docker stack deploy -c "$yml" ovc
     ;;
 esac
