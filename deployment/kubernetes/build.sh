@@ -3,6 +3,7 @@
 DIR=$(dirname $(readlink -f "$0"))
 NVODS="${1:-1}"
 NLIVES="${2:-1}"
+REGISTRY="$3"
 
 echo "Generating templates with NVODS=${NVODS}, NLIVES=${NLIVES}"
 
@@ -11,7 +12,7 @@ find "${DIR}" -maxdepth 1 -name "*.cfg" -exec rm -rf "{}" \;
 
 for template in $(find "${DIR}" -maxdepth 1 -name "*.yaml.m4" -print); do
     yaml=${template/.m4/}
-    m4 -DNVODS=${NVODS} -I "${DIR}" "${template}" > "${yaml}"
+    m4 -DNVODS=${NVODS} -DREGISTRY_PREFIX=${REGISTRY} -I "${DIR}" "${template}" > "${yaml}"
 done
 
 cat <<EOF >> ${DIR}/cpu_mem_managerment.cfg

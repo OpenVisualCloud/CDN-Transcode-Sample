@@ -1,4 +1,6 @@
 
+registryPrefix: ""
+
 zookeeper:
   heapSize: 1024m
 

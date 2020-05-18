@@ -20,7 +20,7 @@ spec:
         - bash
         - -c
         - /home/main.py&/usr/local/sbin/nginx
-        image: ovc_cdn_service:latest
+        image: {{ $.Values.registryPrefix }}ovc_cdn_service:latest
         imagePullPolicy: IfNotPresent
         name: cdn-service
         ports:

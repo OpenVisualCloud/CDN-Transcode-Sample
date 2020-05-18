@@ -67,6 +67,7 @@ sudo systemctl daemon-reload
 sudo systemctl restart docker
 ```
 ## Build(Both of master and slave nodes)
+
 Run below commands to build docker images
 ```
 cd CDN-Transcode-Sample
@@ -75,6 +76,12 @@ cd build
 cmake ..
 make
 ```
+
+---
+
+If you deploy the sample to a cluster, please configure the sample, as `cmake -DREGISTRY=<registry-url> ..`, to push the sample images to the private docker registry after each build.  
+
+---
 
 ## Deploy
 ### Auto deployment using Kubernetes

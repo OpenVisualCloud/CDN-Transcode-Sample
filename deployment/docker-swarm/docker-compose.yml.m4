@@ -52,7 +52,7 @@ services:
             replicas: 1
 
     cdn-service:
-        image: ovc_cdn_service:latest
+        image: defn(`REGISTRY_PREFIX')ovc_cdn_service:latest
         ports:
             - "443:8080"
         volumes:
@@ -78,19 +78,19 @@ services:
               mode: 0440
 
     vod-transcode-service:
-        image: ovc_software_transcode_service:latest
+        image: defn(`REGISTRY_PREFIX')ovc_software_transcode_service:latest
         volumes:
             - ${VIDEO_ARCHIVE_VOLUME}:/var/www/archive:ro
             - ${VIDEO_DASH_VOLUME}:/var/www/dash:rw
             - ${VIDEO_HLS_VOLUME}:/var/www/hls:rw
         deploy:
-            replicas: 2
+            replicas: defn(`NVODS')
         depends_on:
             - kafka-service
             - zookeeper-service
 
     live-transcode-service:
-        image: ovc_software_transcode_service:latest
+        image: defn(`REGISTRY_PREFIX')vc_software_transcode_service:latest
         volumes:
             - ${VIDEO_ARCHIVE_VOLUME}:/var/www/archive:ro
         depends_on:
