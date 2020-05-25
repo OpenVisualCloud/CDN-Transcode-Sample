@@ -13,8 +13,8 @@ KAFKA_TOPIC = "content_provider_sched"
 KAFKA_GROUP = "content_provider_dash_hls_creator"
 
 ARCHIVE_ROOT = "/var/www/archive"
-DASH_ROOT = "/var/www/dash"
-HLS_ROOT = "/var/www/hls"
+DASH_ROOT = "/var/www/video/dash"
+HLS_ROOT = "/var/www/video/hls"
 
 def process_stream(stream):
     stream_name = stream.split("/")[1]

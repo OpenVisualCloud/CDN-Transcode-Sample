@@ -5,6 +5,7 @@ Run DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y -q --no-
 
 COPY *.xsl  /etc/nginx/
 COPY *.conf /etc/nginx/
+COPY   html /var/www/html
 COPY *.py   /home/
 CMD  ["/bin/bash","-c","/home/main.py&/usr/local/sbin/nginx"]
 WORKDIR /home
