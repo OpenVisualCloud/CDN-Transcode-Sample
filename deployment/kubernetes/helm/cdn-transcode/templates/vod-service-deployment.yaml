@@ -27,18 +27,13 @@ spec:
           - mountPath: /var/www/archive
             name: archive
             readOnly: true
-          - mountPath: /var/www/dash
-            name: dash
-          - mountPath: /var/www/hls
-            name: hls
+          - mountPath: /var/www/video
+            name: cache
       volumes:
         - name: archive
           persistentVolumeClaim:
             claimName: video-archive
-        - name: dash
+        - name: cache
           persistentVolumeClaim:
-            claimName: video-dash
-        - name: hls
-          persistentVolumeClaim:
-            claimName: video-hls
+            claimName: video-cache
       restartPolicy: Always

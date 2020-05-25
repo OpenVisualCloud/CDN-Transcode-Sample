@@ -24,36 +24,25 @@ spec:
         imagePullPolicy: IfNotPresent
         name: cdn-service
         ports:
-        - containerPort: 8080
+        - containerPort: 8443
         - containerPort: 1935
         volumeMounts:
           - mountPath: /var/run/secrets
             name: secrets
             readOnly: true
-          - mountPath: /var/www/html
-            name: html
-            readOnly: true
           - mountPath: /var/www/archive
             name: archive
             readOnly: true
-          - mountPath: /var/www/dash
-            name: dash
-          - mountPath: /var/www/hls
-            name: hls
+          - mountPath: /var/www/video
+            name: cache
       volumes:
         - name: secrets
           secret:
             secretName: self-signed-certificate
-        - name: html
-          persistentVolumeClaim:
-            claimName: html
         - name: archive
           persistentVolumeClaim:
             claimName: video-archive
-        - name: dash
+        - name: cache
           persistentVolumeClaim:
-            claimName: video-dash
-        - name: hls
-          persistentVolumeClaim:
-            claimName: video-hls
+            claimName: video-cache
       restartPolicy: Always

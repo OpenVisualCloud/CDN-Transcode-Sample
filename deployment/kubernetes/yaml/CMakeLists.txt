@@ -1,7 +1,6 @@
-set(service "pv")
+set(service "kubernetes")
 include("${CMAKE_SOURCE_DIR}/script/service.cmake")
-include("${CMAKE_SOURCE_DIR}/script/scan-all.cmake")
-add_custom_target(volume ${CMAKE_CURRENT_SOURCE_DIR}/mkvolume.sh)
+include("${CMAKE_SOURCE_DIR}/script/deployment.cmake")
 
 # add cleanup files
 file(GLOB m4files "${CMAKE_CURRENT_SOURCE_DIR}/*.yaml.m4")
