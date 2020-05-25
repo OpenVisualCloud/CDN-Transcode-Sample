@@ -4,8 +4,6 @@ services:
 
     redis-service:
         image: redis:latest
-        ports:
-            - "6379:6379"
         restart: always
         deploy:
             replicas: 1
@@ -54,13 +52,10 @@ services:
     cdn-service:
         image: defn(`REGISTRY_PREFIX')ovc_cdn_service:latest
         ports:
-            - "443:8080"
+            - "443:8443"
         volumes:
-            - ${HTML_VOLUME}:/var/www/html:ro
             - ${VIDEO_ARCHIVE_VOLUME}:/var/www/archive:rw
-            - ${VIDEO_DASH_VOLUME}:/var/www/dash:rw
-            - ${VIDEO_HLS_VOLUME}:/var/www/hls:rw
-            - ${NGINX_LOG_VOLUME}:/var/www/log:rw
+            - ${VIDEO_CACHE_VOLUME}:/var/www/video:rw
         depends_on:
             - kafka-service
         deploy:
@@ -81,8 +76,7 @@ services:
         image: defn(`REGISTRY_PREFIX')ovc_software_transcode_service:latest
         volumes:
             - ${VIDEO_ARCHIVE_VOLUME}:/var/www/archive:ro
-            - ${VIDEO_DASH_VOLUME}:/var/www/dash:rw
-            - ${VIDEO_HLS_VOLUME}:/var/www/hls:rw
+            - ${VIDEO_CACHE_VOLUME}:/var/www/video:rw
         deploy:
             replicas: defn(`NVODS')
         depends_on:
@@ -90,13 +84,15 @@ services:
             - zookeeper-service
 
     live-transcode-service:
-        image: defn(`REGISTRY_PREFIX')vc_software_transcode_service:latest
+        image: defn(`REGISTRY_PREFIX')ovc_software_transcode_service:latest
         volumes:
             - ${VIDEO_ARCHIVE_VOLUME}:/var/www/archive:ro
         depends_on:
             - cdn-service
-        command: |
-              bash -c 'ffmpeg -re -stream_loop -1 -i /var/www/archive/bbb_sunflower_1080p_30fps_normal.mp4 -vf scale=2560:1440 -c:v libsvt_hevc -b:v 15M -forced-idr 1 -f flv rtmp://cdn-service/hls/big_buck_bunny_2560x1440 -vf scale=1920:1080 -c:v libsvt_hevc -b:v 10M -forced-idr 1 -f flv rtmp://cdn-service/hls/big_buck_bunny_1920x1080 -vf scale=1280:720 -c:v libx264 -b:v 8M -f flv rtmp://cdn-service/hls/big_buck_bunny_1280x720 -vf scale=854:480 -c:v libx264 -b:v 6M -f flv rtmp://cdn-service/hls/big_buck_bunny_854x480 -abr_pipeline'
+        environment:
+            no_proxy: "cdn-service"
+            NO_PROXY: "cdn-service"
+        command: ["ffmpeg","-re","-stream_loop","-1","-i","/var/www/archive/bbb_sunflower_1080p_30fps_normal.mp4","-vf","scale=856:480","-c:v","libx264","-b:v","8000000","-forced-idr","1","-preset","veryfast","-an","-f","flv","rtmp://cdn-service/dash/media_0_0","-vf","scale=856:480","-c:v","libsvt_hevc","-b:v","8000000","-forced-idr","1","-preset","9","-an","-f","flv","rtmp://cdn-service/hls/media_0_0","-abr_pipeline"]
 
 secrets:
     self_key:
