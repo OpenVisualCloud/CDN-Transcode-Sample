@@ -8,7 +8,7 @@ spec:
   ports:
   - name: "443"
     port: 443
-    targetPort: 8080
+    targetPort: 8443
   - name: "1935"
     port: 1935
     targetPort: 1935

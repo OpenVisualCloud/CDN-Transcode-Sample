@@ -2,12 +2,11 @@
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: html
+  name: video-archive
 spec:
   accessModes:
     - ReadOnlyMany
-  storageClassName: html
+  storageClassName: video-archive
   resources:
     requests:
-      storage: "{{ .Values.volume.html.size }}"
-
+      storage: 2Gi

@@ -40,12 +40,8 @@ cdn:
   hostIP: defn(`HOSTIP')
 
 volume:
-  html: 
-    size: defn(`HTML_VOLUME_SIZE')
   video:
     archive:
-      size: defn(`ARCHIVE_VOLUME_SIZE')
-    dash:
-      size: defn(`DASH_VOLUME_SIZE')
-    hls:
-      size: defn(`HLS_VOLUME_SIZE')
+      size: defn(`VIDEO_ARCHIVE_VOLUME_SIZE')
+    cache:
+      size: defn(`VIDEO_CACHE_VOLUME_SIZE')
