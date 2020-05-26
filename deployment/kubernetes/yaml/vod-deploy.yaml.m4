@@ -1,4 +1,6 @@
 include(platform.m4)
+include(configure.m4)
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -22,11 +24,11 @@ spec:
           imagePullPolicy: IfNotPresent
           resources:
             limits:
-              cpu: 6
-              memory: 6000Mi
+              cpu: eval(defn(`VOD_CPU')*2)
+              memory: eval(defn(`VOD_MEMORY')*2)Mi
             requests:
-              cpu: 3
-              memory: 3000Mi
+              cpu: defn(`VOD_CPU')
+              memory: defn(`VOD_MEMORY')Mi
           env:
             - name: NO_PROXY
               value: "*"

@@ -10,8 +10,8 @@ spec:
     targetPort: 8443
     name: https
   - port: 1935
-    protocol: TCP
-    name: tcp
+    targetPort: 1935
+    name: rtmp
   externalIPs:
     - defn(`HOSTIP')
   selector:

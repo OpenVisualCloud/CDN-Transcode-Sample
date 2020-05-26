@@ -41,6 +41,15 @@ spec:
             "-f","flv","rtmp://cdn-service/{{ .protocol }}/media_{{ $i }}_{{ $k }}",
 {{- end }}
             "-abr_pipeline"]
+        lifecycle:
+          preStop:
+            exec:
+              command:
+              - rm
+              - -rf
+{{- range $k,$v2 := .transcode }}
+              - ' /var/www/video/{{ .protocol }}/media_{{ $i }}_{{ $k }}'
+{{- end }}
         name: live-service-{{ $i }}
         env:
           - name: NO_PROXY

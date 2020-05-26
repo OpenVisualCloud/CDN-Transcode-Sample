@@ -33,10 +33,8 @@ else
 fi
 
 # Set up NFS
-try_command echo -e "$PWD/../volume/video/archive *(rw,sync,no_root_squash,no_all_squash,no_subtree_check)" > /etc/exports
-try_command echo -e "$PWD/../volume/video/dash *(rw,sync,no_root_squash,no_all_squash,no_subtree_check)" >> /etc/exports
-try_command echo -e "$PWD/../volume/video/hls *(rw,sync,no_root_squash,no_all_squash,no_subtree_check)" >> /etc/exports
-try_command echo -e "$PWD/../volume/html *(rw,sync,no_root_squash,no_all_squash,no_subtree_check)" >> /etc/exports
+try_command echo -e "$PWD/../volume/video/archive *(ro,sync,no_root_squash,no_all_squash,no_subtree_check)" > /etc/exports
+try_command echo -e "$PWD/../volume/video/cache *(rw,sync,no_root_squash,no_all_squash,no_subtree_check)" >> /etc/exports
 
 try_command lsb_release -si > /dev/null
 
