@@ -6,9 +6,8 @@ NLIVES="${2:-1}"
 REGISTRY="$3"
 HOSTIP=$(ip route get 8.8.8.8 | awk '/ src /{split(substr($0,index($0," src ")),f);print f[2];exit}')
 
-if [ ! -x /usr/bin/helm ] && [ ! -x /usr/local/bin/helm ]; then
-    exit 0
-fi 
+# make sure helm is functional
+helm version >/dev/null 2>/dev/null || exit 0
 
 echo "Generating helm chart"
 . "${DIR}/../volume-info.sh"
