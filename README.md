@@ -94,6 +94,7 @@ If you deploy the sample to a cluster, please configure the sample, as `cmake -D
 
 Start CDN transcode service
 ```
+make volume
 make start_kubernetes
 ```
 **Tips:** [Configuration example for Kubernetes deploy](https://github.com/OpenVisualCloud/CDN-Transcode-Sample/wiki/Configuration-example-for-Kubernetes-deploy)
