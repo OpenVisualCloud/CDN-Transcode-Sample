@@ -5,6 +5,10 @@ DIR=$(dirname $(readlink -f "$0"))
 rm -rf "$DIR/../../volume/video/cache"
 mkdir -p "$DIR/../../volume/video/cache/hls" "$DIR/../../volume/video/cache/dash"
 
+if [ ! -x /usr/bin/kubectl ] && [ ! -x /usr/local/bin/kubectl ]; then
+    exit 0
+fi
+
 hosts=($(kubectl get node -l xeone3-zone!=yes -o jsonpath='{range .items[*]}{@.metadata.name}:{range @.status.conditions[*]}{@.type}={@.status};{end}:{range @.spec.taints[*]}{@.key}={@.effect};{end}{end}' | grep Ready=True | grep -v NoSchedule | cut -f1 -d':'))
 
 if test ${#hosts[@]} -eq 0; then
