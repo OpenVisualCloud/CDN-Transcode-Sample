@@ -1,4 +1,6 @@
 include(platform.m4)
+include(configure.m4)
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -33,9 +35,9 @@ spec:
               value: "ERROR"
           resources:
               requests:
-                  cpu: 1
-                  memory: 500Mi
+                  cpu: defn(`ZOOKEEPER_CPU')
+                  memory: defn(`ZOOKEEPER_MEMORY')Mi
               limits:
-                  cpu: 2
-                  memory: 1000Mi
+                  cpu: eval(defn(`ZOOKEEPER_CPU')*2)
+                  memory: eval(defn(`ZOOKEEPER_MEMORY')*2)Mi
 PLATFORM_NODE_SELECTOR(`Xeon')dnl

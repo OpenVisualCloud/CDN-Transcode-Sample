@@ -1,4 +1,6 @@
 include(platform.m4)
+include(configure.m4)
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -25,11 +27,11 @@ spec:
             - containerPort: 1935
           resources:
             limits:
-              cpu: 4
-              memory: 4000Mi
+              cpu: eval(defn(`CDN_CPU')*2)
+              memory: eval(defn(`CDN_MEMORY')*2)Mi
             requests:
-              cpu: 2
-              memory: 2000Mi
+              cpu: defn(`CDN_CPU')
+              memory: defn(`CDN_MEMORY')Mi
           volumeMounts:
             - mountPath: /var/www/archive
               name: video-archive

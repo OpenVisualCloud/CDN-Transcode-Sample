@@ -1,4 +1,6 @@
 include(platform.m4)
+include(configure.m4)
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -48,14 +50,14 @@ spec:
             - name: "KAFKA_LOG_RETENTION_MINUTES"
               value: "30"
             - name: "KAFKA_HEAP_OPTS"
-              value: "-Xmx1024m -Xms1024m"
+              value: "`-Xmx'defn(`KAFKA_MEMORY')m -`Xms'defn(`KAFKA_MEMORY')m"
             - name: "KAFKA_LOG4J_ROOT_LOGLEVEL"
               value: "ERROR"
           resources:
               requests:
-                  cpu: 1
-                  memory: 500Mi
+                  cpu: defn(`KAFKA_CPU')
+                  memory: defn(`KAFKA_MEMORY')Mi
               limits:
-                  cpu: 2
-                  memory: 1000Mi
+                  cpu: eval(defn(`KAFKA_CPU')*2)
+                  memory: defn(`KAFKA_MEMORY')Mi
 PLATFORM_NODE_SELECTOR(`Xeon')dnl

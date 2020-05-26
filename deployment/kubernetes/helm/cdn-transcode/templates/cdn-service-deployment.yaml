@@ -32,7 +32,6 @@ spec:
             readOnly: true
           - mountPath: /var/www/archive
             name: archive
-            readOnly: true
           - mountPath: /var/www/video
             name: cache
       volumes:

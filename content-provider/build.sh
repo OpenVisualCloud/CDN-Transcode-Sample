@@ -8,7 +8,6 @@ clips=("$sample_video/bbb_sunflower_1080p_30fps_normal.mp4")
 case "$(cat /proc/1/sched | head -n 1)" in
 *build.sh*)
     cd /mnt
-    mkdir -p archive dash hls
     for clip in "${clips[@]}"; do
         clip_name="${clip/*\//}"
         clip_name="${clip_name/*=/}"
@@ -27,8 +26,6 @@ case "$(cat /proc/1/sched | head -n 1)" in
     ;;
 *) 
     mkdir -p "$DIR/../volume/video/archive"
-    mkdir -p "$DIR/../volume/video/dash"
-    mkdir -p "$DIR/../volume/video/hls"
     . "$DIR/../script/build.sh"
     . "$DIR/shell.sh" /home/build.sh $@
     ;;

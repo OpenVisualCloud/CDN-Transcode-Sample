@@ -16,7 +16,7 @@ spec:
   capacity:
     storage: defn(`VIDEO_ARCHIVE_VOLUME_SIZE')Gi
   accessModes:
-  - ReadOnlyMany
+  - ReadWriteMany
   persistentVolumeReclaimPolicy: Retain
   storageClassName: video-archive
   local:

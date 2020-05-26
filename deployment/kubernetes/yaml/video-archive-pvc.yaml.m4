@@ -5,7 +5,7 @@ metadata:
   name: video-archive
 spec:
   accessModes:
-    - ReadOnlyMany
+    - ReadWriteMany
   storageClassName: video-archive
   resources:
     requests:

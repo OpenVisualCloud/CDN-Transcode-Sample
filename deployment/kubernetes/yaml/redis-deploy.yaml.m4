@@ -1,4 +1,6 @@
 include(platform.m4)
+include(configure.m4)
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -25,9 +27,9 @@ spec:
             - containerPort: 6379
           resources:
               requests:
-                  cpu: 1
-                  memory: 500Mi  
+                  cpu: defn(`REDIS_CPU')
+                  memory: defn(`REDIS_MEMORY')Mi
               limits:
-                  cpu: 2
-                  memory: 1000Mi
+                  cpu: eval(defn(`REDIS_CPU')*2)
+                  memory: eval(defn(`REDIS_MEMORY')*2)Mi
 PLATFORM_NODE_SELECTOR(`Xeon')dnl
