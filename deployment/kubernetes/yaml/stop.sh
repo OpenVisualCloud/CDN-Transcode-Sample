@@ -21,7 +21,7 @@ function try_command {
 try_command hash kubectl > /dev/null
 
 for i in $(find "$DIR" "$DIR/.." -maxdepth 1 -name "*.yaml"); do
-    kubectl delete --wait=false -f "$i"
+    kubectl delete --wait=false -f "$i" 2> /dev/null
 done
 
 kubectl delete secret self-signed-certificate 2> /dev/null || echo -n ""
