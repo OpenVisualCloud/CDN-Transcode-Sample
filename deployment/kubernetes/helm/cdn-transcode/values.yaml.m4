@@ -1,5 +1,5 @@
 
-registryPrefix: ""
+registryPrefix: "defn(`REGISTRY_PREFIX')"
 
 zookeeper:
   heapSize: 1024m
@@ -45,3 +45,4 @@ volume:
       size: defn(`VIDEO_ARCHIVE_VOLUME_SIZE')
     cache:
       size: defn(`VIDEO_CACHE_VOLUME_SIZE')
+
