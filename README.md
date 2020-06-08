@@ -29,7 +29,7 @@ The CDN Transcode Sample is an Open Visual Cloud software stack with all require
 
 The sample implements a reference server-side transcode system over CDN infrastructure, which features `live streaming` and `VOD`.
 
-<IMG src="https://github.com/OpenVisualCloud/CDN-Transcode-Sample/blob/master/volume/html/image/CDN-Transcode-Sample-Arch.png" height="450">
+<IMG src="doc/CDN-Transcode-Sample-Arch.png" height="450">
 
 # What's in this project
 The CDN Transcode Sample contains below components:
