@@ -2,7 +2,7 @@ include(../../../script/loop.m4)
 include(configure.m4)
 include(platform.m4)
 
-loopifdef(LIDX,0,``LIVE_'defn(`LIDX')_CPU',`ifelse(eval(defn(`LIDX')<defn(`NLIVES')),1,`
+loopifdef(LIDX,0,``LIVE_'defn(`LIDX')_CPU',`
 
 apiVersion: apps/v1
 kind: Deployment
@@ -11,7 +11,7 @@ metadata:
   labels:
     app: live-defn(`LIDX')
 spec:
-  replicas: 1
+  replicas: eval(defn(`LIDX')<defn(`NLIVES'))
   selector:
     matchLabels:
       app: live-defn(`LIDX')
@@ -65,4 +65,4 @@ loopifdef(KIDX,0,``LIVE_'defn(`LIDX')`_'defn(`KIDX')_PROTOCOL',`dnl
 PLATFORM_NODE_SELECTOR(`Xeon')dnl
 
 ---
-')')
+')
