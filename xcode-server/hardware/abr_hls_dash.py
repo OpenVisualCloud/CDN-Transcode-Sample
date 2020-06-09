@@ -55,7 +55,7 @@ def GetABRCommand(in_file, target, streaming_type, renditions=RENDITIONS_SAMPLE,
     cmd_static = ["-c:v", "libx264", "-profile:v", "main", "-sc_threshold", "0", "-strict", "-2"]
     cmd_static += ["-g", str(keyframe_interval), "-keyint_min", str(keyframe_interval)]
     cmd_dash = ["-use_timeline", "1", "-use_template", "1", "-seg_duration",
-                str(segment_target_duration)]
+                str(segment_target_duration), "-adaptation_sets", "id=0,streams=v"]
     cmd_hls = ["-hls_time", str(segment_target_duration), "-hls_list_size", "0"]
     cmd_fade_in_out = ["-an"]
 
