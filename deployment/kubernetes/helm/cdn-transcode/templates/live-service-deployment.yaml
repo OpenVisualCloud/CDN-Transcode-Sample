@@ -1,6 +1,5 @@
 
 {{- range $i,$v1 := .Values.liveTranscode.streams }}
-{{- if lt (int $i) (int $.Values.liveTranscode.replicas) }}
 
 apiVersion: apps/v1
 kind: Deployment
@@ -12,7 +11,7 @@ spec:
   selector:
     matchLabels:
       app: live-service-{{ $i }}
-  replicas: 1
+  replicas: {{if lt (int $i) (int $.Values.liveTranscode.replicas)}}1{{else}}0{{end}}
   template:
     metadata:
       creationTimestamp: null
@@ -67,5 +66,4 @@ spec:
       restartPolicy: Always
 
 ---
-{{- end }}
 {{- end }}
