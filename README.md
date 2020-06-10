@@ -79,7 +79,9 @@ make
 
 ---
 
-If you deploy the sample to a cluster, please configure the sample, as `cmake -DREGISTRY=<registry-url> ..`, to push the sample images to the private docker registry after each build.  
+If you deploy the sample to a cluster, please configure the sample, as `cmake -DREGISTRY=<registry-url> ..`, to push the sample images to the private docker registry after each build.   
+
+To deploy without a private registry, run `make update` after each build to push the sample images to the cluster nodes (which requires passwordless access from the master node to the worker nodes.)   
 
 ---
 
