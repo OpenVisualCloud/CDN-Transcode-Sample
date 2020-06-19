@@ -21,15 +21,17 @@ BEGIN{
 }
 /- ".*"/ {
     host=host2ip[substr($2,2,length($2)-2)];
-    paths[host][path]=1;
-    contents[host][path]=content
+    paths[host,path]=1;
+    contents[host,path]=content
 }
 END {
-    for (host in paths) {
-        for (path in paths[host]) {
-            system("ssh "host" \"mkdir -p "path";find "path" -mindepth 1 -maxdepth 1 -exec rm -rf {} \\\\;\"");
-            system("scp -r "contents[host][path]"/* "host":"path);
-        }
+    for (item in paths) {
+        split(item,tmp,SUBSEP);
+        host=tmp[1]
+        path=tmp[2];
+        print host, path;
+        system("ssh "host" \"mkdir -p "path";find "path" -mindepth 1 -maxdepth 1 -exec rm -rf {} \\\\;\"");
+        system("scp -r "contents[host,path]"/* "host":"path);
     }
 }
 ' "$DIR"/*-pv.yaml
