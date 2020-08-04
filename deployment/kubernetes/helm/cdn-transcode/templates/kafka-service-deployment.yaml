@@ -48,8 +48,10 @@ spec:
           value: "1"
         - name: KAFKA_ZOOKEEPER_CONNECT
           value: zookeeper-service:2181
-        image: wurstmeister/kafka:latest
+        image: {{ $.Values.registryPrefix }}ovc_kafka_service:latest
+        imagePullPolicy: IfNotPresent
         name: kafka-service
         ports:
         - containerPort: 9092
       restartPolicy: Always
+

@@ -20,7 +20,7 @@ spec:
       enableServiceLinks: false
       containers:
         - name: kafka
-          image: wurstmeister/kafka:2.12-2.4.0
+          image: defn(`REGISTRY_PREFIX')ovc_kafka_service:latest
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 9092
