@@ -25,6 +25,8 @@ spec:
             - redis-server 
           ports:
             - containerPort: 6379
+          securityContext:
+            runAsUser: 999
           resources:
               requests:
                   cpu: defn(`REDIS_CPU')
