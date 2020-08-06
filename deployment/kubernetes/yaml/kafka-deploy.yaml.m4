@@ -53,6 +53,8 @@ spec:
               value: "`-Xmx'defn(`KAFKA_MEMORY')m -`Xms'defn(`KAFKA_MEMORY')m"
             - name: "KAFKA_LOG4J_ROOT_LOGLEVEL"
               value: "ERROR"
+          securityContext:
+            runAsUser: 1000
           resources:
               requests:
                   cpu: defn(`KAFKA_CPU')

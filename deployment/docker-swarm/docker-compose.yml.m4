@@ -47,6 +47,7 @@ services:
             KAFKA_HEAP_OPTS: '-Xmx1024m -Xms1024m'
             KAFKA_LOG4J_LOGGERS: 'kafka=ERROR,kafka.controller=ERROR,state.change.logger=ERROR,org.apache.kafka=ERROR'
             KAFKA_LOG4J_ROOT_LOGLEVEL: 'ERROR'
+        user: kafka
         restart: always
         deploy:
             replicas: 1

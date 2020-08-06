@@ -53,5 +53,7 @@ spec:
         name: kafka-service
         ports:
         - containerPort: 9092
+        securityContext:
+          runAsUser: 1000
       restartPolicy: Always
 
