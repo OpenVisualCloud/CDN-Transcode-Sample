@@ -5,24 +5,6 @@
 [![License](https://img.shields.io/badge/license-BSD_3_Clause-green.svg)](https://github.com/OpenVisualCloud/CDN-Transcode-Sample/blob/master/LICENSE)
 [![Contributions](https://img.shields.io/badge/contributions-welcome-blue.svg)](https://github.com/OpenVisualCloud/CDN-Transcode-Sample/wiki)
 
-Table of Contents
-=================
- * [Open Visual Cloud CDN Transcode Sample](#open-visual-cloud-cdn-transcode-sample)
-   * [Architecture](#architecture)
-   * [What's in this project](#whats-in-this-project)
-   * [System requirements](#system-requirements)
-      * [Operating system](#operating-system)
-   * [How to setup The CDN Transcode Sample](#how-to-setup-the-cdn-transcode-sample)
-      * [Setup the CDN Transcode Sample OS environment(Both of master and slave nodes)](#setup-the-cdn-transcode-sample-os-environmentboth-of-master-and-slave-nodes)
-         * [Install ubuntu18.04.2/CentOS 7.6](#install-ubuntu18042centos-76)
-      * [Setup CDN environment(Both of master and slave nodes)](#setup-cdn-environmentboth-of-master-and-slave-nodes)
-         * [Install the third-party dependency Libraries and tools](#install-the-third-party-dependency-libraries-and-tools)
-         * [Setup docker proxy as follows if you are behind a firewall](#setup-docker-proxy-as-follows-if-you-are-behind-a-firewall)
-      * [Build(Both of master and slave nodes)](#buildboth-of-master-and-slave-nodes)
-      * [Deploy](#deploy)
-         * [Auto deployment using Kubernetes](#auto-deployment-using-kubernetes)
-         * [See Also](#see-also)
-
 The CDN Transcode Sample is an Open Visual Cloud software stack with all required open source ingredients well integrated to provide out-of-box CDN media transcode service, including live streaming and video on demand. It also provides Docker-based media delivery software development environment upon which developer can easily build their specific applications.
 
 # Architecture
@@ -48,13 +30,13 @@ The CDN Transcode Sample may run on Linux* 64 bit operating systems. The list be
 - CentOS* 7.6
 
 # How to setup The CDN Transcode Sample
-## Setup the CDN Transcode Sample OS environment(Both of master and slave nodes)
+## Setup the CDN Transcode Sample OS environment   
 Install Ubuntu 18.04.2/CentOS 7.6 on CDN-Transcode Server, and configure the IP address & proxy properly.
 ### Install ubuntu18.04.2/CentOS 7.6
 -  [Download Ubuntu and Install](https://ubuntu.com/download)
 -  [Download CentOS and install](https://www.centos.org/download/)
 
-## Setup CDN environment(Both of master and slave nodes)
+## Setup CDN environment  
 ### Install the third-party dependency Libraries and tools
 ```
 sudo -E ./script/install_dependency.sh
@@ -66,7 +48,7 @@ printf "[Service]\nEnvironment=\"HTTPS_PROXY=$https_proxy\" \"NO_PROXY=$no_proxy
 sudo systemctl daemon-reload
 sudo systemctl restart docker
 ```
-## Build(Both of master and slave nodes)
+## Build   
 
 Run below commands to build docker images
 ```
@@ -88,10 +70,10 @@ To deploy without a private registry, run `make update` after each build to push
 ## Deploy
 ### Auto deployment using Kubernetes
 
-**Tips:** It divides into two parts: master or slave ones
+**Tips:** It divides into two parts:   
 - [Setup Kubernetes master environment for CentOS](https://github.com/OpenVisualCloud/CDN-Transcode-Sample/wiki/Setup-Kubernetes-master-environment-for-CentOS)
 - [Setup Kubernetes master environment for Ubuntu](https://github.com/OpenVisualCloud/CDN-Transcode-Sample/wiki/Setup-Kubernetes-master-environment-for-Ubuntu)
-- [Setup Kubernetes slave environment](https://github.com/OpenVisualCloud/CDN-Transcode-Sample/wiki/Setup-Kubernetes-slave-environment)
+- [Setup Kubernetes worker environment](https://github.com/OpenVisualCloud/CDN-Transcode-Sample/wiki/Setup-Kubernetes-Worker-Environment)   
 - [Setup NFS environment](https://github.com/OpenVisualCloud/CDN-Transcode-Sample/wiki/Setup-NFS-environment)
 
 Start CDN transcode service
