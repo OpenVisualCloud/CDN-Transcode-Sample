@@ -73,7 +73,7 @@ To deploy without a private registry, run `make update` after each build to push
 **Tips:** It divides into two parts:   
 - [Setup Kubernetes master environment for CentOS](https://github.com/OpenVisualCloud/CDN-Transcode-Sample/wiki/Setup-Kubernetes-master-environment-for-CentOS)
 - [Setup Kubernetes master environment for Ubuntu](https://github.com/OpenVisualCloud/CDN-Transcode-Sample/wiki/Setup-Kubernetes-master-environment-for-Ubuntu)
-- [Setup Kubernetes worker environment](https://github.com/OpenVisualCloud/CDN-Transcode-Sample/wiki/Setup-Kubernetes-worker-environment)
+- [Setup Kubernetes worker environment](https://github.com/OpenVisualCloud/CDN-Transcode-Sample/wiki/Setup-Kubernetes-Worker-Environment)   
 - [Setup NFS environment](https://github.com/OpenVisualCloud/CDN-Transcode-Sample/wiki/Setup-NFS-environment)
 
 Start CDN transcode service
