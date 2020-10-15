@@ -13,16 +13,6 @@ The sample implements a reference server-side transcode system over CDN infrastr
 
 <IMG src="doc/CDN-Transcode-Sample-Arch.png" height="450">
 
-# What's in this project
-The CDN Transcode Sample contains below components:
--  Dockerfiles
--  Python web services source code
--  BASH glue scripts
--  HTML web pages
--  CMakefiles
--  Configuration files
--  Documents
-
 # System requirements
 ## Operating system
 The CDN Transcode Sample may run on Linux* 64 bit operating systems. The list below represents the operating systems that the transcode application and library were tested and validated on:
@@ -30,11 +20,6 @@ The CDN Transcode Sample may run on Linux* 64 bit operating systems. The list be
 - CentOS* 7.6
 
 # How to setup The CDN Transcode Sample
-## Setup the CDN Transcode Sample OS environment   
-Install Ubuntu 18.04.2/CentOS 7.6 on CDN-Transcode Server, and configure the IP address & proxy properly.
-### Install ubuntu18.04.2/CentOS 7.6
--  [Download Ubuntu and Install](https://ubuntu.com/download)
--  [Download CentOS and install](https://www.centos.org/download/)
 
 ## Setup CDN environment  
 ### Install the third-party dependency Libraries and tools
@@ -71,9 +56,8 @@ To deploy without a private registry, run `make update` after each build to push
 ### Auto deployment using Kubernetes
 
 **Tips:** It divides into two parts:   
-- [Setup Kubernetes master environment for CentOS](https://github.com/OpenVisualCloud/CDN-Transcode-Sample/wiki/Setup-Kubernetes-master-environment-for-CentOS)
-- [Setup Kubernetes master environment for Ubuntu](https://github.com/OpenVisualCloud/CDN-Transcode-Sample/wiki/Setup-Kubernetes-master-environment-for-Ubuntu)
-- [Setup Kubernetes worker environment](https://github.com/OpenVisualCloud/CDN-Transcode-Sample/wiki/Setup-Kubernetes-Worker-Environment)   
+- [Setup Kubernetes for CentOS](https://github.com/OpenVisualCloud/CDN-Transcode-Sample/wiki/Setup-Kubernetes-for-CentOS)
+- [Setup Kubernetes for Ubuntu](https://github.com/OpenVisualCloud/CDN-Transcode-Sample/wiki/Setup-Kubernetes-for-Ubuntu)
 - [Setup NFS environment](https://github.com/OpenVisualCloud/CDN-Transcode-Sample/wiki/Setup-NFS-environment)
 
 Start CDN transcode service
