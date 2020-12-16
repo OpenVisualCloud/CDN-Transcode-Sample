@@ -20,10 +20,12 @@ spec:
       enableServiceLinks: false
       containers:
         - name: cdn
-          image: defn(`REGISTRY_PREFIX')ovc_cdn_service:latest
+          image: defn(`REGISTRY_PREFIX')`ovc_'defn(`SCENARIO')_service:latest
           imagePullPolicy: IfNotPresent
           ports:
+ifelse(defn(`SCENARIO'),`cdn',`dnl
             - containerPort: 8443
+')dnl
             - containerPort: 1935
           resources:
             limits:
@@ -51,3 +53,4 @@ spec:
             secret:
                secretName: self-signed-certificate
 PLATFORM_NODE_SELECTOR(`Xeon')dnl
+

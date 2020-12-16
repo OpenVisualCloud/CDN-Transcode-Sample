@@ -1,0 +1,54 @@
+[{
+    "vods": [{
+        "name": "bbb_sunflower_1080p_30fps_normal.mp4",
+        "type": "hls",
+        "parameters": [
+            [3840, 2160, 14000000, 192000],
+            [2560, 1440, 10000000, 192000],
+            [1920, 1080, 5000000, 192000],
+            [1280, 720, 2800000, 192000],
+            [842, 480, 1400000, 128000],
+            [640, 360, 800000, 128000]
+        ],
+        "codec": "AVC",
+        "loop": 0,
+        "target": "file",
+        "platform": "software"
+    },{
+        "name": "bbb_sunflower_1080p_30fps_normal.mp4",
+        "type": "dash",
+        "parameters": [
+            [3840, 2160, 14000000, 192000],
+            [2560, 1440, 10000000, 192000],
+            [1920, 1080, 5000000, 192000],
+            [1280, 720, 2800000, 192000],
+            [842, 480, 1400000, 128000],
+            [640, 360, 800000, 128000]
+        ],
+        "codec": "AVC",
+        "loop": 0,
+        "target": "file",
+        "platform": "software"
+    }],
+    "lives":  [{
+        "name": "bbb_sunflower_1080p_30fps_normal.mp4",
+        "type": "hls",
+        "parameters": [
+            [1920, 1080, 5000000, 192000]
+        ],
+        "codec": "AVC",
+        "loop": 1,
+        "target": "rtmp",
+        "platform": "software"
+    },{
+        "name": "bbb_sunflower_1080p_30fps_normal.mp4",
+        "type": "dash",
+        "parameters": [
+            [1920, 1080, 5000000, 192000]
+        ],
+        "codec": "AVC",
+        "loop": 1,
+        "target": "rtmp",
+        "platform": "software"
+    }]
+}]

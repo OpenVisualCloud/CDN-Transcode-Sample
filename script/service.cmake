@@ -1,3 +1,3 @@
 if(EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/build.sh")
-    add_custom_target(build_${service} ALL "${CMAKE_CURRENT_SOURCE_DIR}/build.sh" "${NVODS}" "${NLIVES}" "${REGISTRY}")
+    add_custom_target(build_${service} ALL "${CMAKE_CURRENT_SOURCE_DIR}/build.sh" "${NVODS}" "${NLIVES}" "${SCENARIO}" "${REGISTRY}")
 endif()

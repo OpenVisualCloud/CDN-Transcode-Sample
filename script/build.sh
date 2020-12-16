@@ -5,7 +5,7 @@ if test -z "${DIR}"; then
     exit -1
 fi
 
-REGISTRY="$3"
+REGISTRY="$4"
 
 # build image(s) in order (to satisfy dependencies)
 for dep in .8 .7 .6 .5 .4 .3 .2 .1 ''; do

@@ -1,8 +1,9 @@
 #!/bin/bash -e
 
 DIR=$(dirname $(readlink -f "$0"))
-NVODS="${2:-1}"
-NLIVES="${3:-1}"
+NVODS="${1:-1}"
+NLIVES="${2:-1}"
+SCENARIO="${3:-cdn}"
 REGISTRY="$4"
 
 # Set Bash color

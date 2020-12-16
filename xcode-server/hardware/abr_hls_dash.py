@@ -17,7 +17,7 @@ def to_kps(bitrate):
     return str(int(bitrate/1000))+"k"
 
 def GetABRCommand(in_file, target, streaming_type, renditions=RENDITIONS_SAMPLE, duration=2,
-                  segment_num=0):
+                  segment_num=0,loop=0):
     ffprobe_cmd = ["ffprobe", "-v", "quiet", "-print_format", "json",
                    "-show_streams", in_file]
 
@@ -51,7 +51,11 @@ def GetABRCommand(in_file, target, streaming_type, renditions=RENDITIONS_SAMPLE,
 
     cmd = []
     cmd_abr = []
-    cmd_base = ["ffmpeg", "-hide_banner", "-y", "-i", in_file]
+    if loop:
+        cmd_base = ["ffmpeg", "-hide_banner", "-y", "-stream_loop", "0", "-i", in_file]
+    else:
+        cmd_base = ["ffmpeg", "-hide_banner", "-y", "-i", in_file]
+
     cmd_static = ["-c:v", "libx264", "-profile:v", "main", "-sc_threshold", "0", "-strict", "-2"]
     cmd_static += ["-g", str(keyframe_interval), "-keyint_min", str(keyframe_interval)]
     cmd_dash = ["-use_timeline", "1", "-use_template", "1", "-seg_duration",
