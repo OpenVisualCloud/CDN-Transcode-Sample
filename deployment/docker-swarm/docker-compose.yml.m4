@@ -7,6 +7,7 @@ services:
         restart: always
         deploy:
             replicas: 1
+        user: redis
         command:
             redis-server
 
@@ -20,12 +21,13 @@ services:
             ZOOKEEPER_MAX_CLIENT_CNXNS: '20000'
             ZOOKEEPER_LOG4J_LOGGERS: 'zookeepr=ERROR'
             ZOOKEEPER_LOG4J_ROOT_LOGLEVEL: 'ERROR'
+        user: zookeeper
         restart: always
         deploy:
             replicas: 1
 
     kafka-service:
-        image: wurstmeister/kafka:latest
+        image: defn(`REGISTRY_PREFIX')ovc_kafka_service:latest
         depends_on:
             - zookeeper-service
         environment:
@@ -45,6 +47,7 @@ services:
             KAFKA_HEAP_OPTS: '-Xmx1024m -Xms1024m'
             KAFKA_LOG4J_LOGGERS: 'kafka=ERROR,kafka.controller=ERROR,state.change.logger=ERROR,org.apache.kafka=ERROR'
             KAFKA_LOG4J_ROOT_LOGLEVEL: 'ERROR'
+        user: kafka
         restart: always
         deploy:
             replicas: 1

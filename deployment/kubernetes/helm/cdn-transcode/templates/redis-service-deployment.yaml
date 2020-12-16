@@ -19,7 +19,10 @@ spec:
       - args:
         - redis-server
         image: redis:latest
+        imagePullPolicy: IfNotPresent
         name: redis-service
         ports:
         - containerPort: 6379
+        securityContext:
+          runAsUser: 999
       restartPolicy: Always

@@ -33,6 +33,8 @@ spec:
               value: "1"
             - name: "ZOO_LOG4J_PROP"
               value: "ERROR"
+          securityContext:
+            runAsUser: 1000
           resources:
               requests:
                   cpu: defn(`ZOOKEEPER_CPU')

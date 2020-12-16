@@ -32,7 +32,10 @@ spec:
         - name: ZOOKEEPER_TICK_TIME
           value: "2000"
         image: zookeeper:latest
+        imagePullPolicy: IfNotPresent
         name: zookeeper-service
         ports:
         - containerPort: 2181
+        securityContext:
+          runAsUser: 1000
       restartPolicy: Always

@@ -20,7 +20,7 @@ spec:
       enableServiceLinks: false
       containers:
         - name: kafka
-          image: wurstmeister/kafka:2.12-2.4.0
+          image: defn(`REGISTRY_PREFIX')ovc_kafka_service:latest
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 9092
@@ -53,6 +53,8 @@ spec:
               value: "`-Xmx'defn(`KAFKA_MEMORY')m -`Xms'defn(`KAFKA_MEMORY')m"
             - name: "KAFKA_LOG4J_ROOT_LOGLEVEL"
               value: "ERROR"
+          securityContext:
+            runAsUser: 1000
           resources:
               requests:
                   cpu: defn(`KAFKA_CPU')
