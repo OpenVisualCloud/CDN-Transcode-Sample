@@ -12,11 +12,12 @@ DASHLS_ROOT = "/var/www"
 class ScheduleHandler(web.RequestHandler):
     @gen.coroutine
     def get(self):
-        stream = self.requeist.uri.replace("/schedule/", "")
+        stream = self.request.uri.replace("/schedule/", "")
 
         # schedule producing the stream
         print("request received to process stream: "+stream, flush=True)
         producer = Producer()
+        msg={}
         msg.update({
             "name":stream.split("/")[1],
             "type":stream.split("/")[0],
@@ -26,7 +27,7 @@ class ScheduleHandler(web.RequestHandler):
             "target": "file",
             "platform": "software"
             })
-        producer.send(KAFKA_TOPIC_VODS, msg)
+        producer.send(KAFKA_TOPIC_VODS, json.dumps(msg))
         producer.close()
 
         # wait until file is available, return it

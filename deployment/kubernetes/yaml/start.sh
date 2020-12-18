@@ -4,7 +4,8 @@ DIR=$(dirname $(readlink -f "$0"))
 NVODS="${1:-1}"
 NLIVES="${2:-1}"
 SCENARIO="${3:-cdn}"
-REGISTRY="$4"
+PLATFORM="${4:-Xeon}"
+REGISTRY="$5"
 
 # Set Bash color
 ECHO_PREFIX_INFO="\033[1;32;40mINFO...\033[0;0m"
