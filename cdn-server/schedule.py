@@ -7,7 +7,7 @@ import time
 import json
 
 KAFKA_TOPIC_VODS = "content_provider_sched_vods"
-DASHLS_ROOT = "/var/www"
+DASHLS_ROOT = "/var/www/video"
 
 class ScheduleHandler(web.RequestHandler):
     @gen.coroutine
