@@ -6,7 +6,7 @@ from messaging import Producer
 import time
 import json
 
-KAFKA_TOPIC_VODS = "content_provider_sched_vods"
+KAFKA_TOPIC = "content_provider_sched"
 DASHLS_ROOT = "/var/www/video"
 
 class ScheduleHandler(web.RequestHandler):
@@ -27,7 +27,7 @@ class ScheduleHandler(web.RequestHandler):
             "target": "file",
             "platform": "software"
             })
-        producer.send(KAFKA_TOPIC_VODS, json.dumps(msg))
+        producer.send(KAFKA_TOPIC, json.dumps(msg))
         producer.close()
 
         # wait until file is available, return it

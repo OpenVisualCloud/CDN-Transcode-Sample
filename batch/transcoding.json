@@ -38,7 +38,7 @@
         ],
         "codec": "AVC",
         "loop": 1,
-        "target": "rtmp",
+        "target": "rtmp://cdn-service/",
         "platform": "software"
     },{
         "name": "bbb_sunflower_1080p_30fps_normal.mp4",
@@ -48,7 +48,7 @@
         ],
         "codec": "AVC",
         "loop": 1,
-        "target": "rtmp",
+        "target": "rtmp://cdn-service/",
         "platform": "software"
     }]
 }]

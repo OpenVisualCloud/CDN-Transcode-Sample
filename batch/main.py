@@ -6,8 +6,7 @@ import time
 from os import listdir
 import json
 
-KAFKA_TOPIC_VODS = "content_provider_sched_vods"
-KAFKA_TOPIC_LIVES = "content_provider_sched_lives"
+KAFKA_TOPIC = "content_provider_sched"
 DASHLS_ROOT = "/var/www"
 ARCHIVE_ROOT = "/var/www/archive"
 
@@ -19,21 +18,24 @@ info={}
 with open(config_file,"rt") as fd:
     info=json.load(fd)
 
-print(info,flush=True)
-
 producer = Producer()
-for stream in info[0]["vods"]:
+for idx,stream in enumerate(info[0]["vods"]):
     # schedule producing the stream
     if stream["name"] in streams:
         msg=stream
+        msg.update({"idx": idx})
         print("start VOD transccoding on {} with {}: ".format(stream["name"],stream["type"]), flush=True)
         print(msg,flush=True)
-        producer.send(KAFKA_TOPIC_VODS, json.dumps(msg))
-        # wait until file is available, return it
-        start_time = time.time()
-        while time.time() - start_time < 60:
-            if isfile(DASHLS_ROOT+"/"+stream["name"]): break 
-            time.sleep(1)
+        producer.send(KAFKA_TOPIC, json.dumps(msg))
+
+for idx,stream in enumerate(info[0]["lives"]):
+    # schedule producing the stream
+    if stream["name"] in streams:
+        msg=stream
+        msg.update({"idx": idx})
+        print("start LIVE transccoding on {} with {}: ".format(stream["name"],stream["type"]), flush=True)
+        print(msg,flush=True)
+        producer.send(KAFKA_TOPIC, json.dumps(msg))
 
 producer.close()
 
