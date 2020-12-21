@@ -1,5 +1,6 @@
 version: '3.1'
 
+include(platform.m4)
 services:
 
     redis-service:
@@ -53,9 +54,12 @@ services:
             replicas: 1
 
     cdn-service:
-        image: defn(`REGISTRY_PREFIX')ovc_cdn_service:latest
+        image: defn(`REGISTRY_PREFIX')`ovc_'defn(`SCENARIO')_service:latest
         ports:
+ifelse(defn(`SCENARIO'),`cdn',`dnl
             - "443:8443"
+')dnl
+            - "1935:1935"
         volumes:
             - ${VIDEO_ARCHIVE_VOLUME}:/var/www/archive:rw
             - ${VIDEO_CACHE_VOLUME}:/var/www/video:rw
@@ -76,7 +80,7 @@ services:
               mode: 0440
 
     vod-transcode-service:
-        image: defn(`REGISTRY_PREFIX')ovc_software_transcode_service:latest
+        image: defn(`REGISTRY_PREFIX')`ovc_transcode_'defn(`PLATFORM_SUFFIX'):latest
         volumes:
             - ${VIDEO_ARCHIVE_VOLUME}:/var/www/archive:ro
             - ${VIDEO_CACHE_VOLUME}:/var/www/video:rw
@@ -86,8 +90,9 @@ services:
             - kafka-service
             - zookeeper-service
 
+ifelse(defn(`SCENARIO'),`cdn',`dnl
     live-transcode-service:
-        image: defn(`REGISTRY_PREFIX')ovc_software_transcode_service:latest
+        image: defn(`REGISTRY_PREFIX')`ovc_transcode_'defn(`PLATFORM_SUFFIX'):latest
         volumes:
             - ${VIDEO_ARCHIVE_VOLUME}:/var/www/archive:ro
         depends_on:
@@ -96,6 +101,7 @@ services:
             no_proxy: "cdn-service"
             NO_PROXY: "cdn-service"
         command: ["ffmpeg","-re","-stream_loop","-1","-i","/var/www/archive/bbb_sunflower_1080p_30fps_normal.mp4","-vf","scale=856:480","-c:v","libx264","-b:v","8000000","-forced-idr","1","-preset","veryfast","-an","-f","flv","rtmp://cdn-service/dash/media_0_0","-vf","scale=856:480","-c:v","libsvt_hevc","-b:v","8000000","-forced-idr","1","-preset","9","-an","-f","flv","rtmp://cdn-service/hls/media_0_0","-abr_pipeline"]
+')dnl
 
 secrets:
     self_key:

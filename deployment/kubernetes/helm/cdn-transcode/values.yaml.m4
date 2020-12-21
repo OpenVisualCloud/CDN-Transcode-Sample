@@ -1,6 +1,12 @@
 
 registryPrefix: "defn(`REGISTRY_PREFIX')"
 
+# platform specifies the target platform: Xeon or Xeone3.
+platform: "defn(`PLATFORM')"
+
+# scenario specifies the mode: cdn or batch.
+scenario: "defn(`SCENARIO')"
+
 zookeeper:
   heapSize: 1024m
 
