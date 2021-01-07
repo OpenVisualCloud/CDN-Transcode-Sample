@@ -16,8 +16,7 @@ RENDITIONS_SAMPLE = (
 def to_kps(bitrate):
     return str(int(bitrate/1000))+"k"
 
-def GetABRCommand(in_file, target, streaming_type, renditions=RENDITIONS_SAMPLE, duration=2,
-                  segment_num=0):
+def probe_info(in_file):
     ffprobe_cmd = ["ffprobe", "-v", "quiet", "-print_format", "json",
                    "-show_streams", in_file]
 
@@ -26,6 +25,11 @@ def GetABRCommand(in_file, target, streaming_type, renditions=RENDITIONS_SAMPLE,
     # the call to the `subprocess.Popen` object is completed
     process_id.wait()
     clip_info = json.loads(process_id.stdout.read().decode("utf-8"))
+    return clip_info
+
+def GetABRCommand(in_file, target, streaming_type, renditions=RENDITIONS_SAMPLE, duration=2,
+                  segment_num=0,loop=0):
+    clip_info = probe_info(in_file)
 
     keyframe_interval = 0
     frame_height = 0
@@ -51,7 +55,11 @@ def GetABRCommand(in_file, target, streaming_type, renditions=RENDITIONS_SAMPLE,
 
     cmd = []
     cmd_abr = []
-    cmd_base = ["ffmpeg", "-hide_banner", "-y", "-i", in_file]
+    if loop:
+        cmd_base = ["ffmpeg", "-hide_banner", "-y", "-stream_loop", "0", "-i", in_file]
+    else:
+        cmd_base = ["ffmpeg", "-hide_banner", "-y", "-i", in_file]
+
     cmd_static = ["-c:v", "libx264", "-profile:v", "main", "-sc_threshold", "0", "-strict", "-2"]
     cmd_static += ["-g", str(keyframe_interval), "-keyint_min", str(keyframe_interval)]
     cmd_dash = ["-use_timeline", "1", "-use_template", "1", "-seg_duration",
@@ -116,5 +124,37 @@ def GetABRCommand(in_file, target, streaming_type, renditions=RENDITIONS_SAMPLE,
     if streaming_type == "hls":
         with open(target+"/"+"index.m3u8", "w", encoding='utf-8') as f:
             f.write(master_playlist)
+
+    return cmd
+
+def GetLiveCommand(in_file, target, codec_type="AVC", renditions=[[842, 480, 1400000, 128000]],loop=1):
+    codec = "libx264"
+    if codec_type == "HEVC":
+        codec="libsvt_hevc"
+
+    max_bitrate_ratio = 1.07          # maximum accepted bitrate fluctuations
+    rate_monitor_buffer_ratio = 1.5   # maximum buffer size between bitrate conformance checks
+
+    cmd = []
+    cmd_base = []
+    if loop:
+        cmd_base = ["ffmpeg", "-hide_banner", "-y", "-stream_loop", "0", "-i", in_file]
+    else:
+        cmd_base = ["ffmpeg", "-hide_banner", "-y", "-i", in_file]
+
+    cmd_1=[]
+    for idx,item in enumerate(renditions):
+        width = item[0]
+        height = item[1]
+        v_bitrate = to_kps(item[2])
+        a_bitrate = to_kps(item[3])
+        maxrate = to_kps(item[2] * max_bitrate_ratio)
+        bufsize = to_kps(item[2] * rate_monitor_buffer_ratio)
+        name= target+str(idx)
+
+        cmd_1 += ["-vf", "scale=w="+str(width)+":"+"h="+str(height),"-c:v", codec, "-b:v", v_bitrate, "-maxrate", maxrate, "-bufsize", bufsize]
+        cmd_1 += ["-r", "30","-g", "100", "-bf", "2", "-refs", "2", "-preset", "veryfast", "-forced-idr", "1", "-an", "-f", "flv", name]
+
+    cmd = cmd_base + cmd_1 + ["-abr_pipeline"]
 
     return cmd

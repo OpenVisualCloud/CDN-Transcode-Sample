@@ -31,7 +31,7 @@ spec:
           value: "1"
         - name: ZOOKEEPER_TICK_TIME
           value: "2000"
-        image: zookeeper:latest
+        image: zookeeper:3.5.6
         imagePullPolicy: IfNotPresent
         name: zookeeper-service
         ports:

@@ -4,9 +4,10 @@ from os.path import isfile
 from tornado import web, gen
 from messaging import Producer
 import time
+import json
 
 KAFKA_TOPIC = "content_provider_sched"
-DASHLS_ROOT = "/var/www"
+DASHLS_ROOT = "/var/www/video"
 
 class ScheduleHandler(web.RequestHandler):
     @gen.coroutine
@@ -16,7 +17,17 @@ class ScheduleHandler(web.RequestHandler):
         # schedule producing the stream
         print("request received to process stream: "+stream, flush=True)
         producer = Producer()
-        producer.send(KAFKA_TOPIC, stream)
+        msg={}
+        msg.update({
+            "name":stream.split("/")[1],
+            "type":stream.split("/")[0],
+            "parameters": [ ],
+            "codec": "AVC",
+            "loop": 0,
+            "target": "file",
+            "platform": "software"
+            })
+        producer.send(KAFKA_TOPIC, json.dumps(msg))
         producer.close()
 
         # wait until file is available, return it

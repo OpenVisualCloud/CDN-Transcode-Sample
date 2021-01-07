@@ -1,2 +1,2 @@
-set(service "ovc_hardware_transcode_service")
+set(service "ovc_cdn_common")
 include("${CMAKE_SOURCE_DIR}/script/service.cmake")

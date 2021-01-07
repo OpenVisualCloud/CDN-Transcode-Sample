@@ -1,4 +1,6 @@
 
+{{- if eq "cdn" $.Values.scenario }}
+
 {{- range $i,$v1 := .Values.liveTranscode.streams }}
 
 apiVersion: apps/v1
@@ -19,7 +21,7 @@ spec:
         app: live-service-{{ $i }}
     spec:
       containers:
-      - image: {{ $.Values.registryPrefix }}ovc_software_transcode_service:latest
+      - image: {{ $.Values.registryPrefix }}ovc_transcode_{{ lower $.Values.platform }}:latest
         imagePullPolicy: IfNotPresent
         command: ["/usr/local/bin/ffmpeg","-re","-stream_loop","-1",
             "-i","{{ .name }}",
@@ -67,3 +69,5 @@ spec:
 
 ---
 {{- end }}
+{{- end }}
+

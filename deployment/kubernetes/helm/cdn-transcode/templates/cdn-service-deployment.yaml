@@ -20,11 +20,13 @@ spec:
         - bash
         - -c
         - /home/main.py&/usr/local/sbin/nginx
-        image: {{ $.Values.registryPrefix }}ovc_cdn_service:latest
+        image: {{ $.Values.registryPrefix }}ovc_{{ $.Values.scenario }}_service:latest
         imagePullPolicy: IfNotPresent
         name: cdn-service
         ports:
+{{- if eq "cdn" $.Values.scenario }}
         - containerPort: 8443
+{{- end }}
         - containerPort: 1935
         volumeMounts:
           - mountPath: /var/run/secrets
