@@ -3,7 +3,7 @@
 DIR=$(dirname $(readlink -f "$0"))
 NVODS="${1:-1}"
 NLIVES="${2:-1}"
-SCENARIO="${3:-cdn}"
+SCENARIO="${3:-transcode}"
 PLATFORM="${4:-Xeon}"
 REGISTRY="$5"
 HOSTIP=$(ip route get 8.8.8.8 | awk '/ src /{split(substr($0,index($0," src ")),f);print f[2];exit}')

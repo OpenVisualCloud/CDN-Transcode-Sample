@@ -1,6 +1,6 @@
 cmake_minimum_required (VERSION 2.8)
 
-Project(OVC NONE)
+Project(CDNTranscodeSample NONE)
 
 if (NOT DEFINED REGISTRY)
     set(REGISTRY "")
@@ -19,10 +19,10 @@ if (NOT DEFINED PLATFORM)
 endif()
 
 if (NOT DEFINED SCENARIO)
-    set(SCENARIO "cdn")
+    set(SCENARIO "transcode")
 endif()
 
-if (SCENARIO STREQUAL "batch")
+if (SCENARIO STREQUAL "transcode")
     set(NLIVES "0")
 endif()
 

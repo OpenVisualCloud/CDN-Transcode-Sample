@@ -1,0 +1,48 @@
+{{- if eq "cdn" $.Values.scenario }}
+
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: redis-service
+  name: redis-service
+spec:
+  ports:
+  - name: "6379"
+    port: 6379
+    targetPort: 6379
+  selector:
+    app: redis-service
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: redis-service
+  name: redis-service
+spec:
+  selector:
+    matchLabels:
+      app: redis-service
+  replicas: 1
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: redis-service
+    spec:
+      containers:
+      - args:
+        - redis-server
+        image: redis:latest
+        imagePullPolicy: IfNotPresent
+        name: redis-service
+        ports:
+        - containerPort: 6379
+        securityContext:
+          runAsUser: 999
+      restartPolicy: Always
+
+{{- end }}

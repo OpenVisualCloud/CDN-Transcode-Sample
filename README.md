@@ -1,46 +1,64 @@
-# Open Visual Cloud CDN Transcode Sample
+### Open Visual Cloud CDN Transcode Sample
 
 [![Travis Build Status](https://travis-ci.com/OpenVisualCloud/CDN-Transcode-Sample.svg?branch=master)](https://travis-ci.com/OpenVisualCloud/CDN-Transcode-Sample)
 [![Stable release](https://img.shields.io/badge/latest_release-v1.0-green.svg)](https://github.com/OpenVisualCloud/CDN-Transcode-Sample/releases/tag/v1.0)
 [![License](https://img.shields.io/badge/license-BSD_3_Clause-green.svg)](https://github.com/OpenVisualCloud/CDN-Transcode-Sample/blob/master/LICENSE)
 [![Contributions](https://img.shields.io/badge/contributions-welcome-blue.svg)](https://github.com/OpenVisualCloud/CDN-Transcode-Sample/wiki)
 
-The CDN Transcode Sample is an Open Visual Cloud software stack with all required open source ingredients well integrated to provide out-of-box CDN media transcode service, including live streaming and video on demand. It also provides Docker-based media delivery software development environment upon which developer can easily build their specific applications.
+The CDN Transcode Sample is an Open Visual Cloud software stack with all required open source ingredients well integrated to provide out-of-box simple transcode or transcode+CDN service, including live streaming and video on demand. It also provides Docker-based media delivery software development environment upon which developer can easily build their specific applications.
 
-# Architecture
+### Architecture
 
-The sample implements a reference server-side transcode system over CDN infrastructure, which features `live streaming` and `VOD`.
+The sample implements a reference server-side transcode system over CDN infrastructure, which features `live streaming` and `VOD`. Among them, the `VOD` service can run independently to provide a simple transcode service.  
 
 <IMG src="doc/CDN-Transcode-Sample-Arch.png" height="450">
 
-# System requirements
-## Operating system
-The CDN Transcode Sample may run on Linux* 64 bit operating systems. The list below represents the operating systems that the transcode application and library were tested and validated on:
-- Ubuntu* 18.04.2 Server LTS
-- CentOS* 7.6
+### Software Stacks
 
-# How to setup The CDN Transcode Sample
+The sample is powered by the following Open Visual Cloud software stacks:
 
-## Setup CDN environment  
-### Install the third-party dependency Libraries and tools
-```
-sudo -E ./script/install_dependency.sh
-```
-### Setup docker proxy as follows if you are behind a firewall
-```
-sudo mkdir -p /etc/systemd/system/docker.service.d
-printf "[Service]\nEnvironment=\"HTTPS_PROXY=$https_proxy\" \"NO_PROXY=$no_proxy\"\n" | sudo tee /etc/systemd/system/docker.service.d/proxy.conf
-sudo systemctl daemon-reload
-sudo systemctl restart docker
-```
-## Build   
+- Media transcoding software stack:  
 
-Run below commands to build docker images
+The FFmpeg-based media transcoding stack is used to transcode media content from a higher resolution/quality to a lower resolution/quality. The software stack is optimized for Intel Xeon Scalable Processors and Intel XeonE3 Scalable Processors. 
+
+- Media streaming and Web Hosting software stack:  
+
+The NGINX-based software stack is used to host web services, video content and provide video streaming services. The software stack is optimized for Intel Xeon Scalable Processors.  
+
+### Install Prerequisites:
+
+- **Time Zone**: Check that the timezone setting of your host machine is correctly configured. Timezone is used during build. If you plan to run the sample on a cluster of machines, please make sure to synchronize time among the controller node and worker nodes.
+
+- **Build Tools**: Install `cmake`, `make`, `m4`, `wget` and `gawk` if they are not available on your system.
+
+- **Docker Engine**: 
+
+    - Install [docker engine](https://docs.docker.com/get-docker). Minimum version required: `17.05`. Make sure you setup docker to run as a regular user.
+    - Setup `Kubernetes`. See [Kubernetes Setup](deployment/kubernetes/README.md) for additional setup details.
+    - Setup docker proxy as follows if you are behind a firewall:   
+
 ```
-cd CDN-Transcode-Sample
+sudo mkdir -p /etc/systemd/system/docker.service.d       
+printf "[Service]\nEnvironment=\"HTTPS_PROXY=$https_proxy\" \"NO_PROXY=$no_proxy\"\n" | sudo tee /etc/systemd/system/docker.service.d/proxy.conf       
+sudo systemctl daemon-reload          
+sudo systemctl restart docker     
+```
+
+### Build the Sample  
+
+Run the following command to run the sample as a simple transcoder:  
+```
 mkdir build
 cd build
 cmake ..
+make
+```
+
+Run the following command to run the sample as transcode+CDN:  
+```
+mkdir build
+cd build
+cmake -DSCENARIO=cdn ..
 make
 ```
 
@@ -52,33 +70,28 @@ To deploy without a private registry, run `make update` after each build to push
 
 ---
 
-## Deploy
-### Auto deployment using Kubernetes
+### Deploy the Sample
 
-**Tips:** It divides into two parts:   
-- [Setup Kubernetes for CentOS](https://github.com/OpenVisualCloud/CDN-Transcode-Sample/wiki/Setup-Kubernetes-for-CentOS)
-- [Setup Kubernetes for Ubuntu](https://github.com/OpenVisualCloud/CDN-Transcode-Sample/wiki/Setup-Kubernetes-for-Ubuntu)
-- [Setup NFS environment](https://github.com/OpenVisualCloud/CDN-Transcode-Sample/wiki/Setup-NFS-environment)
+Start/stop the sample with Kubernetes [yaml configurations](deployment/kubernetes/yaml):  
 
-Start CDN transcode service
 ```
 make volume
 make start_kubernetes
-```
-**Tips:** [Configuration example for Kubernetes deploy](https://github.com/OpenVisualCloud/CDN-Transcode-Sample/wiki/Configuration-example-for-Kubernetes-deploy)
-
-Stop CDN transcode service
-```
+...
 make stop_kubernetes
 ```
 
-____
-### See Also
-- [Deploy on Xeon E5 using docker swarm](https://github.com/OpenVisualCloud/CDN-Transcode-Sample/wiki/Deploy-on-Xeon-E5-using-docker-swarm)
-- [Deploy on Xeon E5 using Kubernetes](https://github.com/OpenVisualCloud/CDN-Transcode-Sample/wiki/Deploy-on-Xeon-E5-using-Kubernetes)
-- [Deploy on Xeon E3 with Gen GFX using Kubernetes](https://github.com/OpenVisualCloud/CDN-Transcode-Sample/wiki/Deploy-on-Xeon-E3-with-Gen-GFX-using-Kubernetes)
-- [Deploy on VCA2 with Gen GFX using Kubernetes](https://github.com/OpenVisualCloud/CDN-Transcode-Sample/wiki/Deploy-on-VCA2-with-Gen-GFX-using-Kubernetes)
-- [Setup proxy server](https://github.com/OpenVisualCloud/CDN-Transcode-Sample/wiki/Setup-proxy-server)
-- [Setup Kubernetes Logging](https://github.com/OpenVisualCloud/CDN-Transcode-Sample/wiki/Setup-Kubernetes-logging-environment)
-- [Setup Kubernetes Monitoring](https://github.com/OpenVisualCloud/CDN-Transcode-Sample/wiki/Setup-Kubernetes-monitoring-environment)
-- [Remove Kubernetes environment](https://github.com/OpenVisualCloud/CDN-Transcode-Sample/wiki/Remove-Kubernetes-environment)
+Start/stop the sample with Kubernetes [Helm charts](deployment/kubernetes/helm):  
+
+```
+make volume
+make start_helm
+...
+make stop_helm
+```
+
+# See Also
+
+- [Kubernetes Setup](deployment/kubernetes/README.md)   
+- [Build Options](doc/cmake.md)   
+

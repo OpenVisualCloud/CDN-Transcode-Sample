@@ -1,5 +1,5 @@
 
-The CDN Transcode Sample is an Open Visual Cloud software stack with all required open source ingredients well integrated to provide out-of-box CDN media transcode service, including live streaming and video on demand. It also provides docker-based media delivery software development environment upon which developer can easily build their specific applications.  
+The CDN Transcode Sample is an Open Visual Cloud software stack with all required open source ingredients well integrated to provide out-of-box simple transcode or CDN media transcode service, including live streaming and video on demand. It also provides docker-based media delivery software development environment upon which developer can easily build their specific applications.  
 
 ### Prerequisites:
 
