@@ -1,6 +1,29 @@
 include(platform.m4)
 include(configure.m4)
 
+ifelse(defn(`SCENARIO'),`cdn',`
+apiVersion: v1
+kind: Service
+metadata:
+  name: cdn-service
+  labels:
+    app: cdn
+spec:
+  ports:
+  - port: 443
+    targetPort: 8443
+    name: https
+  - port: 1935
+    targetPort: 1935
+    name: rtmp
+  externalIPs:
+    - defn(`HOSTIP')
+  selector:
+    app: cdn
+
+---
+')
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -8,7 +31,7 @@ metadata:
   labels:
     app: cdn
 spec:
-  replicas: 1
+  replicas: ifelse(defn(`SCENARIO'),`cdn',1,0)
   selector:
     matchLabels:
       app: cdn
@@ -20,12 +43,10 @@ spec:
       enableServiceLinks: false
       containers:
         - name: cdn
-          image: defn(`REGISTRY_PREFIX')`ovc_'defn(`SCENARIO')_service:latest
+          image: defn(`REGISTRY_PREFIX')`tc_'defn(`SCENARIO')_service:latest
           imagePullPolicy: IfNotPresent
           ports:
-ifelse(defn(`SCENARIO'),`cdn',`dnl
             - containerPort: 8443
-')dnl
             - containerPort: 1935
           resources:
             limits:
@@ -53,4 +74,3 @@ ifelse(defn(`SCENARIO'),`cdn',`dnl
             secret:
                secretName: self-signed-certificate
 PLATFORM_NODE_SELECTOR(`Xeon')dnl
-

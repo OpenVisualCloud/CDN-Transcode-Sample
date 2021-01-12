@@ -1,6 +1,21 @@
 include(platform.m4)
 include(configure.m4)
 
+apiVersion: v1
+kind: Service
+metadata:
+  name: kafka-service
+  labels:
+    app: kafka
+spec:
+  ports:
+  - port: 9092
+    protocol: TCP
+  selector:
+    app: kafka
+
+---
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -20,7 +35,7 @@ spec:
       enableServiceLinks: false
       containers:
         - name: kafka
-          image: defn(`REGISTRY_PREFIX')ovc_kafka_service:latest
+          image: defn(`REGISTRY_PREFIX')tc_kafka_service:latest
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 9092

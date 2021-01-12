@@ -1,6 +1,21 @@
 include(platform.m4)
 include(configure.m4)
 
+apiVersion: v1
+kind: Service
+metadata:
+  name: redis-service
+  labels:
+    app: redis
+spec:
+  ports:
+  - port: 6379
+    protocol: TCP
+  selector:
+    app: redis
+
+---
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -8,7 +23,7 @@ metadata:
   labels:
      app: redis
 spec:
-  replicas: 1
+  replicas: ifelse(defn(`SCENARIO'),`cdn',1,0)
   selector:
     matchLabels:
       app: redis

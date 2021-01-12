@@ -1,6 +1,21 @@
 include(platform.m4)
 include(configure.m4)
 
+apiVersion: v1
+kind: Service
+metadata:
+  name: zookeeper-service
+  labels:
+    app: zookeeper
+spec:
+  ports:
+  - port: 2181
+    protocol: TCP
+  selector:
+    app: zookeeper
+
+---
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:

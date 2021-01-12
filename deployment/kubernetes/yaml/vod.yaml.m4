@@ -20,7 +20,7 @@ spec:
       enableServiceLinks: false
       containers:
         - name: vod
-          image: defn(`REGISTRY_PREFIX')`ovc_transcode_'defn(`PLATFORM_SUFFIX'):latest
+          image: defn(`REGISTRY_PREFIX')`tc_transcode_'defn(`PLATFORM_SUFFIX'):latest
           imagePullPolicy: IfNotPresent
           resources:
             limits:

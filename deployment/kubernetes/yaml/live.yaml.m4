@@ -11,7 +11,7 @@ metadata:
   labels:
     app: live-defn(`LIDX')
 spec:
-  replicas: eval(defn(`LIDX')<defn(`NLIVES'))
+  replicas: ifelse(defn(`SCENARIO'),`cdn',eval(defn(`LIDX')<defn(`NLIVES')),0)
   selector:
     matchLabels:
       app: live-defn(`LIDX')
@@ -23,7 +23,7 @@ spec:
       enableServiceLinks: false
       containers:
         - name: live-defn(`LIDX')
-          image: defn(`REGISTRY_PREFIX')`ovc_transcode_'defn(`PLATFORM_SUFFIX'):latest
+          image: defn(`REGISTRY_PREFIX')`tc_transcode_'defn(`PLATFORM_SUFFIX'):latest
           imagePullPolicy: IfNotPresent
           resources:
             limits:

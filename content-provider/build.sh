@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-IMAGE="ovc_content_provider_archive"
+IMAGE="tc_content_provider_archive"
 DIR=$(dirname $(readlink -f "$0"))
 sample_video="http://distribution.bbb3d.renderfarming.net/video/mp4"
 clips=("$sample_video/bbb_sunflower_1080p_30fps_normal.mp4")

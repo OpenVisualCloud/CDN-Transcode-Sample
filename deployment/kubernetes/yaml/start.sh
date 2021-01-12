@@ -3,7 +3,7 @@
 DIR=$(dirname $(readlink -f "$0"))
 NVODS="${1:-1}"
 NLIVES="${2:-1}"
-SCENARIO="${3:-cdn}"
+SCENARIO="${3:-transcode}"
 PLATFORM="${4:-Xeon}"
 REGISTRY="$5"
 

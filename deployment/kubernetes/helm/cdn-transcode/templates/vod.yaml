@@ -1,45 +1,36 @@
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: cdn-service
-  name: cdn-service
+    app: vod-service
+  name: vod-service
 spec:
   selector:
     matchLabels:
-      app: cdn-service
-  replicas: 1
+      app: vod-service
+  replicas: {{ .Values.vodTranscode.replicas }}
   template:
     metadata:
       creationTimestamp: null
       labels:
-        app: cdn-service
+        app: vod-service
     spec:
       containers:
       - args:
         - bash
         - -c
-        - /home/main.py&/usr/local/sbin/nginx
-        image: {{ $.Values.registryPrefix }}ovc_{{ $.Values.scenario }}_service:latest
+        - /home/main.py
+        image: {{ $.Values.registryPrefix }}tc_transcode_{{ lower $.Values.platform }}:latest
         imagePullPolicy: IfNotPresent
-        name: cdn-service
-        ports:
-{{- if eq "cdn" $.Values.scenario }}
-        - containerPort: 8443
-{{- end }}
-        - containerPort: 1935
+        name: vod-service
         volumeMounts:
-          - mountPath: /var/run/secrets
-            name: secrets
-            readOnly: true
           - mountPath: /var/www/archive
             name: archive
+            readOnly: true
           - mountPath: /var/www/video
             name: cache
       volumes:
-        - name: secrets
-          secret:
-            secretName: self-signed-certificate
         - name: archive
           persistentVolumeClaim:
             claimName: video-archive

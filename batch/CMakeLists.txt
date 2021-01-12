@@ -1,2 +1,5 @@
-set(service "ovc_batch_service")
-include("${CMAKE_SOURCE_DIR}/script/service.cmake")
+if (SCENARIO STREQUAL "transcode")
+    set(service "tc_batch_service")
+    include("${CMAKE_SOURCE_DIR}/script/service.cmake")
+    add_dependencies(build_${service} build_tc_common)
+endif()

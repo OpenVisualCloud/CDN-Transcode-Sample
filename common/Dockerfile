@@ -1,7 +1,7 @@
 
-FROM centos:7.6.1810
+FROM ubuntu:18.04
 
-RUN  yum install -y -q epel-release && yum install -y -q python36-requests python36-ply python36-psutil && rm -rf /var/cache/yum/*
+RUN  apt-get update -q && apt-get install -y -q python3-requests python3-ply python3-psutil && rm -rf /var/lib/apt/lists/*
 
 COPY *.py /home/
 ENV  PYTHONIOENCODING=UTF-8

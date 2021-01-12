@@ -1,4 +1,4 @@
-[{
+{
     "vods": [{
         "name": "bbb_sunflower_1080p_30fps_normal.mp4",
         "type": "hls",
@@ -29,26 +29,5 @@
         "loop": 0,
         "target": "file",
         "platform": "software"
-    }],
-    "lives":  [{
-        "name": "bbb_sunflower_1080p_30fps_normal.mp4",
-        "type": "hls",
-        "parameters": [
-            [1920, 1080, 5000000, 192000]
-        ],
-        "codec": "AVC",
-        "loop": 1,
-        "target": "rtmp://cdn-service/",
-        "platform": "software"
-    },{
-        "name": "bbb_sunflower_1080p_30fps_normal.mp4",
-        "type": "dash",
-        "parameters": [
-            [1920, 1080, 5000000, 192000]
-        ],
-        "codec": "AVC",
-        "loop": 1,
-        "target": "rtmp://cdn-service/",
-        "platform": "software"
     }]
-}]
+}
