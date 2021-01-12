@@ -21,6 +21,10 @@ The sample is powered by the following Open Visual Cloud software stacks:
 
 The FFmpeg-based media transcoding stack is used to transcode media content from a higher resolution/quality to a lower resolution/quality. The software stack is optimized for Intel Xeon Scalable Processors and Intel XeonE3 Scalable Processors. 
 
+- Media streaming and Web Hosting software stack:  
+
+The NGINX-based software stack is used to host web services, video content and provide video streaming services. The software stack is optimized for Intel Xeon Scalable Processors.  
+
 ### Install Prerequisites:
 
 - **Time Zone**: Check that the timezone setting of your host machine is correctly configured. Timezone is used during build. If you plan to run the sample on a cluster of machines, please make sure to synchronize time among the controller node and worker nodes.
