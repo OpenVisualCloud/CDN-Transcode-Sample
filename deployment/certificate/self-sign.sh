@@ -1,6 +1,6 @@
 #!/bin/bash -e
 
-IMAGE="ovc_self_certificate"
+IMAGE="tc_self_certificate"
 DIR=$(dirname $(readlink -f "$0"))
 
 case "$(cat /proc/1/sched | head -n 1)" in
