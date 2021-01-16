@@ -38,3 +38,35 @@ spec:
           persistentVolumeClaim:
             claimName: video-cache
       restartPolicy: Always
+
+{{- if eq "transcode" $.Values.scenario }}
+---
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: benchmark
+spec:
+  template:
+    spec:
+      enableServiceLinks: false
+      containers:
+        - name: benchmark
+          image: {{ $.Values.registryPrefix }}tc_benchmark_service:latest
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: NO_PROXY
+              value: "*"
+            - name: no_proxy
+              value: "*"
+          volumeMounts:
+            - mountPath: /var/www/archive
+              name: video-archive
+              readOnly: true
+      volumes:
+          - name: video-archive
+            persistentVolumeClaim:
+               claimName: video-archive
+      restartPolicy: Never
+
+{{- end }}
