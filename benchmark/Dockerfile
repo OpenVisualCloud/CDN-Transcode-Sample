@@ -1,7 +1,7 @@
 
 FROM tc_common
 
-Run apt-get update -q && apt-get install -y -q python3-kafka python3-kazoo && rm -rf /var/lib/apt/lists/*
+Run apt-get update -q && apt-get install -y -q python3-kafka python3-kazoo vim && rm -rf /var/lib/apt/lists/*
 
 COPY *.py   /home/
 COPY *.json   /home/

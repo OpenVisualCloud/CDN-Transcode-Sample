@@ -48,3 +48,40 @@ spec:
             persistentVolumeClaim:
                claimName: video-archive
 PLATFORM_NODE_SELECTOR(`Xeon')dnl
+
+ifelse(defn(`SCENARIO'),`transcode',`
+---
+
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: benchmark
+spec:
+  template:
+    spec:
+      enableServiceLinks: false
+      containers:
+        - name: benchmark
+          image: defn(`REGISTRY_PREFIX')tc_benchmark_service:latest
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: NO_PROXY
+              value: "*"
+            - name: no_proxy
+              value: "*"
+          volumeMounts:
+            - mountPath: /var/www/archive
+              name: video-archive
+              readOnly: true
+            - mountPath: /var/www/video
+              name: video-cache
+      volumes:
+          - name: video-archive
+            persistentVolumeClaim:
+               claimName: video-archive
+          - name: video-cache
+            persistentVolumeClaim:
+               claimName: video-cache
+      restartPolicy: Never
+PLATFORM_NODE_SELECTOR(`Xeon')dnl
+')
