@@ -63,10 +63,15 @@ spec:
             - mountPath: /var/www/archive
               name: video-archive
               readOnly: true
+            - mountPath: /var/www/video
+              name: video-cache
       volumes:
           - name: video-archive
             persistentVolumeClaim:
                claimName: video-archive
+          - name: video-cache
+            persistentVolumeClaim:
+               claimName: video-cache
       restartPolicy: Never
 
 {{- end }}
