@@ -23,9 +23,8 @@ print("Submit jobs:", flush=True)
 producer = Producer()
 for idx,msg in enumerate(jobs):
     # schedule producing the stream
-    if msg["target"] == "file":
-        if msg["name"] not in streams:
-            continue
+    if msg["name"] not in streams:
+        continue
     msg.update({"idx": idx})
     print(msg,flush=True)
 

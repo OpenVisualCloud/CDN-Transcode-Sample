@@ -1,29 +1,39 @@
 [{
     "name": "bbb_sunflower_1080p_30fps_normal.mp4",
-    "type": "hls",
-    "parameters": [
-        [3840, 2160, 14000000, 192000],
-        [2560, 1440, 10000000, 192000],
-        [1920, 1080, 5000000, 192000],
-        [1280, 720, 2800000, 192000],
-        [842, 480, 1400000, 128000],
-        [640, 360, 800000, 128000]
-    ],
-    "codec": "AVC",
+    "parameters": {
+         "renditions":[[1920, 1080, 5000000, 192000]],
+         "codec_type":"HEVC",
+         "gop_size": "100",
+         "framerate": "30",
+         "bframe": "2",
+         "preset": "9",
+         "profile": "main",
+         "refs": "2",
+         "forced_idr": "1"
+        },
     "loop": 0,
-    "target": "file"
+    "output": {
+        "target": "file",
+        "type": "mp4"
+    },
+    "live_vod": "live"
 },{
     "name": "bbb_sunflower_1080p_30fps_normal.mp4",
-    "type": "dash",
-    "parameters": [
-        [3840, 2160, 14000000, 192000],
-        [2560, 1440, 10000000, 192000],
-        [1920, 1080, 5000000, 192000],
-        [1280, 720, 2800000, 192000],
-        [842, 480, 1400000, 128000],
-        [640, 360, 800000, 128000]
-    ],
-    "codec": "AVC",
+    "parameters": {
+         "renditions":[[1920, 1080, 5000000, 192000]],
+         "codec_type":"AVC",
+         "gop_size": "100",
+         "framerate": "30",
+         "bframe": "2",
+         "preset": "veryfast",
+         "profile": "main",
+         "refs": "2",
+         "forced_idr": "1"
+        },
     "loop": 0,
-    "target": "file"
+    "output": {
+        "target": "file",
+        "type": "mp4"
+    },
+    "live_vod": "live"
 }]

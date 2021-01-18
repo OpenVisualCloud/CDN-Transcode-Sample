@@ -27,9 +27,11 @@ def probe_info(in_file):
     clip_info = json.loads(process_id.stdout.read().decode("utf-8"))
     return clip_info
 
-def GetABRCommand(in_file, target, streaming_type, renditions=RENDITIONS_SAMPLE, duration=2,
+def GetABRCommand(in_file, target, streaming_type, params, duration=2,
                   segment_num=0,loop=0):
     clip_info = probe_info(in_file)
+    codec = "libx264"
+    renditions=params["renditions"] if params["renditions"] else RENDITIONS_SAMPLE
 
     keyframe_interval = 0
     frame_height = 0
@@ -56,11 +58,11 @@ def GetABRCommand(in_file, target, streaming_type, renditions=RENDITIONS_SAMPLE,
     cmd = []
     cmd_abr = []
     if loop:
-        cmd_base = ["ffmpeg", "-hide_banner", "-y", "-stream_loop", "0", "-i", in_file]
+        cmd_base = ["ffmpeg", "-hide_banner", "-y", "-stream_loop", "-1", "-i", in_file]
     else:
         cmd_base = ["ffmpeg", "-hide_banner", "-y", "-i", in_file]
 
-    cmd_static = ["-c:v", "libx264", "-profile:v", "main", "-sc_threshold", "0", "-strict", "-2"]
+    cmd_static = ["-c:v", codec, "-profile:v", "main", "-sc_threshold", "0", "-strict", "-2"]
     cmd_static += ["-g", str(keyframe_interval), "-keyint_min", str(keyframe_interval)]
     cmd_dash = ["-use_timeline", "1", "-use_template", "1", "-seg_duration",
                 str(segment_target_duration), "-adaptation_sets", "id=0,streams=v"]
@@ -127,7 +129,24 @@ def GetABRCommand(in_file, target, streaming_type, renditions=RENDITIONS_SAMPLE,
 
     return cmd
 
-def GetLiveCommand(in_file, target, codec_type="AVC", renditions=[[842, 480, 1400000, 128000]],loop=1):
+default={
+    "params": {
+            "renditions":[[1920, 1080, 5000000, 192000]],
+            "codec_type":"AVC",
+            "gop_size": "100",
+            "framerate": "30",
+            "bframe": "2",
+            "preset": "veryfast",
+            "refs": "2",
+            "forced_idr": "1",
+            "target_type": "mp4"
+        }
+    }
+
+def GetLiveCommand(in_file, target,  streaming_type, params = default["params"] ,loop=0):
+    codec_type=params["codec_type"]
+    renditions=params["renditions"]
+
     codec = "libx264"
     if codec_type == "HEVC":
         codec="libsvt_hevc"
@@ -138,7 +157,7 @@ def GetLiveCommand(in_file, target, codec_type="AVC", renditions=[[842, 480, 140
     cmd = []
     cmd_base = []
     if loop:
-        cmd_base = ["ffmpeg", "-hide_banner", "-y", "-stream_loop", "0", "-i", in_file]
+        cmd_base = ["ffmpeg", "-hide_banner", "-y", "-stream_loop", "-1", "-i", in_file]
     else:
         cmd_base = ["ffmpeg", "-hide_banner", "-y", "-i", in_file]
 
@@ -150,10 +169,10 @@ def GetLiveCommand(in_file, target, codec_type="AVC", renditions=[[842, 480, 140
         a_bitrate = to_kps(item[3])
         maxrate = to_kps(item[2] * max_bitrate_ratio)
         bufsize = to_kps(item[2] * rate_monitor_buffer_ratio)
-        name= target+str(idx)
+        name= target+"/"+codec_type+"_"+str(height)+"p."+streaming_type if streaming_type == "mp4" else target+"_"+codec_type+str(height)+"p"
 
-        cmd_1 += ["-vf", "scale=w="+str(width)+":"+"h="+str(height),"-c:v", codec, "-b:v", v_bitrate, "-maxrate", maxrate, "-bufsize", bufsize]
-        cmd_1 += ["-r", "30","-g", "100", "-bf", "2", "-refs", "2", "-preset", "veryfast", "-forced-idr", "1", "-an", "-f", "flv", name]
+        cmd_1 += ["-vf", "scale=w="+str(width)+":"+"h="+str(height),"-c:v", codec, "-b:v", v_bitrate]
+        cmd_1 += ["-r", params["framerate"],"-g", params["gop_size"], "-bf", params["bframe"], "-refs", params["refs"], "-preset", params["preset"], "-forced-idr", params["forced_idr"], "-an", "-f", streaming_type, name]
 
     cmd = cmd_base + cmd_1 + ["-abr_pipeline"]
 

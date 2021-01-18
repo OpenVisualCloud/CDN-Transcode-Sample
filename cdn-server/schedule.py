@@ -20,12 +20,16 @@ class ScheduleHandler(web.RequestHandler):
         msg={}
         msg.update({
             "name":stream.split("/")[1],
-            "type":stream.split("/")[0],
-            "parameters": [ ],
-            "codec": "AVC",
-            "loop": 0,
-            "target": "file",
-            "platform": "software"
+            "parameters": {
+                "renditions":[ ],
+                "codec_type": "AVC"
+                },
+            "output": {
+                "target": "file",
+                "type": stream.split("/")[0]
+                },
+            "live_vod": "vod",
+            "loop": 0
             })
         producer.send(KAFKA_TOPIC, json.dumps(msg))
         producer.close()
