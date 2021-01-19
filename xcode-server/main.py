@@ -5,7 +5,7 @@ from subprocess import call
 import subprocess
 from os import makedirs 
 from zkstate import ZKState
-from messaging import Consumer
+from messaging import Consumer, Producer
 from abr_hls_dash import GetABRCommand,GetLiveCommand
 import traceback
 import time
@@ -13,9 +13,11 @@ import json
 import re
 from datetime import datetime, timedelta
 import random
+import psutil
 
 KAFKA_TOPIC = "content_provider_sched"
 KAFKA_GROUP = "content_provider_dash_hls_creator"
+KAFKA_WORKLOAD_TOPIC = "transcoding"
 
 ARCHIVE_ROOT = "/var/www/archive"
 VIDEO_ROOT = "/var/www/video/"
@@ -26,6 +28,8 @@ MP4_ROOT = "/var/www/video/mp4"
 fps_regex = re.compile(
             r"\s*frame=\s*(?P<frame_count>\d+)\s*fps=\s*(?P<fps>\d+\.?\d*).*"
             r"time=(?P<duration>\d+:\d+:\d+\.\d+).*speed=\s*(?P<speed>\d+\.\d+)x")
+
+producer = Producer()
 
 def get_fps(next_line,start_time):
     matched = fps_regex.match(next_line)
@@ -43,7 +47,7 @@ def get_fps(next_line,start_time):
         if fps < 0:
             fps = (frame_count / (duration.total_seconds())) * speed
         now=time.time()
-        return {"fps":fps, "speed":speed, "frames":frame_count, "start":start_time, "duration":now-start_time,"end":now}
+        return {"fps":round(fps,1), "speed":round(speed,3), "frames":frame_count, "start":round(start_time,3), "duration":round(now-start_time,3), "end":round(now,3), "status": "active"}
     return {}
 
 def execute(idx, name, cmd):
@@ -51,13 +55,26 @@ def execute(idx, name, cmd):
     p.poll()
     start_time=time.time()
     sinfo={"id": idx, "stream":name}
+    p1=psutil.Process(p.pid)
     while p.returncode is None:
         next_line = p.stderr.readline()
         r=get_fps(next_line,start_time)
         if r:
+            sinfo.update({"cpu": round(p1.cpu_percent(),2), "mem": round(p1.memory_percent(),2)})
             sinfo.update(r)
             print(sinfo, flush=True)
+            if int(sinfo["frames"] % 10) == 0:
+                try:
+                    producer.send(KAFKA_WORKLOAD_TOPIC, json.dumps(sinfo))
+                except Exception as e:
+                    print("Exception: {}".format(e))
+                    continue
         p.poll()
+    try:
+        sinfo.update({"status": "completed"})
+        producer.send(KAFKA_WORKLOAD_TOPIC, json.dumps(sinfo))
+    except Exception as e:
+        print("Exception: {}".format(e))
     return p.returncode
 
 def process_stream_vods(msg):
