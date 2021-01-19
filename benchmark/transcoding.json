@@ -1,5 +1,5 @@
 [{
-    "name": "bbb_sunflower_1080p_30fps_normal.mp4",
+    "name": ".*.mp4$",
     "parameters": {
          "renditions":[[1920, 1080, 5000000, 192000]],
          "codec_type":"HEVC",
@@ -18,7 +18,7 @@
     },
     "live_vod": "live"
 },{
-    "name": "bbb_sunflower_1080p_30fps_normal.mp4",
+    "name": ".*.mp4$",
     "parameters": {
          "renditions":[[1920, 1080, 5000000, 192000]],
          "codec_type":"AVC",
