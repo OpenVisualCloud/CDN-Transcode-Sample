@@ -16,7 +16,7 @@ kafka:
 liveTranscode:
   replicas: defn(`NLIVES')
   streams:
-    - name: "/var/www/archive/bbb_sunflower_1080p_30fps_normal.mp4"
+    - name: "/var/www/archive/3115738.mp4"
       transcode:
         - protocol: dash
           scale: "856:480"
@@ -27,7 +27,7 @@ liveTranscode:
           refsNum: 2
           preset: veryfast
           encoderType: libx264
-    - name: "/var/www/archive/bbb_sunflower_1080p_30fps_normal.mp4"
+    - name: "/var/www/archive/3115738.mp4"
       transcode:
         - protocol: hls
           scale: "856:480"

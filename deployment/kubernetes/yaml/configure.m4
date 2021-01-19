@@ -16,7 +16,7 @@ define(`VOD_MEMORY',2000)
 
 define(`LIVE_0_CPU',1)
 define(`LIVE_0_MEMORY',2000)
-define(`LIVE_0_URL',bbb_sunflower_1080p_30fps_normal.mp4)
+define(`LIVE_0_URL',3115738.mp4)
 
 define(`LIVE_0_0_PROTOCOL',hls)
 define(`LIVE_0_0_WIDTH',856)

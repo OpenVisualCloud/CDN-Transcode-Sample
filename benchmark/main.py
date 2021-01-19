@@ -6,6 +6,7 @@ from os.path import getsize
 import time
 import json
 import psutil
+import re
 
 KAFKA_TOPIC = "content_provider_sched"
 KAFKA_WORKLOAD_TOPIC = "transcoding"
@@ -25,12 +26,17 @@ with open(config_file,"rt") as fd:
 print("Submit jobs:", flush=True)
 # ingest jobs to start transcoding
 producer = Producer()
-for idx,msg in enumerate(jobs):
+idx=0
+for idx1,msg in enumerate(jobs):
     # schedule producing the stream
-    if msg["name"] not in streams:
-        continue
-    msg.update({"idx": idx})
-    print(msg,flush=True)
+    name_pattern=msg["name"]
+    for stream1 in streams:
+        print("name_pattern={}".format(name_pattern), flush=True)
+        print("stream1={}".format(stream1), flush=True)
+        if re.match(name_pattern, stream1):
+            msg.update({"idx": idx, "name": stream1})
+            print(msg,flush=True)
+            idx=idx+1
 
     while True:
         try:
