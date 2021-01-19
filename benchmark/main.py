@@ -1,14 +1,18 @@
 #!/usr/bin/python3
 
-from messaging import Producer
+from messaging import Producer, Consumer
 from os import listdir, walk
 from os.path import getsize
 import time
 import json
+import psutil
 
 KAFKA_TOPIC = "content_provider_sched"
+KAFKA_WORKLOAD_TOPIC = "transcoding"
+
 ARCHIVE_ROOT = "/var/www/archive"
 TARGET_ROOT = "/var/www/video"
+log_file = TARGET_ROOT+"/log.txt"
 
 config_file="/home/transcoding.json"
 
@@ -23,9 +27,8 @@ print("Submit jobs:", flush=True)
 producer = Producer()
 for idx,msg in enumerate(jobs):
     # schedule producing the stream
-    if msg["target"] == "file":
-        if msg["name"] not in streams:
-            continue
+    if msg["name"] not in streams:
+        continue
     msg.update({"idx": idx})
     print(msg,flush=True)
 
@@ -49,22 +52,30 @@ def stats_fileinfo(root):
                 size=size+getsize(path+"/"+stream1)
     return (nfiles, size)
 
-srcinfo=stats_fileinfo(ARCHIVE_ROOT) 
-print(srcinfo)
-dstinfo=(0,0)
-start=time.time()
+c = Consumer(None)
+
+info={"summary":{"cpu": round(psutil.cpu_percent(),2), "mem": round(int(psutil.virtual_memory().total - psutil.virtual_memory().free) / float(psutil.virtual_memory().total), 2), "active": 0, "completed":0}}
+
+def process_message(msg,sinfo):
+    msg=json.loads(message)
+    sinfo.update({msg["id"]:msg})
+    active=[ item["id"] for k,item in sinfo.items() if "status" in item.keys() and item["status"] == "active"]
+    complete=[ item["id"] for k,item in sinfo.items() if "status" in item.keys() and item["status"] == "completed"]
+    sinfo.update({"summary":{"cpu": round(psutil.cpu_percent(),2), "mem": round(int(psutil.virtual_memory().total - psutil.virtual_memory().free) / float(psutil.virtual_memory().total), 2), "active": len(active), "completed":len(complete)}})
+
+def format_info(sinfo):
+    print("\n", flush=True)
+    with open(log_file, "w") as f:
+        for k,v in sinfo.items():
+            print(k,v, flush=True)
+            f.write(str(k)+": "+json.dumps(v))
+            f.write("\n")
+
 while True:
-    dstinfo1=stats_fileinfo(TARGET_ROOT)
-    if dstinfo1[0]==dstinfo[0] and dstinfo1[1]==dstinfo[1]:
-        time.sleep(1) 
-        continue
-
-    now=time.time()
-    delta=now-start
-
-    print("src: {} media files, size {} bytes".format(srcinfo[0], srcinfo[1]), flush=True)
-    if delta>0:
-        print("dst: {} media files, size {} bytes, throughput {:.2f} MB/s".format(dstinfo1[0], dstinfo1[1], dstinfo1[1]/delta/1024/1024), flush=True)
-
-    dstinfo=dstinfo1
-    time.sleep(1) 
+    try:
+        for message in c.messages(KAFKA_WORKLOAD_TOPIC):
+            process_message(message,info)
+            format_info(info)
+    except Exception as e:
+        print("Exception: {}".format(e))
+        time.sleep(2)
