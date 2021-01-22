@@ -12,12 +12,10 @@ clips=(
     https://www.pexels.com/video/2257025/download
     https://www.pexels.com/video/3743056/download
     https://www.pexels.com/video/5419496/download
-    https://www.pexels.com/video/2249449/download
     https://www.pexels.com/video/3121138/download
     https://www.pexels.com/video/2324293/download
     https://www.pexels.com/video/5413799/download
     https://www.pexels.com/video/3063911/download
-    https://www.pexels.com/video/852435/download
 )
    
 case "$(cat /proc/1/sched | head -n 1)" in
