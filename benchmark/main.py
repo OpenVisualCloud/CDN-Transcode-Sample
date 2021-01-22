@@ -38,13 +38,13 @@ for idx1,msg in enumerate(jobs):
             print(msg,flush=True)
             idx=idx+1
 
-    while True:
-        try:
-            producer.send(KAFKA_TOPIC, json.dumps(msg))
-            break
-        except Exception as e:
-            print("Exception: {}".format(e))
-            time.sleep(5)
+            while True:
+                try:
+                    producer.send(KAFKA_TOPIC, json.dumps(msg))
+                    break
+                except Exception as e:
+                    print("Exception: {}".format(e))
+                    time.sleep(5)
 
 # show transcoding statistics
 
