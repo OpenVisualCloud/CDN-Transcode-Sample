@@ -31,9 +31,7 @@ for idx1,msg in enumerate(jobs):
     # schedule producing the stream
     name_pattern=msg["name"]
     for stream1 in streams:
-        print("name_pattern={}".format(name_pattern), flush=True)
-        print("stream1={}".format(stream1), flush=True)
-        if re.match(name_pattern, stream1):
+        if re.search(name_pattern, stream1):
             msg.update({"idx": idx, "name": stream1})
             print(msg,flush=True)
             idx=idx+1
