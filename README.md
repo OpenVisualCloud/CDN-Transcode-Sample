@@ -98,7 +98,7 @@ make start_helm
 make stop_helm
 ```
 
-For the `transcoding` scenario, look at the logs of the `benchmark` pod for batch transcoding summaries. For the `cdn` scenario, point your browser to `https://<your-host>` to watch the list of video clips via `DASH` or `HLS`.   
+For the `transcode` scenario, look at the logs of the `benchmark` pod for the batch transcoding summary. For the `cdn` scenario, point your browser to `https://<your-host>` to watch the list of video clips via `DASH` or `HLS`.   
 
 # See Also
 
