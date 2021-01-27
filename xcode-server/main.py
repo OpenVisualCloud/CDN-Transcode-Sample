@@ -6,7 +6,7 @@ import subprocess
 from os import makedirs 
 from zkstate import ZKState
 from messaging import Consumer, Producer
-from abr_hls_dash import GetABRCommand,GetLiveCommand
+from ffmpegcmd import FFMpegCmd
 import traceback
 import time
 import json
@@ -24,6 +24,8 @@ VIDEO_ROOT = "/var/www/video/"
 DASH_ROOT = "/var/www/video/dash"
 HLS_ROOT = "/var/www/video/hls"
 MP4_ROOT = "/var/www/video/mp4"
+
+hw="false"
 
 fps_regex = re.compile(
             r"\s*frame=\s*(?P<frame_count>\d+)\s*fps=\s*(?P<fps>\d+\.?\d*).*"
@@ -103,12 +105,13 @@ def process_stream_vods(msg):
 
     if zk.process_start():
         try:
-            cmd = GetABRCommand(ARCHIVE_ROOT+"/"+stream_name, target_root+"/"+stream_name, stream_type, params=stream_parameters, loop=loop)
-            print(cmd, flush=True)
-            r = execute(idx, stream_name, cmd)
-            if r:
-                raise Exception("status code: "+str(r))
-            zk.process_end()
+            cmd = FFMpegCmd(ARCHIVE_ROOT+"/"+stream_name, target_root+"/"+stream_name, stream_type, params=stream_parameters, hw=hw, loop=loop).cmd()
+            if cmd:
+                print(cmd, flush=True)
+                r = execute(idx, stream_name, cmd)
+                if r:
+                    raise Exception("status code: "+str(r))
+                zk.process_end()
         except:
             print(traceback.format_exc(), flush=True)
             zk.process_abort()
@@ -148,15 +151,14 @@ def process_stream_lives(msg):
 
     if zk.process_start():
         try:
-            if stream_parameters:
-                cmd = GetLiveCommand(ARCHIVE_ROOT+"/"+stream_name, target_name, stream_type, params=stream_parameters,loop=loop)
-            else:
-                cmd = GetLiveCommand(ARCHIVE_ROOT+"/"+stream_name, target_name, stream_type, loop=loop)
-            print(cmd, flush=True)
-            r = execute(idx, stream_name, cmd)
-            if r:
-                raise Exception("status code: "+str(r))
-            zk.process_end()
+            cmd = FFMpegCmd(ARCHIVE_ROOT+"/"+stream_name, target_name, stream_type, params=stream_parameters, hw=hw, loop=loop).cmd()
+
+            if cmd:
+                print(cmd, flush=True)
+                r = execute(idx, stream_name, cmd)
+                if r:
+                    raise Exception("status code: "+str(r))
+                zk.process_end()
         except:
             print(traceback.format_exc(), flush=True)
             zk.process_abort()

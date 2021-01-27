@@ -24,11 +24,11 @@ spec:
           imagePullPolicy: IfNotPresent
           resources:
             limits:
+              cpu: eval(defn(`VOD_CPU')*4)
+              memory: eval(defn(`VOD_MEMORY')*4)Mi
+            requests:
               cpu: eval(defn(`VOD_CPU')*2)
               memory: eval(defn(`VOD_MEMORY')*2)Mi
-            requests:
-              cpu: defn(`VOD_CPU')
-              memory: defn(`VOD_MEMORY')Mi
           env:
             - name: NO_PROXY
               value: "*"
