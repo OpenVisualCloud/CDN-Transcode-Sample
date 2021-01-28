@@ -24,12 +24,28 @@ spec:
         image: {{ $.Values.registryPrefix }}tc_transcode_{{ lower $.Values.platform }}:latest
         imagePullPolicy: IfNotPresent
         name: vod-service
+        env:
+{{- if ne $.Values.platform "Xeon" }}
+          - name: HW_ACCELERATOR
+            value: "true"
+{{- end }}
+          - name: NO_PROXY
+            value: "*"
+          - name: no_proxy
+            value: "*"
         volumeMounts:
           - mountPath: /var/www/archive
             name: archive
             readOnly: true
           - mountPath: /var/www/video
             name: cache
+{{- if ne $.Values.platform "Xeon" }}
+#        resources:
+#          limits:
+#            gpu.intel.com/i915: 1
+        securityContext:
+          privileged: true
+{{- end }}
       volumes:
         - name: archive
           persistentVolumeClaim:
@@ -55,6 +71,10 @@ spec:
           image: {{ $.Values.registryPrefix }}tc_benchmark_service:latest
           imagePullPolicy: IfNotPresent
           env:
+{{- if ne $.Values.platform "Xeon" }}
+            - name: HW_ACCELERATOR
+              value: "true"
+{{- end }}
             - name: NO_PROXY
               value: "*"
             - name: no_proxy
@@ -65,6 +85,13 @@ spec:
               readOnly: true
             - mountPath: /var/www/video
               name: video-cache
+{{- if ne $.Values.platform "Xeon" }}
+#        resources:
+#          limits:
+#            gpu.intel.com/i915: 1
+        securityContext:
+          privileged: true
+{{- end }}
       volumes:
           - name: video-archive
             persistentVolumeClaim:

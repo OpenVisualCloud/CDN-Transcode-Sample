@@ -32,7 +32,7 @@ for idx1,msg in enumerate(jobs):
     name_pattern=msg["name"]
     for stream1 in streams:
         if re.search(name_pattern, stream1):
-            msg.update({"idx": idx, "name": stream1})
+            msg.update({"idx": str(idx), "name": stream1})
             print(msg,flush=True)
             idx=idx+1
 
@@ -58,28 +58,61 @@ def stats_fileinfo(root):
 
 c = Consumer(None)
 
-info={"summary":{"cpu": round(psutil.cpu_percent(),2), "mem": round(int(psutil.virtual_memory().total - psutil.virtual_memory().free) / float(psutil.virtual_memory().total), 2), "active": 0, "completed":0}}
+info={
+        "summary":{
+            "cpu": round(psutil.cpu_percent(),2),
+            "mem": round(int(psutil.virtual_memory().total - psutil.virtual_memory().free) / float(psutil.virtual_memory().total), 2),
+            "active":0,
+            "completed":0,
+            "aborted":0
+            },
+        "active_task":[],
+        "completed_task":[],
+        "aborted_task":[]
+        }
+
+def status_check(item, status):
+    return isinstance(item,dict) and "status" in item.keys() and item["status"] == status
 
 def process_message(msg,sinfo):
     msg=json.loads(message)
     sinfo.update({msg["id"]:msg})
-    active=[ item["id"] for k,item in sinfo.items() if "status" in item.keys() and item["status"] == "active"]
-    complete=[ item["id"] for k,item in sinfo.items() if "status" in item.keys() and item["status"] == "completed"]
-    sinfo.update({"summary":{"cpu": round(psutil.cpu_percent(),2), "mem": round(int(psutil.virtual_memory().total - psutil.virtual_memory().free) / float(psutil.virtual_memory().total), 2), "active": len(active), "completed":len(complete)}})
+    active=[ item["id"] for k,item in sinfo.items() if status_check(item, "active")]
+    completed=[ item["id"] for k,item in sinfo.items() if status_check(item, "completed")]
+    aborted=[ item["id"] for k,item in sinfo.items() if status_check(item, "aborted")]
+    sinfo.update({
+        "summary":{
+            "cpu": round(psutil.cpu_percent(),2),
+            "mem": round(int(psutil.virtual_memory().total - psutil.virtual_memory().free) / float(psutil.virtual_memory().total), 2),
+            "active": len(active),
+            "completed": len(completed),
+            "aborted": len(aborted)
+            },
+        "active_task":active,
+        "completed_task":completed,
+        "aborted_task":aborted
+        })
+    return active,completed,aborted
 
-def format_info(sinfo):
-    print("\n", flush=True)
+def log_info(sinfo):
     with open(log_file, "w") as f:
         for k,v in sinfo.items():
-            print(k,v, flush=True)
             f.write(str(k)+": "+json.dumps(v))
             f.write("\n")
 
+def format_info(sinfo,task_list):
+    print("\n", flush=True)
+    for k,v in sinfo.items():
+        if k in task_list + ["summary","active_task","completed_task","aborted_task"]:
+            print(k,v, flush=True)
+
 while True:
     try:
+        print("Waiting...",flush=True)
         for message in c.messages(KAFKA_WORKLOAD_TOPIC):
-            process_message(message,info)
-            format_info(info)
+            active,completed,aborted = process_message(message,info)
+            log_info(info)
+            format_info(info,active)
     except Exception as e:
         print("Exception: {}".format(e))
         time.sleep(2)

@@ -1,7 +1,7 @@
 
 registryPrefix: "defn(`REGISTRY_PREFIX')"
 
-# platform specifies the target platform: Xeon or Xeone3.
+# platform specifies the target platform: Xeon or XeonE3.
 platform: "defn(`PLATFORM')"
 
 # scenario specifies the mode: cdn or batch.

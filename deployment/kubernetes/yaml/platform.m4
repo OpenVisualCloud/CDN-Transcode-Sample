@@ -1,7 +1,12 @@
 define(`PLATFORM_SUFFIX',translit(defn(`PLATFORM'),`A-Z',`a-z'))dnl
 define(`PLATFORM_RESOURCES',dnl
 ifelse(defn(`PLATFORM'),`XeonE3',dnl
-#             gpu.intel.com/i915: 1
+#          resources:
+#            limits:
+#              gpu.intel.com/i915: 1
+          securityContext:
+            privileged: true
+            runAsUser: 0
 ))dnl
 define(`PLATFORM_NODE_SELECTOR',dnl
       affinity:
