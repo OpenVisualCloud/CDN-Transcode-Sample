@@ -30,6 +30,8 @@ spec:
               cpu: eval(defn(`VOD_CPU')*2)
               memory: eval(defn(`VOD_MEMORY')*2)Mi
           env:
+            - name: HW_ACCELERATOR
+              value: ifelse(defn(`PLATFORM'),`Xeon',"false","true")
             - name: NO_PROXY
               value: "*"
             - name: no_proxy
@@ -40,6 +42,7 @@ spec:
             - mountPath: /var/www/archive
               name: video-archive
               readOnly: true
+defn(`PLATFORM_RESOURCES')dnl
       volumes:
           - name: video-cache
             persistentVolumeClaim:
@@ -65,6 +68,8 @@ spec:
           image: defn(`REGISTRY_PREFIX')tc_benchmark_service:latest
           imagePullPolicy: IfNotPresent
           env:
+            - name: HW_ACCELERATOR
+              value: ifelse(defn(`PLATFORM'),`Xeon',"false","true")
             - name: NO_PROXY
               value: "*"
             - name: no_proxy
@@ -75,6 +80,7 @@ spec:
               readOnly: true
             - mountPath: /var/www/video
               name: video-cache
+defn(`PLATFORM_RESOURCES')dnl
       volumes:
           - name: video-archive
             persistentVolumeClaim:

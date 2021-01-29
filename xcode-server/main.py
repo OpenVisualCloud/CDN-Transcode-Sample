@@ -14,6 +14,7 @@ import re
 from datetime import datetime, timedelta
 import random
 import psutil
+import os
 
 KAFKA_TOPIC = "content_provider_sched"
 KAFKA_GROUP = "content_provider_dash_hls_creator"
@@ -25,7 +26,7 @@ DASH_ROOT = "/var/www/video/dash"
 HLS_ROOT = "/var/www/video/hls"
 MP4_ROOT = "/var/www/video/mp4"
 
-hw="false"
+hw=os.environ["HW_ACCELERATOR"]
 
 fps_regex = re.compile(
             r"\s*frame=\s*(?P<frame_count>\d+)\s*fps=\s*(?P<fps>\d+\.?\d*).*"
@@ -56,7 +57,7 @@ def execute(idx, name, cmd):
     p = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, bufsize=1, universal_newlines=True)
     p.poll()
     start_time=time.time()
-    sinfo={"id": idx, "stream":name}
+    sinfo={"id": str(idx), "stream":name}
     p1=psutil.Process(p.pid)
     while p.returncode is None:
         next_line = p.stderr.readline()
@@ -65,15 +66,18 @@ def execute(idx, name, cmd):
             sinfo.update({"cpu": round(p1.cpu_percent(),2), "mem": round(p1.memory_percent(),2)})
             sinfo.update(r)
             print(sinfo, flush=True)
-            if int(sinfo["frames"] % 10) == 0:
-                try:
-                    producer.send(KAFKA_WORKLOAD_TOPIC, json.dumps(sinfo))
-                except Exception as e:
-                    print("Exception: {}".format(e))
-                    continue
+            try:
+                producer.send(KAFKA_WORKLOAD_TOPIC, json.dumps(sinfo))
+            except Exception as e:
+                print("Exception: {}".format(e))
+                continue
         p.poll()
     try:
-        sinfo.update({"status": "completed"})
+        if p.returncode:
+            sinfo.update({"status": "aborted"})
+        else:
+            sinfo.update({"status": "completed"})
+        print(sinfo, flush=True)
         producer.send(KAFKA_WORKLOAD_TOPIC, json.dumps(sinfo))
     except Exception as e:
         print("Exception: {}".format(e))
