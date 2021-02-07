@@ -22,6 +22,7 @@ spec:
         - name: vod
           image: defn(`REGISTRY_PREFIX')`tc_transcode_'defn(`PLATFORM_SUFFIX'):latest
           imagePullPolicy: IfNotPresent
+ifelse(defn(`SCENARIO'),`transcode',`dnl
           resources:
             limits:
               cpu: eval(defn(`VOD_CPU')*4)
@@ -29,6 +30,7 @@ spec:
             requests:
               cpu: eval(defn(`VOD_CPU')*2)
               memory: eval(defn(`VOD_MEMORY')*2)Mi
+')dnl
           env:
             - name: HW_ACCELERATOR
               value: ifelse(defn(`PLATFORM'),`Xeon',"false","true")

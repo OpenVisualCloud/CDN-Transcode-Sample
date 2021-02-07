@@ -16,7 +16,7 @@ celery = Celery('tasks',
 @celery.task
 def in_out(proPath, srcPath, fileName, count):
     i=0
-    while i < 10:
+    while i < 20:
         if len(os.listdir(proPath)) == int(count) + 1:
             try:
                 with open(os.path.join(srcPath, fileName), "wb") as upload_file:

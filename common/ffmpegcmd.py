@@ -136,7 +136,7 @@ class FFMpegCmd:
             cmd_3 = ["-f", self._streaming_type]
             cmd_4 = ["-hls_segment_filename", self._target+"/"+name+"_"+"%03d.ts", self._target+"/"+name+".m3u8"]
             master_playlist += "#EXT-X-STREAM-INF:BANDWIDTH="+str(item[2])+","+"RESOLUTION="+str(width)+"x"+str(height)+"\n"+name+".m3u8"+"\n"
-            cmd_abr += cmd_1 + self._cmd_static + cmd_1 + cmd_2 + cmd_fade_in_out + cmd_3 + cmd_hls + cmd_4
+            cmd_abr += cmd_1 + self._cmd_static + cmd_2 + cmd_fade_in_out + cmd_3 + cmd_hls + cmd_4
 
             count += 1
             if count > self._default_threshold:
