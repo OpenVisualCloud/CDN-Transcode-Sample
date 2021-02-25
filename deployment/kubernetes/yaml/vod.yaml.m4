@@ -1,25 +1,28 @@
-include(platform.m4)
+include(../../../script/loop.m4)
 include(configure.m4)
+include(platform.m4)
+
+loop(DEVICEIDX,0,eval(defn(`HW_DEVICE_NUM')-1),`
 
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: vod
+  name: vod-defn(`DEVICEIDX')
   labels:
-    app: vod
+    app: vod-defn(`DEVICEIDX')
 spec:
   replicas: defn(`NVODS')
   selector:
     matchLabels:
-      app: vod
+      app: vod-defn(`DEVICEIDX')
   template:
     metadata:
       labels:
-        app: vod
+        app: vod-defn(`DEVICEIDX')
     spec:
       enableServiceLinks: false
       containers:
-        - name: vod
+        - name: vod-defn(`DEVICEIDX')
           image: defn(`REGISTRY_PREFIX')`tc_transcode_'defn(`PLATFORM_SUFFIX'):latest
           imagePullPolicy: IfNotPresent
 ifelse(defn(`SCENARIO'),`transcode',`dnl
@@ -34,6 +37,10 @@ ifelse(defn(`SCENARIO'),`transcode',`dnl
           env:
             - name: HW_ACC_TYPE
               value: ifelse(defn(`PLATFORM'),`Xeon',"sw","defn(`HW_ACC_PLUGIN_TYPE')")
+ifelse(defn(`PLATFORM'),`Xeon',,`dnl
+            - name: HW_DEVICE
+              value: "`/dev/dri/renderD'eval(defn(`DEVICEIDX')+128)"
+')dnl
             - name: NO_PROXY
               value: "*"
             - name: no_proxy
@@ -53,6 +60,9 @@ defn(`PLATFORM_RESOURCES')dnl
             persistentVolumeClaim:
                claimName: video-archive
 PLATFORM_NODE_SELECTOR(`Xeon')dnl
+
+---
+')
 
 ifelse(defn(`SCENARIO'),`transcode',`
 ---
@@ -80,7 +90,6 @@ spec:
               readOnly: true
             - mountPath: /var/www/video
               name: video-cache
-defn(`PLATFORM_RESOURCES')dnl
       volumes:
           - name: video-archive
             persistentVolumeClaim:
