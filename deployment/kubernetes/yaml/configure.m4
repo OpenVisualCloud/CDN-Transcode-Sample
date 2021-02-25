@@ -1,4 +1,6 @@
 
+define(`HW_ACC_PLUGIN_TYPE',`qsv')
+
 define(`CDN_CPU',2)
 define(`CDN_MEMORY',2000)
 

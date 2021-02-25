@@ -26,8 +26,8 @@ spec:
         name: vod-service
         env:
 {{- if ne $.Values.platform "Xeon" }}
-          - name: HW_ACCELERATOR
-            value: "true"
+          - name: HW_ACC_TYPE
+            value: {{ $.Values.hwAccType }}
 {{- end }}
           - name: NO_PROXY
             value: "*"
@@ -71,10 +71,6 @@ spec:
           image: {{ $.Values.registryPrefix }}tc_benchmark_service:latest
           imagePullPolicy: IfNotPresent
           env:
-{{- if ne $.Values.platform "Xeon" }}
-            - name: HW_ACCELERATOR
-              value: "true"
-{{- end }}
             - name: NO_PROXY
               value: "*"
             - name: no_proxy

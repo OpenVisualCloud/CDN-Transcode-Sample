@@ -26,7 +26,8 @@ DASH_ROOT = "/var/www/video/dash"
 HLS_ROOT = "/var/www/video/hls"
 MP4_ROOT = "/var/www/video/mp4"
 
-hw=os.environ["HW_ACCELERATOR"]
+HW_ACC_TYPE=os.getenv("HW_ACC_TYPE","sw")
+HW_DEVICE=os.getenv("HW_DEVICE",None)
 
 fps_regex = re.compile(
             r"\s*frame=\s*(?P<frame_count>\d+)\s*fps=\s*(?P<fps>\d+\.?\d*).*"
@@ -109,7 +110,7 @@ def process_stream_vods(msg):
 
     if zk.process_start():
         try:
-            cmd = FFMpegCmd(ARCHIVE_ROOT+"/"+stream_name, target_root+"/"+stream_name, stream_type, params=stream_parameters, hw=hw, loop=loop).cmd()
+            cmd = FFMpegCmd(ARCHIVE_ROOT+"/"+stream_name, target_root+"/"+stream_name, stream_type, params=stream_parameters, acc_type=HW_ACC_TYPE, loop=loop, device=HW_DEVICE).cmd()
             if cmd:
                 print(cmd, flush=True)
                 r = execute(idx, stream_name, cmd)
@@ -155,7 +156,7 @@ def process_stream_lives(msg):
 
     if zk.process_start():
         try:
-            cmd = FFMpegCmd(ARCHIVE_ROOT+"/"+stream_name, target_name, stream_type, params=stream_parameters, hw=hw, loop=loop).cmd()
+            cmd = FFMpegCmd(ARCHIVE_ROOT+"/"+stream_name, target_name, stream_type, params=stream_parameters, acc_type=HW_ACC_TYPE, loop=loop, device=HW_DEVICE).cmd()
 
             if cmd:
                 print(cmd, flush=True)

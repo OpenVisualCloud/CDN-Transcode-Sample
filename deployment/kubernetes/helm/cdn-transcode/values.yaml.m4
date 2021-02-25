@@ -4,6 +4,9 @@ registryPrefix: "defn(`REGISTRY_PREFIX')"
 # platform specifies the target platform: Xeon or XeonE3.
 platform: "defn(`PLATFORM')"
 
+# transcoding with HW QSV or VAAPI: qsv or vaapi.
+hwAccType: "qsv"
+
 # scenario specifies the mode: cdn or batch.
 scenario: "defn(`SCENARIO')"
 

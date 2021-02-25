@@ -32,8 +32,8 @@ ifelse(defn(`SCENARIO'),`transcode',`dnl
               memory: eval(defn(`VOD_MEMORY')*2)Mi
 ')dnl
           env:
-            - name: HW_ACCELERATOR
-              value: ifelse(defn(`PLATFORM'),`Xeon',"false","true")
+            - name: HW_ACC_TYPE
+              value: ifelse(defn(`PLATFORM'),`Xeon',"sw","defn(`HW_ACC_PLUGIN_TYPE')")
             - name: NO_PROXY
               value: "*"
             - name: no_proxy
@@ -70,8 +70,6 @@ spec:
           image: defn(`REGISTRY_PREFIX')tc_benchmark_service:latest
           imagePullPolicy: IfNotPresent
           env:
-            - name: HW_ACCELERATOR
-              value: ifelse(defn(`PLATFORM'),`Xeon',"false","true")
             - name: NO_PROXY
               value: "*"
             - name: no_proxy
