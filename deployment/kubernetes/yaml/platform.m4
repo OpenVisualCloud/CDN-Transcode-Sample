@@ -1,6 +1,6 @@
 define(`PLATFORM_SUFFIX',translit(defn(`PLATFORM'),`A-Z',`a-z'))dnl
 define(`PLATFORM_RESOURCES',dnl
-ifelse(defn(`PLATFORM'),`XeonE3',dnl
+ifelse(defn(`PLATFORM'),`Xeon',,dnl
 #          resources:
 #            limits:
 #              gpu.intel.com/i915: 1

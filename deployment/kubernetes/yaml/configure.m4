@@ -1,4 +1,7 @@
 
+define(`HW_ACC_PLUGIN_TYPE',`qsv')
+define(`HW_DEVICE_NUM',ifelse(defn(`PLATFORM'),`SG1',4,1))
+
 define(`CDN_CPU',2)
 define(`CDN_MEMORY',2000)
 

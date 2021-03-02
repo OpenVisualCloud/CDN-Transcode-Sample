@@ -1,20 +1,22 @@
 
+{{- range $deviceIdx := until ( int ( $.Values.hwDeviceNum ) ) }}
+
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   labels:
-    app: vod-service
-  name: vod-service
+    app: vod-service-{{ $deviceIdx }}
+  name: vod-service-{{ $deviceIdx }}
 spec:
   selector:
     matchLabels:
-      app: vod-service
-  replicas: {{ .Values.vodTranscode.replicas }}
+      app: vod-service-{{ $deviceIdx }}
+  replicas: {{ $.Values.vodTranscode.replicas }}
   template:
     metadata:
       creationTimestamp: null
       labels:
-        app: vod-service
+        app: vod-service-{{ $deviceIdx }}
     spec:
       containers:
       - args:
@@ -23,11 +25,13 @@ spec:
         - /home/main.py
         image: {{ $.Values.registryPrefix }}tc_transcode_{{ lower $.Values.platform }}:latest
         imagePullPolicy: IfNotPresent
-        name: vod-service
+        name: vod-service-{{ $deviceIdx }}
         env:
 {{- if ne $.Values.platform "Xeon" }}
-          - name: HW_ACCELERATOR
-            value: "true"
+          - name: HW_ACC_TYPE
+            value: {{ $.Values.hwAccType }}
+          - name: HW_DEVICE
+            value: /dev/dri/renderD{{ add $deviceIdx 128 }}
 {{- end }}
           - name: NO_PROXY
             value: "*"
@@ -45,6 +49,7 @@ spec:
 #            gpu.intel.com/i915: 1
         securityContext:
           privileged: true
+          runAsUser: 0
 {{- end }}
       volumes:
         - name: archive
@@ -54,6 +59,10 @@ spec:
           persistentVolumeClaim:
             claimName: video-cache
       restartPolicy: Always
+
+---
+{{- end }}
+
 
 {{- if eq "transcode" $.Values.scenario }}
 ---
@@ -71,10 +80,6 @@ spec:
           image: {{ $.Values.registryPrefix }}tc_benchmark_service:latest
           imagePullPolicy: IfNotPresent
           env:
-{{- if ne $.Values.platform "Xeon" }}
-            - name: HW_ACCELERATOR
-              value: "true"
-{{- end }}
             - name: NO_PROXY
               value: "*"
             - name: no_proxy
@@ -85,13 +90,6 @@ spec:
               readOnly: true
             - mountPath: /var/www/video
               name: video-cache
-{{- if ne $.Values.platform "Xeon" }}
-#        resources:
-#          limits:
-#            gpu.intel.com/i915: 1
-        securityContext:
-          privileged: true
-{{- end }}
       volumes:
           - name: video-archive
             persistentVolumeClaim:

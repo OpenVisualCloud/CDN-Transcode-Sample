@@ -38,19 +38,22 @@ codec_setting={
         "AVC": "libx264",
         "HEVC": "libsvt_hevc"
     },
-    "hw": {
+    "vaapi": {
         "AVC": "h264_vaapi",
         "HEVC": "hevc_vaapi"
+    },
+    "qsv": {
+        "AVC": "h264_qsv",
+        "HEVC": "hevc_qsv"
     }
 }
 class FFMpegCmd:
-    def __init__(self, in_params, out_params, streaming_type, params, loop=0, hw="false"):
+    def __init__(self, in_params, out_params, streaming_type, params, loop=0, acc_type="sw", device=None):
         self._in_file=in_params
         self._target=out_params
         self._tc_params=params if params else default_params["tc_params"]
         self._hls_dash_params=params["hls_dash_params"] if "hls_dash_params" in params.keys() else default_params["hls_dash_params"]
-        self._hw=hw
-        self._platform="hw" if hw == "true" else "sw"
+        self._acc_type=acc_type
 
         self._segment_num=self._hls_dash_params["segment_num"]
         self._duration=self._hls_dash_params["duration"]
@@ -65,8 +68,16 @@ class FFMpegCmd:
         self._cmd_base=["ffmpeg", "-hide_banner", "-y"]
         if loop:
             self._cmd_base = self._cmd_base + ["-stream_loop", "-1"]
-        if self._hw == "true":
-            self._cmd_base = self._cmd_base +  ["-hwaccel", "vaapi", "-hwaccel_device", "/dev/dri/renderD128", "-hwaccel_output_format", "vaapi"]
+
+        self._device=device
+        if not device and self._acc_type != "sw":
+            self._device = "/dev/dri/renderD128"
+
+        if self._acc_type == "vaapi":
+            self._cmd_base = self._cmd_base +  ["-hwaccel", "vaapi", "-hwaccel_device", self._device, "-hwaccel_output_format", "vaapi"]
+        elif self._acc_type == "qsv":
+            self._cmd_base = self._cmd_base +  ["-hwaccel", "qsv", "-qsv_device", self._device, "-c:v", "h264_qsv"]
+
         self._cmd_base = self._cmd_base + ["-i", self._in_file]
 
         self._keyframe_interval = 0
@@ -83,7 +94,7 @@ class FFMpegCmd:
         self._codec = self._get_codec()
         # hls and dash
         self._cmd_static = ["-c:v", self._codec, "-profile:v", "main", "-sc_threshold", "0", "-strict", "-2"]
-        if self._hw == "true":
+        if self._acc_type != "sw":
             self._cmd_static = ["-profile:v", "main", "-c:v", self._codec]
         self._cmd_static += ["-g", str(self._keyframe_interval)]
 
@@ -92,7 +103,7 @@ class FFMpegCmd:
         return str(int(bitrate/1000))+"k"
 
     def _get_codec(self):
-        return codec_setting[self._platform][self._codec_type]
+        return codec_setting[self._acc_type][self._codec_type]
 
     def stream_info(self, in_file):
         ffprobe_cmd = ["ffprobe", "-v", "quiet", "-print_format", "json", "-show_streams", in_file]
@@ -130,8 +141,11 @@ class FFMpegCmd:
                 continue
 
             cmd_1 = ["-vf", "scale=w="+str(width)+":"+"h="+str(height)]
-            if self._hw == "true":
+            if self._acc_type == "vaapi":
                 cmd_1 = ["-vf", "scale_vaapi=w="+str(width)+":"+"h="+str(height)+":format=nv12"]
+            elif self._acc_type == "qsv":
+                cmd_1 = ["-vf", "scale_qsv=w="+str(width)+":"+"h="+str(height)+":format=nv12"]
+
             cmd_2 = ["-b:v", v_bitrate, "-maxrate", maxrate]
             cmd_3 = ["-f", self._streaming_type]
             cmd_4 = ["-hls_segment_filename", self._target+"/"+name+"_"+"%03d.ts", self._target+"/"+name+".m3u8"]
@@ -160,8 +174,10 @@ class FFMpegCmd:
             if self._frame_height < height:
                 continue
             cmd_1 = ["-map", "[out"+str(count) +"]", "-b:v"+":"+str(count), v_bitrate, "-maxrate"+":"+str(count), maxrate]
-            if self._hw == "true":
+            if self._acc_type == "vaapi":
                 cmd_scale += [";", "[mid"+str(count) +"]", "scale_vaapi=w="+str(width)+":"+"h="+str(height)+":format=nv12","[out"+str(count) +"]"]
+            elif self._acc_type == "qsv":
+                cmd_scale += [";", "[mid"+str(count) +"]", "scale_qsv=w="+str(width)+":"+"h="+str(height)+":format=nv12","[out"+str(count) +"]"]
             else:
                 cmd_scale += [";", "[mid"+str(count) +"]", "scale=w="+str(width)+":"+"h="+str(height),"[out"+str(count) +"]"]
             cmd_abr += cmd_1
@@ -182,14 +198,17 @@ class FFMpegCmd:
             maxrate = self._to_kps(item[2] * self._max_bitrate_ratio)
             name= self._target+"/"+self._codec_type+"_"+str(height)+"p."+self._streaming_type if self._streaming_type == "mp4" else self._target+"_"+self._codec_type+str(height)+"p"
 
-            if self._hw == "true":
+            if self._acc_type == "vaapi":
                 cmd_1 += ["-vf", "scale_vaapi=w="+str(width)+":"+"h="+str(height)+":format=nv12", "-c:v", self._codec]
+                cmd_1 += ["-profile:v", "main", "-b:v", v_bitrate, "-maxrate", v_bitrate, "-r", params["framerate"],"-g", params["gop_size"], "-bf", params["bframe"], "-an", "-f", self._streaming_type, name]
+            elif self._acc_type == "qsv":
+                cmd_1 += ["-vf", "scale_qsv=w="+str(width)+":"+"h="+str(height)+":format=nv12", "-c:v", self._codec]
                 cmd_1 += ["-profile:v", "main", "-b:v", v_bitrate, "-maxrate", v_bitrate, "-r", params["framerate"],"-g", params["gop_size"], "-bf", params["bframe"], "-an", "-f", self._streaming_type, name]
             else:
                 cmd_1 += ["-vf", "scale=w="+str(width)+":"+"h="+str(height),"-c:v", self._codec, "-b:v", v_bitrate]
                 cmd_1 += ["-r", params["framerate"],"-g", params["gop_size"], "-bf", params["bframe"], "-refs", params["refs"], "-preset", params["preset"], "-forced-idr", params["forced_idr"], "-an", "-f", self._streaming_type, name]
 
-        return  cmd_1 + ["-abr_pipeline"]
+        return  cmd_1
 
     def cmd(self):
         cmd = []
