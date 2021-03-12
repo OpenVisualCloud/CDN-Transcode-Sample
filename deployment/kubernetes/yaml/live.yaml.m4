@@ -23,7 +23,7 @@ spec:
       enableServiceLinks: false
       containers:
         - name: live-defn(`LIDX')
-          image: defn(`REGISTRY_PREFIX')`tc_transcode_'defn(`PLATFORM_SUFFIX'):latest
+          image: defn(`REGISTRY_PREFIX')tc_transcode_xeon:latest
           imagePullPolicy: IfNotPresent
           resources:
             limits:
