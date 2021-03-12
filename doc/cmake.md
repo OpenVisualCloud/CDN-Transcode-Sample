@@ -3,7 +3,7 @@
 
 Use the following definitions to customize the building process:   
 - **REGISTRY**: Specify the URL of the privcay docker registry.    
-- **PLATFORM**: Specify the target platform: `Xeon` or `XeonE3`.  
+- **PLATFORM**: Specify the target platform: `Xeon` , `XeonE3` or `SG1`.
 - **SCENARIO**: Specify the sample scenario(s): `transcode` or `cdn`.  
 - **NLIVES**: Specify the number of live streaming services in the deployment. 
 - **NVODS**: Specify the number of vod transcoding services in the deployment.  
