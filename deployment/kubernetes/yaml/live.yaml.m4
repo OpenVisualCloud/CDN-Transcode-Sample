@@ -57,7 +57,7 @@ loopifdef(KIDX,0,``LIVE_'defn(`LIDX')`_'defn(`KIDX')_PROTOCOL',`dnl
             "-an", 
             "-f", "flv", "`rtmp://cdn-service/'defn(`LIVE_'defn(`LIDX')`_'defn(`KIDX')_PROTOCOL)`/media_'defn(`LIDX')`_'defn(`KIDX')",
 ')dnl
-            "-abr_pipeline"]
+            ]
       volumes:
           - name: video-archive
             persistentVolumeClaim:
