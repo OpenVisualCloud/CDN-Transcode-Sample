@@ -11,5 +11,5 @@ HOSTIP=$(ip route get 8.8.8.8 | awk '/ src /{split(substr($0,index($0," src ")),
 . "${DIR}/../volume-info.sh"
 echo "NVODS=${NVODS} NLIVES=${NLIVES} SCENARIO=${SCENARIO} PLATFORM=${PLATFORM}"
 for template in $(find "${DIR}" -maxdepth 1 -name "*.yaml.m4" -print); do
-    m4 -DNVODS=${NVODS} -DNLIVES=${NLIVES} -DSCENARIO=${SCENARIO} -DPLATFORM=${PLATFORM} -DHOSTIP=${HOSTIP} -DREGISTRY_PREFIX=${REGISTRY} $(env | grep _VOLUME_ | sed 's/^/-D/') -I "${DIR}" "${template}" > "${template/.m4/}"
+    m4 -DNVODS=${NVODS} -DNLIVES=${NLIVES} -DSCENARIO=${SCENARIO} -DPLATFORM=${PLATFORM} -DUSERID=$(id -u) -DGROUPID=$(id -g) -DHOSTIP=${HOSTIP} -DREGISTRY_PREFIX=${REGISTRY} $(env | grep _VOLUME_ | sed 's/^/-D/') -I "${DIR}" "${template}" > "${template/.m4/}"
 done
