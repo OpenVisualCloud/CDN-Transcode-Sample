@@ -104,4 +104,5 @@ For the `transcode` scenario, look at the logs of the `benchmark` pod for the ba
 
 - [Kubernetes Setup](deployment/kubernetes/README.md)   
 - [Build Options](doc/cmake.md)   
+- [Reference Architecture](https://networkbuilders.intel.com/solutionslibrary/container-bare-metal-for-2nd-generation-intel-xeon-scalable-processor)   
 
