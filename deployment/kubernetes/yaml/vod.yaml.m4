@@ -52,6 +52,14 @@ ifelse(defn(`PLATFORM'),`Xeon',,`dnl
               name: video-archive
               readOnly: true
 defn(`PLATFORM_RESOURCES')dnl
+      initContainers:
+        - image: busybox:latest
+          imagePullPolicy: IfNotPresent
+          name: init
+          command: ["sh", "-c", "chown -R 1000:1000 /var/www/video"]
+          volumeMounts:
+            - mountPath: /var/www/video
+              name: video-cache
       volumes:
           - name: video-cache
             persistentVolumeClaim:

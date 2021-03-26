@@ -23,7 +23,7 @@ spec:
       enableServiceLinks: false
       containers:
         - name: live-defn(`LIDX')
-          image: defn(`REGISTRY_PREFIX')`tc_transcode_'defn(`PLATFORM_SUFFIX'):latest
+          image: defn(`REGISTRY_PREFIX')tc_transcode_xeon:latest
           imagePullPolicy: IfNotPresent
           resources:
             limits:
@@ -57,7 +57,7 @@ loopifdef(KIDX,0,``LIVE_'defn(`LIDX')`_'defn(`KIDX')_PROTOCOL',`dnl
             "-an", 
             "-f", "flv", "`rtmp://cdn-service/'defn(`LIVE_'defn(`LIDX')`_'defn(`KIDX')_PROTOCOL)`/media_'defn(`LIDX')`_'defn(`KIDX')",
 ')dnl
-            "-abr_pipeline"]
+            ]
       volumes:
           - name: video-archive
             persistentVolumeClaim:

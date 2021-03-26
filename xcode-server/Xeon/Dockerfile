@@ -1,6 +1,6 @@
 # tc_transcode_xeon
 
-FROM openvisualcloud/xeon-ubuntu1804-media-ffmpeg:20.7
+FROM openvisualcloud/xeon-ubuntu1804-media-ffmpeg:21.3
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y -q --no-install-recommends python3-tornado python3-kafka python3-kazoo python3-psutil && rm -rf /var/lib/apt/lists/*
 
 COPY --from=tc_common /home/ /home/
