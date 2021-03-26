@@ -35,5 +35,7 @@ The command ```make update``` uploads the sample images to each worker node. If 
 ### See Also 
 
 - [Helm Charts](helm/cdn-transcode/README.md)
-- [CMake Options](../../doc/cmake.md)
+- [CMake Options](../../doc/cmake.md)  
+- [Reference Architecture](https://networkbuilders.intel.com/solutionslibrary/container-bare-metal-for-2nd-generation-intel-xeon-scalable-processor)   
+
 
