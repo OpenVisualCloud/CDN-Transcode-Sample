@@ -7,25 +7,25 @@ loop(DEVICEIDX,0,eval(defn(`HW_DEVICE_NUM')-1),`
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: vod-defn(`DEVICEIDX')
+  name: xcode-defn(`DEVICEIDX')
   labels:
-    app: vod-defn(`DEVICEIDX')
+    app: xcode-defn(`DEVICEIDX')
 spec:
   replicas: defn(`NVODS')
   selector:
     matchLabels:
-      app: vod-defn(`DEVICEIDX')
+      app: xcode-defn(`DEVICEIDX')
   template:
     metadata:
       labels:
-        app: vod-defn(`DEVICEIDX')
+        app: xcode-defn(`DEVICEIDX')
     spec:
       enableServiceLinks: false
       containers:
-        - name: vod-defn(`DEVICEIDX')
-          image: defn(`REGISTRY_PREFIX')`tc_transcode_'defn(`PLATFORM_SUFFIX'):latest
+        - name: xcode-defn(`DEVICEIDX')
+          image: defn(`REGISTRY_PREFIX')`tc_xcode_'defn(`PLATFORM_SUFFIX'):latest
           imagePullPolicy: IfNotPresent
-ifelse(defn(`SCENARIO'),`transcode',`dnl
+ifelse(defn(`SCENARIO'),`cdn',,`dnl
           resources:
             limits:
               cpu: eval(defn(`VOD_CPU')*4)
@@ -41,6 +41,8 @@ ifelse(defn(`PLATFORM'),`Xeon',,`dnl
             - name: HW_DEVICE
               value: "`/dev/dri/renderD'eval(defn(`DEVICEIDX')+128)"
 ')dnl
+            - name: `SCENARIO'
+              value: "defn(`SCENARIO')"
             - name: NO_PROXY
               value: "*"
             - name: no_proxy
@@ -72,7 +74,7 @@ PLATFORM_NODE_SELECTOR(`Xeon')dnl
 ---
 ')
 
-ifelse(defn(`SCENARIO'),`transcode',`
+ifelse(defn(`SCENARIO'),`cdn',,`
 ---
 
 apiVersion: batch/v1

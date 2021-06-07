@@ -37,7 +37,7 @@ spec:
         - name: ZOOKEEPER_CLIENT_PORT
           value: "2181"
         - name: ZOOKEEPER_HEAP_OPTS
-          value: -Xmx{{ .Values.zookeeper.heapSize }} -Xms{{ .Values.zookeeper.heapSize }}
+          value: -Xmx{{ $.Values.zookeeper.heapSize }} -Xms{{ $.Values.zookeeper.heapSize }}
         - name: ZOOKEEPER_LOG4J_LOGGERS
           value: zookeepr=ERROR
         - name: ZOOKEEPER_LOG4J_ROOT_LOGLEVEL
