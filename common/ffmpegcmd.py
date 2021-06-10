@@ -190,13 +190,14 @@ class FFMpegCmd:
     def _tc(self):
         cmd_1 = []
         params = self._tc_params
+        stream_name = self._target.split("/")[-1].split(".")[0]
         for item in self._renditions:
             width = item[0]
             height = item[1]
             v_bitrate = self._to_kps(item[2])
             a_bitrate = self._to_kps(item[3])
             maxrate = self._to_kps(item[2] * self._max_bitrate_ratio)
-            name= self._target+"/"+self._codec_type+"_"+str(height)+"p."+self._streaming_type if self._streaming_type == "mp4" else self._target+"_"+self._codec_type+str(height)+"p"
+            name= self._target+"/"+stream_name+self._codec_type+"_"+str(height)+"p."+self._streaming_type if self._streaming_type == "mp4" else self._target+"_"+self._codec_type+str(height)+"p"
 
             if self._acc_type == "vaapi":
                 cmd_1 += ["-vf", "scale_vaapi=w="+str(width)+":"+"h="+str(height)+":format=nv12", "-c:v", self._codec]
