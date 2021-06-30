@@ -21,7 +21,7 @@ spec:
         app: live-service-{{ $i }}
     spec:
       containers:
-      - image: {{ $.Values.registryPrefix }}tc_transcode_{{ lower $.Values.platform }}:latest
+      - image: {{ $.Values.registryPrefix }}tc_xcode_{{ lower $.Values.platform }}:latest
         imagePullPolicy: IfNotPresent
         command: ["/usr/local/bin/ffmpeg","-re","-stream_loop","-1",
             "-i","{{ .name }}",

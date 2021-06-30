@@ -21,6 +21,7 @@ clips=(
 case "$(cat /proc/1/sched | head -n 1)" in
 *build.sh*)
     cd /mnt
+    mkdir -p /mnt/raw
     for clip in "${clips[@]}"; do
         clip_name="$(echo $clip | cut -f5 -d/).mp4"
         if test ! -f "archive/$clip_name"; then
@@ -38,6 +39,12 @@ case "$(cat /proc/1/sched | head -n 1)" in
         clip_name="${clip/*\//}"
         if test ! -f "archive/$clip_name".png; then
             ffmpeg -i "archive/$clip_name" -vf "thumbnail,scale=640:360" -frames:v 1 -y "archive/$clip_name".png
+        fi
+    done
+    for clip in `find archive -name "*.mp4" -print`; do
+        clip_name="${clip/*\//}"
+        if test ! -f "raw/$clip_name".yuv; then
+            ffmpeg -i "archive/$clip_name" -vcodec rawvideo -an -frames:v 600 -y "raw/$clip_name".yuv
         fi
     done
     wait

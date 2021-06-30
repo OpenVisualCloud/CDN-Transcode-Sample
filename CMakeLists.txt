@@ -22,7 +22,7 @@ if (NOT DEFINED SCENARIO)
     set(SCENARIO "transcode")
 endif()
 
-if (SCENARIO STREQUAL "transcode")
+if (NOT (SCENARIO STREQUAL "cdn"))
     set(NLIVES "0")
 endif()
 

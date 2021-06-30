@@ -1,4 +1,4 @@
-# tc_transcode_xeone3
+# tc_xcode_xeone3
 
 FROM openvisualcloud/xeone3-ubuntu1804-media-ffmpeg:21.3
 

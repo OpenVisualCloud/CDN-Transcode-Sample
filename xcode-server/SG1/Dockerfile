@@ -1,4 +1,4 @@
-# tc_transcode_sg1
+# tc_xcode_sg1
 
 FROM openvisualcloud/sg1-ubuntu1804-media-ffmpeg:21.3
 
