@@ -1,4 +1,4 @@
-if (SCENARIO STREQUAL "transcode")
+if (NOT (SCENARIO STREQUAL "cdn"))
     set(service "tc_benchmark_service")
     include("${CMAKE_SOURCE_DIR}/script/service.cmake")
     add_dependencies(build_${service} build_tc_common)
