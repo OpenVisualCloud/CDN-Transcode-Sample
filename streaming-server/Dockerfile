@@ -1,5 +1,5 @@
 
-FROM openvisualcloud/xeon-ubuntu1804-media-nginx:21.3
+FROM openvisualcloud/xeon-ubuntu1804-media-nginx:21.6
 COPY *.conf /etc/nginx/
 CMD  ["/usr/sbin/nginx"]
 WORKDIR /home
