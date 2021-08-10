@@ -38,5 +38,4 @@ def in_out(proPath, srcPath, fileName, count):
         else:
             sleep(1)
             i += 1
-    del_file(proPath)
     return ("can't find file")
