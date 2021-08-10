@@ -1,6 +1,6 @@
 # tc_xcode_sg1
 
-FROM openvisualcloud/sg1-ubuntu1804-media-ffmpeg-vmaf:21.6
+FROM openvisualcloud/sg1-ubuntu1804-media-ffmpeg-vmaf:21.6.1
 
 RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y -q --no-install-recommends python3-tornado python3-kafka python3-kazoo python3-psutil wget && rm -rf /var/lib/apt/lists/*
 
