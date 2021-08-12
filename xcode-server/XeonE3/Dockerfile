@@ -1,4 +1,4 @@
-# tc_xcode_xeone3
+# tc_xcode_xeone3:latest
 
 # SPDX-License-Identifier: BSD 3-Clause License
 #
