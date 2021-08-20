@@ -38,3 +38,7 @@ Component: Foundation for Sites
 Repository: https://github.com/zurb/foundation-sites-6
 License: MIT (https://github.com/zurb/foundation-sites-6/blob/develop/LICENSE)
 
+Component: Netflix/vmaf
+Repository: https://github.com/Netflix/vmaf
+License: BSD-2-Clause-Patent (https://github.com/Netflix/vmaf/blob/master/LICENSE)
+
