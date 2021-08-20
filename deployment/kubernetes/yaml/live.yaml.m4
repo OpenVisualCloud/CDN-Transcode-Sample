@@ -23,7 +23,7 @@ spec:
       enableServiceLinks: false
       containers:
         - name: live-defn(`LIDX')
-          image: defn(`REGISTRY_PREFIX')tc_xcode_xeon:latest
+          image: openvisualcloud/xeon-ubuntu1804-media-ffmpeg-vmaf:21.6.1
           imagePullPolicy: IfNotPresent
           resources:
             limits:

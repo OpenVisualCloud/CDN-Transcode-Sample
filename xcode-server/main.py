@@ -71,7 +71,7 @@ def execute(idx, name, cmd,kafka=True):
             sinfo.update(r)
             print(sinfo, flush=True)
             try:
-                producer.send(KAFKA_WORKLOAD_TOPIC, json.dumps(sinfo))
+                if kafka: producer.send(KAFKA_WORKLOAD_TOPIC, json.dumps(sinfo))
             except Exception as e:
                 print("Exception: {}".format(e))
                 continue
@@ -103,7 +103,7 @@ def decode_yuv(yuv_path,in_stream_name,nframes=None):
         pass
     return yuv_name
 
-def measure_quality_vamf(idx,name, raw_mp4_path, target_mp4_path,width,height, nframes=100):
+def measure_quality_vmaf(idx,name, raw_mp4_path, target_mp4_path,width,height, nframes=100):
     vmaf_score=None
     model_path="/home/models/"
     try:
@@ -208,11 +208,11 @@ def process_stream_lives(msg):
                 r = execute(idx, stream_name, cmd)
                 if r:
                     raise Exception("status code: "+str(r))
-                if SCENARIO == "encode":
+                if SCENARIO == "transcode-quality":
                     width=stream_parameters["renditions"][0][0]
                     height=stream_parameters["renditions"][0][1]
                     mp4_file=cmd[-1]
-                    measure_quality_vamf(idx,stream_name,raw_mp4_path=input_stream,target_mp4_path=mp4_file,width=width,height=height)
+                    measure_quality_vmaf(idx,stream_name,raw_mp4_path=input_stream,target_mp4_path=mp4_file,width=width,height=height)
                 zk.process_end()
         except:
             print(traceback.format_exc(), flush=True)
