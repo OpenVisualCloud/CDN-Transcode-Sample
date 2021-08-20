@@ -9,7 +9,7 @@ RENDITIONS_SAMPLE = (
     [2560, 1440, 10000000, 192000],
     [1920, 1080, 5000000, 192000],
     [1280, 720, 2800000, 192000],
-    [842, 480, 1400000, 128000],
+#    [842, 480, 1400000, 128000],
     [640, 360, 800000, 128000]
 )
 
@@ -197,7 +197,7 @@ class FFMpegCmd:
             v_bitrate = self._to_kps(item[2])
             a_bitrate = self._to_kps(item[3])
             maxrate = self._to_kps(item[2] * self._max_bitrate_ratio)
-            name= self._target+"/"+stream_name+self._codec_type+"_"+str(height)+"p."+self._streaming_type if self._streaming_type == "mp4" else self._target+"_"+self._codec_type+str(height)+"p"
+            name= self._target+"/"+stream_name+"_"+self._codec_type+"_"+str(height)+"p."+self._streaming_type if self._streaming_type == "mp4" else self._target+"/"+stream_name+"_"+self._codec_type+"_"+str(height)+"p"
 
             if self._acc_type == "vaapi":
                 cmd_1 += ["-vf", "scale_vaapi=w="+str(width)+":"+"h="+str(height)+":format=nv12", "-c:v", self._codec]
