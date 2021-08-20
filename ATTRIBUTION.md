@@ -42,3 +42,10 @@ Component: Netflix/vmaf
 Repository: https://github.com/Netflix/vmaf
 License: BSD-2-Clause-Patent (https://github.com/Netflix/vmaf/blob/master/LICENSE)
 
+Component: Jquery-Magnific-Popup
+Repository: https://github.com/dimsemenov/Magnific-Popup
+License: MIT (https://github.com/dimsemenov/Magnific-Popup/blob/master/LICENSE)
+
+Component: bootstrap.min.js
+Repository: https://github.com/twbs/bootstrap
+License: MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
