@@ -5,14 +5,11 @@ DIR=$(dirname $(readlink -f "$0"))
 LICENSE="https://www.pexels.com/photo-license"
 clips=(
     https://www.pexels.com/video/3115738/download
-    https://www.pexels.com/video/2274223/download
-    https://www.pexels.com/video/3061912/download
     https://www.pexels.com/video/1110140/download
     https://www.pexels.com/video/2644023/download
     https://www.pexels.com/video/2257025/download
     https://www.pexels.com/video/3743056/download
     https://www.pexels.com/video/5419496/download
-    https://www.pexels.com/video/3121138/download
     https://www.pexels.com/video/2324293/download
     https://www.pexels.com/video/5413799/download
     https://www.pexels.com/video/3063911/download
